@@ -1,4 +1,4 @@
-@startuml
+@startuml Student parliament website
 title Use Case Diagram: Система Студпарламенту Факультету
 left to right direction
 skinparam packageStyle rectangle
