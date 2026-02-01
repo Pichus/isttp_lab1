@@ -1,0 +1,80 @@
+@startuml
+title Use Case Diagram: Система Студпарламенту Факультету
+left to right direction
+skinparam packageStyle rectangle
+
+' --- ACTORS (АКТОРИ) ---
+' Використовуємо спадкування (Generalization), щоб не дублювати зв'язки.
+' Студент вміє все, що Гість + своє.
+' Член СП вміє все, що Студент + своє.
+
+actor "Гість" as Guest
+actor "Авторизований студент" as Student
+actor "Член Студпарламенту (СП)" as SPMember
+actor "Спейс-менеджер" as SpaceManager
+actor "Голова департаменту коворкінгу" as HeadCoworking
+
+' Ієрархія акторів
+Guest <|-- Student
+Student <|-- SPMember
+SPMember <|-- SpaceManager
+SPMember <|-- HeadCoworking
+
+' --- USE CASES (ВАРІАНТИ ВИКОРИСТАННЯ) ---
+package "Веб-платформа Студпарламенту" {
+    
+    ' Блок для всіх (Гості +)
+    usecase "Перегляд архіву заходів" as UC_ViewPast
+
+    ' Блок для Студентів
+    usecase "Перегляд анонсів майбутніх подій" as UC_ViewFuture
+    usecase "Реєстрація на захід" as UC_Register
+
+    ' Блок для Членів СП (Заходи та Аналітика)
+    usecase "Управління заходами" as UC_ManageEvent
+    note right of UC_ManageEvent
+      Створення, редагування,
+      налаштування лімітів реєстрації
+    end note
+    
+    usecase "Долучитися до оргкомітету" as UC_JoinOrgTeam
+    usecase "Перегляд статистики та KPI" as UC_ViewStats
+    note right of UC_ViewStats
+      Активність членів СП,
+      популярність івентів
+    end note
+
+    ' Блок Коворкінг (Бронювання)
+    usecase "Перегляд слотів коворкінгу" as UC_ViewSlots
+    usecase "Бронювання часу в коворкінгу" as UC_BookSlot
+
+    ' Специфічні дії менеджерів
+    usecase "Адміністрування простору під час івенту" as UC_EventAdmin
+    usecase "Генерація звіту для деканату" as UC_DeanReport
+}
+
+' --- RELATIONSHIPS (ЗВ'ЯЗКИ) ---
+
+' Гість
+Guest --> UC_ViewPast
+
+' Студент (має доступ до того ж, що і гість через спадкування)
+Student --> UC_ViewFuture
+Student --> UC_Register
+
+' Член СП
+SPMember --> UC_ManageEvent
+SPMember --> UC_JoinOrgTeam
+SPMember --> UC_ViewSlots
+SPMember --> UC_BookSlot
+SPMember --> UC_ViewStats
+
+' Специфічні ролі
+SpaceManager --> UC_EventAdmin
+HeadCoworking --> UC_DeanReport
+
+' Логічні залежності між кейсами
+' Щоб забронювати, треба спочатку глянути слоти (бізнес-логіка)
+UC_BookSlot .> UC_ViewSlots : <<include>>
+
+@enduml
