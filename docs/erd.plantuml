@@ -1,0 +1,141 @@
+@startuml Student parliament website entity relationship diagram
+title ER Diagram: SPF Event & Coworking System
+hide circle
+skinparam linetype ortho
+
+' --- ENTITIES (СУТНОСТІ) ---
+
+entity "Users" as user {
+  *id : UUID <<PK>>
+  --
+  name : VARCHAR(100)
+  email : VARCHAR(100)
+  password_hash : VARCHAR(255)
+  created_at : TIMESTAMP
+}
+
+entity "Roles" as role {
+    *id : UUID <<PK>>
+    --
+    name : VARCHAR(100)
+}
+
+' Проміжна таблиця для зв'язку М:N (Користувач - Ролі)
+entity "Users_Roles" as user_role {
+    *user_id : UUID <<PK, FK>> 
+    *role_id : UUID <<PK, FK>>
+}
+
+entity "Departments" as department {
+  *id : UUID <<PK>>
+  --
+  name : VARCHAR(50)
+  description : TEXT
+  head_user_id : UUID <<FK>> -- Голова департаменту
+}
+
+' Проміжна таблиця для зв'язку М:N (Користувач - Департаменти)
+entity "Users_Departments" as user_department {
+    *user_id : UUID <<PK, FK>>
+    *department_id : UUID <<PK, FK>>
+}
+
+entity "EventTags" as event_tag {
+    *id : UUID <<PK>>
+    --
+    name : VARCHAR(50)
+}
+
+entity "Events" as event {
+  *id : UUID <<PK>>
+  --
+  title : VARCHAR(200)
+  description : TEXT
+  poster_url : VARCHAR(255)
+  location: VARCHAR(255)
+  max_participants : INT 
+  is_published : BOOLEAN 
+  created_by : UUID <<FK>> 
+  created_at : TIMESTAMP
+}
+
+' Проміжна таблиця для тегів івенту
+entity "Events_EventTags" as event_event_tag {
+    *event_id : UUID <<PK, FK>>
+    *event_tag_id : UUID <<PK, FK>>
+}
+
+entity "Event_Registrations" as reg {
+  *id : UUID <<PK>>
+  --
+  *user_id : UUID <<FK>> 
+  *event_id : UUID <<FK>> 
+  registered_at : TIMESTAMP
+}
+
+' Затверджені організатори
+entity "Event_Organizers" as org {
+  *id : UUID <<PK>>
+  --
+  *event_id : UUID <<FK>>
+  *user_id : UUID <<FK>> 
+  role_in_event : VARCHAR(100)
+}
+
+' Заявки на організацію (Pending state)
+entity "Event_Organization_Requests" as org_request {
+    *id : UUID <<PK>>
+    --
+    *requesting_user_id : UUID <<FK>>
+    *event_id : UUID <<FK>>
+    status : ENUM('PENDING', 'APPROVED', 'REJECTED')
+    created_at : TIMESTAMP
+}
+
+entity "Coworking_Bookings" as booking {
+  *id : UUID <<PK>>
+  --
+  *event_id : UUID <<FK>> 
+  start_time : DATETIME
+  end_time : DATETIME
+  status : ENUM('PENDING', 'CONFIRMED', 'CANCELED')
+  space_manager_id : UUID <<FK>> -- Може бути NULL, поки менеджер не взяв заявку
+}
+
+' --- RELATIONSHIPS (ЗВ'ЯЗКИ) ---
+
+' --- User & Roles & Depts ---
+user ||..o{ user_role : "has role"
+role ||..o{ user_role : "assigned to"
+
+user ||..o{ user_department : "member of"
+department ||..o{ user_department : "has members"
+
+' Голова департаменту (окремий зв'язок)
+department }o..|| user : "headed by"
+
+' --- Events Creation ---
+user ||..o{ event : "creates"
+
+' --- Tags ---
+event ||..o{ event_event_tag : "has tag"
+event_tag ||..o{ event_event_tag : "tag used in"
+
+' --- Registrations ---
+user ||..o{ reg : "registers"
+event ||..o{ reg : "has attendees"
+
+' --- Organizers (Active Team) ---
+user ||..o{ org : "helps organizing"
+event ||..o{ org : "managed by team"
+
+' --- Organization Requests (Pending) ---
+user ||..o{ org_request : "requests to join"
+event ||..o{ org_request : "has requests"
+
+' --- Coworking ---
+event ||..o{ booking : "occupies slot"
+' Менеджер може адмініструвати багато бронювань, але бронювання може бути без менеджера (0 or 1)
+user |o..o{ booking : "administers space"
+
+@enduml
