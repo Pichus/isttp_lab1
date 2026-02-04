@@ -1,5 +1,5 @@
 @startuml Student parliament website
-title Use Case Diagram: Студпарламент з деталізацією ролей
+title Use Case Diagram: Студпарламент (з Include/Extend)
 left to right direction
 skinparam packageStyle rectangle
 
@@ -16,29 +16,14 @@ actor "Голова Департаменту" as DeptHead
 actor "Голова читалкадепу" as CoworkingHead
 actor "Голова СПФ" as SPHead
 
-' --- HIERARCHY (СПАДКУВАННЯ) ---
+' --- HIERARCHY ---
 
-' Студент може все, що Гість
 Guest <|-- Student
-
-' Член СПФ - це студент з розширеними правами
 Student <|-- SPMember
-
-' Адмін теж студент, але має тех права (або можна зробити окремо)
 SPMember <|-- Admin
-
-' адмін читалки - це Член СПФ + функції коворкінгу
 SPMember <|-- SpaceMember
-
-' Голова деп - це Член СПФ + менеджмент
 SPMember <|-- DeptHead
-
-' Голова СПФ - це як голова департаменту, але найголовніший
 DeptHead <|-- SPHead
-
-' Голова коворкінгу - унікальний випадок.
-' Він має вміти все, що адмін читалки (бронювання), 
-' і все, що Голова (звітність).
 SpaceMember <|-- CoworkingHead
 
 ' --- USE CASES ---
@@ -49,18 +34,20 @@ package "Система Студпарламенту" {
     usecase "Перегляд архіву заходів" as UC_ViewPast
     usecase "Перегляд майбутніх заходів" as UC_ViewFuture
     usecase "Реєстрація на захід" as UC_Register
+    usecase "Пошук та фільтрація" as UC_Search
 
-    ' --- БЛОК 2: ФУНКЦІОНАЛ ЧЛЕНА СПФ (Будь-який деп) ---
+    ' --- БЛОК 2: ФУНКЦІОНАЛ ЧЛЕНА СПФ ---
     usecase "Створення/Редагування івенту" as UC_CreateEvent
     usecase "Долучитися до оргкомітету" as UC_JoinOrg
     usecase "Перегляд вільного часу в коворкінгу" as UC_ViewSlots 
     usecase "Запит на бронювання читалки" as UC_BookSlotRequest
     
-    ' --- БЛОК 3: КОВОРКІНГ ДЕПАРТАМЕНТ (адмін читалкии) ---
+    ' --- БЛОК 3: КОВОРКІНГ ДЕПАРТАМЕНТ ---
     usecase "Бронювання слоту (Approve)" as UC_BookSlot
+    usecase "Перевірка конфліктів розкладу" as UC_CheckConflicts
     usecase "Адміністрування простору під час івенту" as UC_SpaceAdmin
 
-    ' --- БЛОК 4: КЕРІВНИЦТВО (Голови) ---
+    ' --- БЛОК 4: КЕРІВНИЦТВО ---
     usecase "Перегляд статистики департаменту" as UC_DeptStats
     usecase "Генерація звіту для Деканату" as UC_DeanReport
     usecase "Глобальна аналітика та KPI" as UC_GlobalStats
@@ -69,7 +56,7 @@ package "Система Студпарламенту" {
     usecase "Управління користувачами" as UC_ManageUsers
 }
 
-' --- ЗВ'ЯЗКИ ---
+' --- ЗВ'ЯЗКИ ACTORS ---
 
 ' Гість
 Guest --> UC_ViewPast
@@ -78,20 +65,20 @@ Guest --> UC_ViewPast
 Student --> UC_ViewFuture
 Student --> UC_Register
 
-' Член СПФ (Базовий функціонал активіста)
+' Член СПФ
 SPMember --> UC_CreateEvent
 SPMember --> UC_JoinOrg
 SPMember --> UC_ViewSlots
 SPMember --> UC_BookSlotRequest
 
-' адмін читалки (Специфіка коворкінгу)
+' адмін читалки
 SpaceMember --> UC_BookSlot
 SpaceMember --> UC_SpaceAdmin
 
-' Голова Департаменту (Загальний)
+' Голова Департаменту
 DeptHead --> UC_DeptStats
 
-' Голова Коворкінгу (Специфічний звіт)
+' Голова Коворкінгу
 CoworkingHead --> UC_DeanReport
 
 ' Голова СПФ
@@ -99,5 +86,24 @@ SPHead --> UC_GlobalStats
 
 ' Адмін
 Admin --> UC_ManageUsers
+
+' --- ЗВ'ЯЗКИ INCLUDE / EXTEND (Логіка системи) ---
+
+' 1. Пошук розширює перегляд (це опціональна дія при перегляді)
+UC_ViewFuture <.. UC_Search : <<extend>>
+
+' 2. Створення івенту може включати запит на бронювання 
+' (якщо івент офлайн в читалці - це розширення базового сценарію створення)
+UC_CreateEvent <.. UC_BookSlotRequest : <<extend>>
+
+' 3. Щоб зареєструватись, треба спочатку знайти івент (не обов'язково, але логічно)
+' АБО реєстрація розширює перегляд детальної інформації. 
+' Тут залишимо простіше: прямий зв'язок актора.
+
+' 4. Щоб заапрувити слот (BookSlot), система ОБОВ'ЯЗКОВО має перевірити конфлікти
+UC_BookSlot ..> UC_CheckConflicts : <<include>>
+
+' 5. Щоб зробити звіт для деканату, ОБОВ'ЯЗКОВО треба мати статистику
+UC_DeanReport ..> UC_DeptStats : <<include>>
 
 @enduml
