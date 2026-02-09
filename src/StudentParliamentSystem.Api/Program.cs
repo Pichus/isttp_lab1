@@ -1,11 +1,16 @@
 using StudentParliamentSystem.Api.Configurations;
+using StudentParliamentSystem.Infrastructure;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+builder.Services.AddInfrastructureServices(builder.Configuration,
+    builder.Environment.EnvironmentName);
+
 builder.Services.AddOpenApi();
+
 
 WebApplication app = builder.Build();
 
