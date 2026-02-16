@@ -14,8 +14,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Data\Configurations\"/>
         <Folder Include="Data\Migrations\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\StudentParliamentSystem.Core\StudentParliamentSystem.Core.csproj"/>
     </ItemGroup>
 
 </Project>
