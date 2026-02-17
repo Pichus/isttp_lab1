@@ -24,9 +24,12 @@ public static class MiddlewareConfig
             app.UseExceptionHandler("/Error");
             app.UseHsts();
         }
+        
+        app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
         if (app.Environment.IsDevelopment())
         {
+            app.UseDeveloperExceptionPage();
             app.UseOpenApi();
             app.UseSwaggerUi();
             app.MapGet("/", () => Results.Redirect("/swagger"));
