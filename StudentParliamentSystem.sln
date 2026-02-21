@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentParliamentSystem.Inf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentParliamentSystem.Core", "src\StudentParliamentSystem.Core\StudentParliamentSystem.Core.csproj", "{EA127100-AEFE-4DCC-8A2C-49E0D963B8DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentParliamentSystem.UseCases", "src\StudentParliamentSystem.UseCases\StudentParliamentSystem.UseCases.csproj", "{3434B07D-91CE-47E2-AF21-F5D077BF12FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{EA127100-AEFE-4DCC-8A2C-49E0D963B8DE}.Release|x64.Build.0 = Release|Any CPU
 		{EA127100-AEFE-4DCC-8A2C-49E0D963B8DE}.Release|x86.ActiveCfg = Release|Any CPU
 		{EA127100-AEFE-4DCC-8A2C-49E0D963B8DE}.Release|x86.Build.0 = Release|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Release|x64.Build.0 = Release|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{3434B07D-91CE-47E2-AF21-F5D077BF12FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
