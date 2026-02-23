@@ -1,0 +1,56 @@
+@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Управління email";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<h3 class="text-xl font-semibold mb-4">@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="card bg-base-100 border border-base-200 shadow-sm">
+    <div class="card-body">
+        <form id="email-form" method="post" class="flex flex-col gap-4 max-w-md">
+            <div asp-validation-summary="All" class="alert alert-error text-sm" role="alert"></div>
+
+            @if (Model.IsEmailConfirmed)
+            {
+                <div class="form-control">
+                    <label asp-for="Email" class="label">
+                        <span class="label-text font-medium">Поточний email</span>
+                        <span class="label-text-alt text-success font-semibold flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            Підтверджено
+                        </span>
+                    </label>
+                    <input asp-for="Email" class="input input-bordered w-full" placeholder="Ваш email" disabled />
+                </div>
+            }
+            else
+            {
+                <div class="form-control">
+                    <label asp-for="Email" class="label">
+                        <span class="label-text font-medium">Поточний email</span>
+                        <span class="label-text-alt text-warning">Не підтверджено</span>
+                    </label>
+                    <input asp-for="Email" class="input input-bordered w-full" placeholder="Ваш email" disabled />
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-outline btn-sm mt-2">
+                        Надіслати підтвердження
+                    </button>
+                </div>
+            }
+
+            <div class="form-control">
+                <label asp-for="Input.NewEmail" class="label"><span class="label-text font-medium">Новий email</span></label>
+                <input asp-for="Input.NewEmail" class="input input-bordered w-full" autocomplete="email" aria-required="true" placeholder="new@example.com" />
+                <span asp-validation-for="Input.NewEmail" class="label-text-alt text-error mt-1"></span>
+            </div>
+
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-primary">Змінити email</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

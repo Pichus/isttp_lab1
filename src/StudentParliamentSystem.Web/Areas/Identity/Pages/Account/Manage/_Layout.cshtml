@@ -1,0 +1,28 @@
+@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold mb-1">Управління акаунтом</h1>
+    <p class="text-base-content/60">Налаштуйте параметри вашого акаунту</p>
+</div>
+
+<div class="flex flex-col lg:flex-row gap-8">
+    <aside class="lg:w-56 shrink-0">
+        <partial name="_ManageNav"/>
+    </aside>
+    <div class="flex-1 min-w-0">
+        @RenderBody()
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", false)
+}

@@ -1,0 +1,34 @@
+@page
+@model DeletePersonalDataModel
+@{
+    ViewData["Title"] = "Видалення персональних даних";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h3 class="text-xl font-semibold mb-4">@ViewData["Title"]</h3>
+
+<div class="alert alert-error mb-6" role="alert">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0 2-2m-2 2-2-2m2 2 2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    <span><strong>Видалення цих даних назавжди видалить ваш акаунт і це незворотня дія.</strong></span>
+</div>
+
+<div class="card bg-base-100 border border-base-200 shadow-sm">
+    <div class="card-body">
+        <form id="delete-user" method="post" class="flex flex-col gap-4 max-w-md">
+            <div asp-validation-summary="ModelOnly" class="alert alert-error text-sm" role="alert"></div>
+            @if (Model.RequirePassword)
+            {
+                <div class="form-control">
+                    <label asp-for="Input.Password" class="label"><span class="label-text font-medium">Підтвердіть пароль</span></label>
+                    <input asp-for="Input.Password" class="input input-bordered w-full" autocomplete="current-password" aria-required="true" placeholder="••••••••" />
+                    <span asp-validation-for="Input.Password" class="label-text-alt text-error mt-1"></span>
+                </div>
+            }
+            <button class="btn btn-error w-full" type="submit">Видалити дані та акаунт</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,92 @@
+@page
+@using Microsoft.AspNetCore.Http.Features
+@model TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "Двофакторна автентифікація (2FA)";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<h3 class="text-xl font-semibold mb-4">@ViewData["Title"]</h3>
+
+@{
+    var consentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
+    @if (consentFeature?.CanTrack ?? true)
+    {
+        @if (Model.Is2faEnabled)
+        {
+            if (Model.RecoveryCodesLeft == 0)
+            {
+                <div class="alert alert-error mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0 2-2m-2 2-2-2m2 2 2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div>
+                        <p class="font-bold">У вас не залишилось кодів відновлення.</p>
+                        <p>Вам потрібно <a asp-page="./GenerateRecoveryCodes" class="link">згенерувати нові коди</a> перш ніж увійти з кодом відновлення.</p>
+                    </div>
+                </div>
+            }
+            else if (Model.RecoveryCodesLeft == 1)
+            {
+                <div class="alert alert-error mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0 2-2m-2 2-2-2m2 2 2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div>
+                        <p class="font-bold">Залишився 1 код відновлення.</p>
+                        <p>Ви можете <a asp-page="./GenerateRecoveryCodes" class="link">згенерувати нові коди</a>.</p>
+                    </div>
+                </div>
+            }
+            else if (Model.RecoveryCodesLeft <= 3)
+            {
+                <div class="alert alert-warning mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <p class="font-bold">Залишилось @Model.RecoveryCodesLeft кодів відновлення.</p>
+                        <p>Рекомендуємо <a asp-page="./GenerateRecoveryCodes" class="link">згенерувати нові коди</a>.</p>
+                    </div>
+                </div>
+            }
+
+            <div class="flex flex-wrap gap-3 mb-6">
+                @if (Model.IsMachineRemembered)
+                {
+                    <form method="post">
+                        <button type="submit" class="btn btn-outline btn-sm">Забути цей браузер</button>
+                    </form>
+                }
+                <a asp-page="./Disable2fa" class="btn btn-error btn-sm">Вимкнути 2FA</a>
+                <a asp-page="./GenerateRecoveryCodes" class="btn btn-outline btn-sm">Оновити коди відновлення</a>
+            </div>
+        }
+
+        <div class="card bg-base-100 border border-base-200 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title text-lg">Застосунок-автентифікатор</h4>
+                <div class="flex flex-wrap gap-3 mt-2">
+                    @if (!Model.HasAuthenticator)
+                    {
+                        <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary btn-sm">Додати автентифікатор</a>
+                    }
+                    else
+                    {
+                        <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary btn-sm">Налаштувати автентифікатор</a>
+                        <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-outline btn-sm">Скинути автентифікатор</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0 2-2m-2 2-2-2m2 2 2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <div>
+                <p class="font-bold">Політику конфіденційності не прийнято.</p>
+                <p>Вам потрібно прийняти політику перш ніж увімкнути двофакторну автентифікацію.</p>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

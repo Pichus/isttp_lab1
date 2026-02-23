@@ -1,0 +1,40 @@
+@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Помилка";
+}
+
+<div class="flex justify-center items-start py-12">
+    <div class="card bg-base-100 shadow-xl border border-error/30 w-full max-w-lg">
+        <div class="card-body gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center text-error shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-error">Помилка</h1>
+                    <p class="text-base-content/70">Під час обробки вашого запиту сталася помилка.</p>
+                </div>
+            </div>
+
+            @if (Model.ShowRequestId)
+            {
+                <div class="bg-base-200 rounded-lg p-3 text-sm">
+                    <span class="font-medium">Request ID:</span>
+                    <code class="font-mono ml-2">@Model.RequestId</code>
+                </div>
+            }
+
+            <div class="divider my-0"></div>
+
+            <div class="text-sm text-base-content/60">
+                <p class="font-semibold mb-1">Режим розробника</p>
+                <p>Перемкніть на середовище <strong>Development</strong> для отримання детальної інформації про помилку. Не вмикайте це у виробничому середовищі.</p>
+            </div>
+
+            <a href="/" class="btn btn-primary btn-sm self-start">На головну</a>
+        </div>
+    </div>
+</div>

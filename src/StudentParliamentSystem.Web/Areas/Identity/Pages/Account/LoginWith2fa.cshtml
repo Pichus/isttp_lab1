@@ -1,0 +1,45 @@
+@page
+@model LoginWith2faModel
+@{
+    ViewData["Title"] = "Двофакторна автентифікація";
+}
+
+<div class="flex justify-center items-start py-8">
+    <div class="card bg-base-100 shadow-xl border border-base-200 w-full max-w-md">
+        <div class="card-body gap-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold">@ViewData["Title"]</h1>
+                <p class="text-base-content/60 mt-1">Введіть код з вашого застосунку-автентифікатора</p>
+            </div>
+
+            <form method="post" asp-route-returnUrl="@Model.ReturnUrl" class="flex flex-col gap-4">
+                <input asp-for="RememberMe" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-error text-sm" role="alert"></div>
+
+                <div class="form-control">
+                    <label asp-for="Input.TwoFactorCode" class="label"><span class="label-text font-medium">Код автентифікатора</span></label>
+                    <input asp-for="Input.TwoFactorCode" class="input input-bordered w-full font-mono tracking-widest" autocomplete="off" />
+                    <span asp-validation-for="Input.TwoFactorCode" class="label-text-alt text-error mt-1"></span>
+                </div>
+
+                <div class="form-control">
+                    <label asp-for="Input.RememberMachine" class="label cursor-pointer justify-start gap-3">
+                        <input asp-for="Input.RememberMachine" class="checkbox checkbox-primary" />
+                        <span class="label-text">@Html.DisplayNameFor(m => m.Input.RememberMachine)</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">Увійти</button>
+
+                <p class="text-center text-sm text-base-content/60">
+                    Немає доступу до пристрою?
+                    <a id="recovery-code-login" asp-page="./LoginWithRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl" class="link link-primary">Увійти з кодом відновлення</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

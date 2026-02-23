@@ -1,0 +1,33 @@
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Вихід";
+}
+
+<div class="flex justify-center items-start py-12">
+    <div class="card bg-base-100 shadow-xl border border-base-200 w-full max-w-md">
+        <div class="card-body items-center text-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center text-base-content/60">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold">@ViewData["Title"]</h1>
+            @{
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <p class="text-base-content/70">Ви впевнені, що хочете вийти?</p>
+                    <form class="w-full" asp-area="Identity" asp-page="/Account/Logout"
+                          asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                        <button type="submit" class="btn btn-error w-full">Вийти</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="text-base-content/70">Ви успішно вийшли з системи.</p>
+                    <a href="/" class="btn btn-primary mt-2">На головну</a>
+                }
+            }
+        </div>
+    </div>
+</div>
