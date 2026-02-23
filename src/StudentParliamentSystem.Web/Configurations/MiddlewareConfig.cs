@@ -32,7 +32,7 @@ public static class MiddlewareConfig
             app.UseDeveloperExceptionPage();
             app.UseOpenApi();
             app.UseSwaggerUi();
-            app.MapGet("/", () => Results.Redirect("/swagger"));
+            // app.MapGet("/", () => Results.Redirect("/swagger"));
         }
 
         return app;

@@ -1,0 +1,184 @@
+@{
+    ViewData["Title"] = "КНУ Коворкінг та Читалка";
+}
+
+<div class="mb-8 flex justify-between items-end flex-wrap gap-4">
+    <div>
+        <h1 class="text-4xl font-black mb-2">Коворкінг Простір ФКНК</h1>
+        <p class="text-base-content/70">Плануйте свій розклад, бронюйте місця для навчання, роботи або засідань до 30 днів вперед.</p>
+    </div>
+    <div class="flex gap-2">
+        <a href="/Coworking/Manage" class="btn btn-outline btn-sm lg:btn-md">Адміністрування</a>
+        <a href="/Coworking/Book" class="btn btn-secondary btn-sm lg:btn-md flex items-center gap-1">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+            Забронювати Слот
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <!-- Info Section (Rules) -->
+    <div class="lg:col-span-2 bg-secondary/10 p-6 rounded-3xl border border-secondary/20 flex flex-col justify-center">
+        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-secondary"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /></svg>
+            Ліміти та Правила для Членів СПФ
+        </h3>
+        <ul class="list-disc list-inside space-y-2 text-sm text-base-content/80">
+            <li>Максимальна тривалість безперервного бронювання: <strong>12 годин</strong>.</li>
+            <li>Дозволено планувати бронювання на період до <strong>1 місяця</strong> вперед.</li>
+            <li>Календар нижче відображає загальну завантаженість. Клікайте на день для деталізації часу.</li>
+            <li>Червоний = весь день зайнято, Жовтий = частково зайнято, Зелений = повністю вільно.</li>
+        </ul>
+    </div>
+    
+    <div class="lg:col-span-1 bg-base-100 p-6 rounded-3xl border border-base-200 shadow-xl flex flex-col justify-center">
+         <h3 class="font-bold mb-4">Статистика за поточний тиждень</h3>
+         <div class="flex justify-between items-center mb-2">
+             <span class="text-sm">Пікова завантаженість</span>
+             <span class="font-bold">65%</span>
+         </div>
+         <progress class="progress progress-secondary w-full" value="65" max="100"></progress>
+         <div class="text-xs text-base-content/50 mt-2">Найбільше бронювань: Четвер, 14:00 - 18:00</div>
+    </div>
+</div>
+
+<!-- Full Width Calendar Grid View -->
+<div class="bg-base-100 p-6 rounded-3xl border border-base-200 shadow-xl">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 border-b border-base-200 pb-4">
+        <h2 class="text-2xl font-bold flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-primary"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+            Розклад (Жовтень 2026)
+        </h2>
+        <div class="flex items-center gap-2">
+             <button class="btn btn-sm btn-ghost">&lt; Попередній</button>
+             <input type="month" class="input input-bordered input-sm font-semibold w-1" style="width: 140px;" value="2026-10" />
+             <button class="btn btn-sm btn-ghost">Наступний &gt;</button>
+        </div>
+    </div>
+
+    <!-- Calendar Grid Container -->
+    <div class="w-full overflow-x-auto pb-4">
+        <div class="min-w-[800px]">
+            <!-- Headers -->
+            <div class="grid grid-cols-7 gap-px bg-base-300 rounded-t-xl overflow-hidden mb-px">
+                <div class="bg-base-200 p-3 text-center font-bold text-sm text-base-content/70">Пн</div>
+                <div class="bg-base-200 p-3 text-center font-bold text-sm text-base-content/70">Вв</div>
+                <div class="bg-base-200 p-3 text-center font-bold text-sm text-base-content/70">Ср</div>
+                <div class="bg-base-200 p-3 text-center font-bold text-sm text-base-content/70">Чт</div>
+                <div class="bg-base-200 p-3 text-center font-bold text-sm text-base-content/70">Пт</div>
+                <div class="bg-base-200 p-3 text-center font-bold text-sm text-base-content/70">Сб</div>
+                <div class="bg-base-200 p-3 text-center font-bold text-sm text-base-content/70 text-error">Нд</div>
+            </div>
+
+            <!-- Days Grid (Mock up of 2 weeks for brevity, pretending it's a full calendar) -->
+            <div class="grid grid-cols-7 gap-px bg-base-300 border border-base-300 rounded-b-xl overflow-hidden">
+                
+                <!-- Day 1 (Past) -->
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col opacity-50 relative group">
+                    <span class="text-xs font-semibold self-end text-base-content/50">28</span>
+                </div>
+                 <!-- Day 2 (Past) -->
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col opacity-50 relative group">
+                    <span class="text-xs font-semibold self-end text-base-content/50">29</span>
+                </div>
+                 <!-- Day 3 (Past) -->
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col opacity-50 relative group">
+                    <span class="text-xs font-semibold self-end text-base-content/50">30</span>
+                </div>
+
+                <!-- Day 4: (Today) Partially Booked -->
+                <div class="bg-primary/5 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer relative border-2 border-primary">
+                     <div class="absolute inset-0 bg-base-content/5 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10 backdrop-blur-[1px]">
+                        <span class="btn btn-primary btn-sm rounded-full">Бронювати</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="badge badge-primary badge-sm text-[10px] font-bold">Сьогодні</span>
+                        <span class="text-sm font-bold w-6 h-6 rounded-full bg-primary text-primary-content flex items-center justify-center">1</span>
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col gap-1 mt-2">
+                        <!-- Booked block -->
+                        <div class="w-full text-[10px] bg-warning/20 text-warning-content border border-warning/40 rounded px-1 py-0.5 font-medium truncate" title="10:00 - 13:00 Зустріч Ради">
+                            <span class="font-bold">10:00</span> Збори Ради...
+                        </div>
+                        <div class="w-full text-[10px] bg-error/20 text-error-content border border-error/40 rounded px-1 py-0.5 font-medium truncate" title="14:00 - 18:00 Весь простір (МедіаДеп)">
+                            <span class="font-bold">14:00</span> Простір!
+                        </div>
+                         <!-- Free block indicator -->
+                        <div class="w-full text-[10px] bg-success/10 text-success border border-success/30 rounded border-dashed px-1 py-0.5 font-medium mt-auto text-center">
+                            Вільних: 6 год
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 5: Fully Booked -->
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-not-allowed">
+                    <span class="text-sm font-semibold self-end text-base-content mb-2">2</span>
+                    <div class="flex-1 flex flex-col gap-1">
+                         <div class="w-full h-full min-h-[4rem] bg-error/10 border border-error/30 rounded flex flex-col items-center justify-center p-1 text-[10px] text-error font-medium text-center">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mb-1"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                             Абсолютно<br/>зайнято
+                         </div>
+                    </div>
+                </div>
+
+                 <!-- Day 6: Completely Free -->
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer relative overflow-hidden">
+                    <!-- Hover Overlay Button -->
+                    <div class="absolute inset-0 bg-base-content/5 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10 backdrop-blur-[1px]">
+                        <span class="btn btn-primary btn-sm rounded-full">Бронювати (до 12г)</span>
+                    </div>
+
+                    <span class="text-sm font-semibold self-end text-base-content mb-2">3</span>
+                    <div class="flex-1 flex flex-col">
+                        <div class="w-full h-full min-h-[4rem] bg-success/10 border border-success/30 border-dashed rounded flex flex-col items-center justify-center p-1 text-[10px] text-success font-medium text-center">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mb-1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                             Повністю<br/>вільно
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Day 7: Weekend (Partially) -->
+                <div class="bg-base-200/50 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer relative">
+                     <div class="absolute inset-0 bg-base-content/5 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10 backdrop-blur-[1px]">
+                        <span class="btn btn-primary btn-sm rounded-full">Бронювати</span>
+                    </div>
+                    <span class="text-sm font-semibold self-end text-error mb-2">4</span>
+                    <div class="flex-1 flex flex-col gap-1">
+                        <div class="w-full text-[10px] bg-warning/20 text-warning-content border border-warning/40 rounded px-1 py-0.5 font-medium truncate" title="12:00 - 15:00 IT Event">
+                            <span class="font-bold">12:00</span> IT Event
+                        </div>
+                        <div class="w-full text-[10px] bg-success/10 text-success border border-success/30 rounded border-dashed px-1 py-0.5 font-medium mt-auto text-center">
+                            Вільних: 9 год
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note: In a real app we'd map all 31 days. Skipping repetitive HTML here. -->
+                
+                 <!-- Row 2 Mock ... -->
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer relative">
+                     <!-- Hover Overlay Button -->
+                    <div class="absolute inset-0 bg-base-content/5 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-10 backdrop-blur-[1px]">
+                        <span class="btn btn-primary btn-sm rounded-full">Бронювати (до 12г)</span>
+                    </div>
+
+                    <span class="text-sm font-semibold self-end text-base-content mb-2">5</span>
+                    <div class="flex-1 flex flex-col">
+                        <div class="w-full h-full min-h-[4rem] bg-success/10 border border-success/30 border-dashed rounded flex flex-col items-center justify-center p-1 text-[10px] text-success font-medium text-center">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mb-1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                             Повністю<br/>вільно
+                        </div>
+                    </div>
+                </div>
+                <!-- Adding blanks to fulfill grid -->
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer opacity-50"><span class="text-sm font-semibold self-end text-base-content mb-2">6</span><span class="text-xs text-base-content/40 mt-auto text-center">Без бронювань</span></div>
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer opacity-50"><span class="text-sm font-semibold self-end text-base-content mb-2">7</span><span class="text-xs text-base-content/40 mt-auto text-center">Без бронювань</span></div>
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer opacity-50"><span class="text-sm font-semibold self-end text-base-content mb-2">8</span><span class="text-xs text-base-content/40 mt-auto text-center">Без бронювань</span></div>
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer opacity-50"><span class="text-sm font-semibold self-end text-base-content mb-2">9</span><span class="text-xs text-base-content/40 mt-auto text-center">Без бронювань</span></div>
+                <div class="bg-base-100 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer opacity-50"><span class="text-sm font-semibold self-end text-base-content mb-2">10</span><span class="text-xs text-base-content/40 mt-auto text-center">Без бронювань</span></div>
+                <div class="bg-base-200/50 min-h-[140px] p-2 flex flex-col group hover:bg-base-200 transition-colors cursor-pointer opacity-50"><span class="text-sm font-semibold self-end text-error mb-2">11</span><span class="text-xs text-base-content/40 mt-auto text-center">Без бронювань</span></div>
+            </div>
+        </div>
+    </div>
+</div>
