@@ -13,8 +13,12 @@ public static class MiddlewareConfig
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
         app.UseAuthorization();
 
+        app.MapRazorPages();
+        
         app.MapControllerRoute(
             "default",
             "{controller=Home}/{action=Index}/{id?}");
