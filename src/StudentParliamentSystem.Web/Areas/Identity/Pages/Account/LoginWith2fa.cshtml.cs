@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
 using Microsoft.AspNetCore.Identity;
@@ -16,12 +17,12 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account;
 public class LoginWith2faModel : PageModel
 {
     private readonly ILogger<LoginWith2faModel> _logger;
-    private readonly SignInManager<StudentParliamentSystemUser> _signInManager;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public LoginWith2faModel(
-        SignInManager<StudentParliamentSystemUser> signInManager,
-        UserManager<StudentParliamentSystemUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager,
         ILogger<LoginWith2faModel> logger)
     {
         _signInManager = signInManager;

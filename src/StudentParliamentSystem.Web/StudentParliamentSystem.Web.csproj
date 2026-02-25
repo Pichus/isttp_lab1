@@ -26,6 +26,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\StudentParliamentSystem.Infrastructure\StudentParliamentSystem.Infrastructure.csproj" />
+        <ProjectReference Include="..\StudentParliamentSystem.Infrastructure.Identity\StudentParliamentSystem.Infrastructure.Identity.csproj" />
     </ItemGroup>
 
 </Project>

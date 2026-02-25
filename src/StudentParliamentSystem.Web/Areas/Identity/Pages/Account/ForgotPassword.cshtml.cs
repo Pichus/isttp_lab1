@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -20,9 +21,9 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account;
 public class ForgotPasswordModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ForgotPasswordModel(UserManager<StudentParliamentSystemUser> userManager, IEmailSender emailSender)
+    public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
     {
         _userManager = userManager;
         _emailSender = emailSender;

@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,12 +15,12 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account.Manage;
 public class ResetAuthenticatorModel : PageModel
 {
     private readonly ILogger<ResetAuthenticatorModel> _logger;
-    private readonly SignInManager<StudentParliamentSystemUser> _signInManager;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public ResetAuthenticatorModel(
-        UserManager<StudentParliamentSystemUser> userManager,
-        SignInManager<StudentParliamentSystemUser> signInManager,
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
         ILogger<ResetAuthenticatorModel> logger)
     {
         _userManager = userManager;

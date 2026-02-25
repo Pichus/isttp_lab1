@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
 using Microsoft.AspNetCore.Identity;
@@ -15,12 +16,12 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account.Manage;
 
 public class SetPasswordModel : PageModel
 {
-    private readonly SignInManager<StudentParliamentSystemUser> _signInManager;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public SetPasswordModel(
-        UserManager<StudentParliamentSystemUser> userManager,
-        SignInManager<StudentParliamentSystemUser> signInManager)
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;

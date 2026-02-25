@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,10 +15,10 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account.Manage;
 public class Disable2faModel : PageModel
 {
     private readonly ILogger<Disable2faModel> _logger;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public Disable2faModel(
-        UserManager<StudentParliamentSystemUser> userManager,
+        UserManager<ApplicationUser> userManager,
         ILogger<Disable2faModel> logger)
     {
         _userManager = userManager;

@@ -1,5 +1,6 @@
+@using StudentParliamentSystem.Infrastructure.Identity.Data.Entities
 @using StudentParliamentSystem.Infrastructure.Identity
-@inject SignInManager<StudentParliamentSystemUser> SignInManager
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

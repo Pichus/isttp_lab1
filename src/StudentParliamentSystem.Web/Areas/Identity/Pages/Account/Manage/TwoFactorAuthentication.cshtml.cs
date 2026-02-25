@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,11 +15,11 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account.Manage;
 public class TwoFactorAuthenticationModel : PageModel
 {
     private readonly ILogger<TwoFactorAuthenticationModel> _logger;
-    private readonly SignInManager<StudentParliamentSystemUser> _signInManager;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public TwoFactorAuthenticationModel(
-        UserManager<StudentParliamentSystemUser> userManager, SignInManager<StudentParliamentSystemUser> signInManager,
+        UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
         ILogger<TwoFactorAuthenticationModel> logger)
     {
         _userManager = userManager;

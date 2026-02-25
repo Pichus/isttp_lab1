@@ -1,4 +1,5 @@
 using StudentParliamentSystem.Infrastructure;
+using StudentParliamentSystem.Infrastructure.Identity;
 
 namespace StudentParliamentSystem.Api.Configurations;
 
@@ -11,14 +12,15 @@ public static class ServiceConfig
 
         services.AddLoggerConfig(configuration, environment);
 
-        services.AddIdentityConfig();
+        services.AddAuthenticationConfig();
 
         services.AddRazorPages();
 
         services.AddSwaggerConfig();
 
-        services.AddInfrastructureServices(configuration,
-            environment.EnvironmentName, logger);
+        services
+            .AddInfrastructureServices(configuration, environment.EnvironmentName, logger)
+            .AddIdentityInfrastructureServices(configuration, environment.EnvironmentName, logger);
 
         return services;
     }
