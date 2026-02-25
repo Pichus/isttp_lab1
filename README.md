@@ -63,8 +63,14 @@ Run the project using docker compose
 
 Add migrations
 
+For the main application database:
 ```bash
-    dotnet ef migrations add MigrationName --project src/StudentParliamentSystem.Infrastructure  --startup-project src/StudentParliamentSystem.Web -o ./Data/Migrations
+    dotnet ef migrations add MigrationName --project src/StudentParliamentSystem.Infrastructure  --startup-project src/StudentParliamentSystem.Web --context ApplicationDatabaseContext -o ./Data/Migrations
+```
+
+For the identity database:
+```bash
+    dotnet ef migrations add MigrationName --project src/StudentParliamentSystem.Infrastructure.Identity --startup-project src/StudentParliamentSystem.Web --context IdentityDatabaseContext -o ./Data/Migrations
 ```
 
 Apply migrations
@@ -74,7 +80,14 @@ Apply migrations
     when the project is run in Development environment for better developer experience
 ```
 
+To apply them manually:
+
+For the main application database:
 ```bash
     dotnet ef database update --project src/StudentParliamentSystem.Infrastructure  --startup-project src/StudentParliamentSystem.Web
 ```
 
+For the identity database:
+```bash
+    dotnet ef database update --project src/StudentParliamentSystem.Infrastructure.Identity --startup-project src/StudentParliamentSystem.Web --context IdentityDatabaseContext
+```
