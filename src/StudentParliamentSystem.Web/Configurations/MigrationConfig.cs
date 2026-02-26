@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using StudentParliamentSystem.Infrastructure.Data;
+using StudentParliamentSystem.Infrastructure.Identity.Data;
 
 namespace StudentParliamentSystem.Api.Configurations;
 
@@ -9,10 +10,13 @@ public static class MigrationConfig
     public static void UseMigrations(this IApplicationBuilder app, ILogger logger)
     {
         using IServiceScope scope = app.ApplicationServices.CreateScope();
-        using ApplicationDatabaseContext dbContext =
+        using ApplicationDatabaseContext mainApplicationDatabaseContext =
             scope.ServiceProvider.GetRequiredService<ApplicationDatabaseContext>();
+        using IdentityDatabaseContext identityDatabaseContext =
+            scope.ServiceProvider.GetRequiredService<IdentityDatabaseContext>();
 
-        dbContext.Database.Migrate();
+        mainApplicationDatabaseContext.Database.Migrate();
+        identityDatabaseContext.Database.Migrate();
 
         logger.LogInformation("Migrations applied successfully");
     }
