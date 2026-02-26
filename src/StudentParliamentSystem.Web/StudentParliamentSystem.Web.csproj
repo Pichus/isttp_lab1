@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>StudentParliamentSystem.Api</RootNamespace>
+        <UserSecretsId>99e4880a-8fed-4fad-ba03-38a51ae00188</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
