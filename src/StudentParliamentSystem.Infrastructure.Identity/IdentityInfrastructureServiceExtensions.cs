@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,12 +65,15 @@ public static class IdentityInfrastructureServiceExtensions
 
     private static void RegisterServices(IServiceCollection services)
     {
-        services.AddIdentityCore<ApplicationUser>(o =>
+        services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(o =>
             {
                 o.Stores.MaxLengthForKeys = 128;
             })
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<IdentityDatabaseContext>();
+        
+        // todo implement real email confirmation, create a real email sender
+        services.AddTransient<IEmailSender, NoOpEmailSender>();
     }
 
     private static void ConfigureIdentity(IServiceCollection services)
