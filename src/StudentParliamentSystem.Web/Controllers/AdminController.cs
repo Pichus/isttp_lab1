@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using StudentParliamentSystem.Api.Configurations;
+using StudentParliamentSystem.Api.ViewModels;
 
 namespace StudentParliamentSystem.Api.Controllers;
 
@@ -12,13 +13,23 @@ public class AdminController : Controller
     // User management and roles
     public IActionResult Index()
     {
-        return View("Users");
+        return View("Users", new PaginationViewModel
+        {
+            CurrentPage = 1,
+            TotalPages = 10
+        });
     }
 
     // GET: /Admin/Users
-    public IActionResult Users()
+    public IActionResult Users(int page = 1)
     {
-        return View();
+        var viewModel = new PaginationViewModel
+        {
+            CurrentPage = page,
+            TotalPages = 10 // placeholder for UI
+        };
+        
+        return View(viewModel);
     }
 
     // GET: /Admin/Edit/5

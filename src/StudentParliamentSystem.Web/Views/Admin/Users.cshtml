@@ -1,3 +1,5 @@
+@model StudentParliamentSystem.Api.ViewModels.PaginationViewModel
+
 @{
     ViewData["Title"] = "Управління Користувачами";
 }
@@ -136,4 +138,62 @@
       </tr>
     </tbody>
   </table>
+</div>
+
+<!-- Pagination -->
+<div class="flex flex-col items-center mt-8 mb-4 gap-4">
+    <div class="join shadow-sm">
+        @if (Model.CurrentPage > 1)
+        {
+            <a asp-action="Users" asp-route-page="@(Model.CurrentPage - 1)" class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">«</a>
+        }
+        else
+        {
+            <button class="join-item btn btn-disabled bg-base-100 border-base-200">«</button>
+        }
+
+        @{
+            var pageNumbers = new List<int>();
+            for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == 1 || i == Model.TotalPages || (i >= Model.CurrentPage - 1 && i <= Model.CurrentPage + 1))
+                {
+                    pageNumbers.Add(i);
+                }
+            }
+            
+            int? lastPageNumber = null;
+        }
+
+        @foreach (var p in pageNumbers)
+        {
+            if (lastPageNumber != null && p - lastPageNumber > 1)
+            {
+                <button class="join-item btn btn-disabled bg-base-100 border-base-200 pointer-events-none">...</button>
+            }
+            
+            if (p == Model.CurrentPage)
+            {
+                <button class="join-item btn btn-active btn-neutral pointer-events-none">@p</button>
+            }
+            else
+            {
+                <a asp-action="Users" asp-route-page="@p" class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">@p</a>
+            }
+            
+            lastPageNumber = p;
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a asp-action="Users" asp-route-page="@(Model.CurrentPage + 1)" class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">»</a>
+        }
+        else
+        {
+            <button class="join-item btn btn-disabled bg-base-100 border-base-200">»</button>
+        }
+    </div>
+    <div class="text-sm text-base-content/70 font-medium">
+        Сторінка @Model.CurrentPage з @Model.TotalPages
+    </div>
 </div>

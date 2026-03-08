@@ -12,8 +12,6 @@ public static class ServiceConfig
 
         services.AddLoggerConfig(configuration, environment);
 
-        services.AddAuthenticationConfig();
-
         services.AddAuthorizationConfig();
 
         services.AddRazorPages();
@@ -23,6 +21,8 @@ public static class ServiceConfig
         services
             .AddInfrastructureServices(configuration, environment.EnvironmentName, logger)
             .AddIdentityInfrastructureServices(configuration, environment.EnvironmentName, logger);
+        
+        services.AddAuthenticationConfig();
 
         return services;
     }
