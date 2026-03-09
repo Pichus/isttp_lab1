@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using StudentParliamentSystem.Infrastructure.Data;
 
@@ -11,8 +12,9 @@ public static class InfrastructureServiceExtensions
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services,
         IConfiguration configuration,
-        string environmentName)
+        string environmentName, ILogger logger)
     {
+        
         if (environmentName == "Development")
         {
             RegisterDevelopmentOnlyDependencies(services, configuration);
@@ -28,13 +30,15 @@ public static class InfrastructureServiceExtensions
 
         RegisterEFRepositories(services);
         RegisterServices(services);
+        
+        logger.LogInformation("{Project} services registered", "Infrastructure");
 
         return services;
     }
 
     private static void AddDbContextWithPostgres(IServiceCollection services, IConfiguration configuration)
     {
-        string? connectionString = configuration.GetConnectionString("Postgres");
+        var connectionString = configuration.GetConnectionString("Postgres");
         services.AddDbContext<ApplicationDatabaseContext>(options =>
             options.UseNpgsql(connectionString));
     }

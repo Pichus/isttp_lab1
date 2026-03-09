@@ -1,14 +1,39 @@
+using Serilog;
+using Serilog.Events;
+
 using StudentParliamentSystem.Api.Configurations;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+try
+{
+    Log.Information("Starting web application");
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddServices(builder.Environment, builder.Configuration);
+    using var loggerFactory = LoggerFactory.Create(config => config.AddConsole());
+    var startupLogger = loggerFactory.CreateLogger<Program>();
 
-var app = builder.Build();
+    builder.Services.AddServices(builder.Environment, builder.Configuration, startupLogger);
 
-app.UseAppMiddleware();
+    var app = builder.Build();
 
-app.Run();
+    app.UseAppMiddleware();
+
+    app.Run();
+}
+catch (Exception exception)
+{
+    Log.Fatal(exception, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+
+public partial class Program
+{
+}
