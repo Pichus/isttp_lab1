@@ -1,3 +1,4 @@
+@using StudentParliamentSystem.Api.Configurations
 <header>
     <div class="navbar bg-base-100 shadow-xl mb-8">
         <div class="navbar-start">
@@ -10,15 +11,18 @@
                     </svg>
                 </label>
                 <ul tabindex="0"
-                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 gap-2">
+                    class="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-52 gap-2">
                     <li><a href="/Events">Заходи</a></li>
                     <li><a href="/Coworking">Коворкінг</a></li>
                     <li><a href="/Statistics">Статистика</a></li>
-                    <li><a href="/Admin">Адмін панель</a></li>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, AuthorizationPolicyNameConstants.CanAccessAdminPanel)).Succeeded)
+                    {
+                        <li><a href="/Admin">Адмін панель</a></li>
+                    }
                 </ul>
             </div>
             <a href="/"
-               class="btn btn-ghost normal-case text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Студпарламент
+               class="btn btn-ghost normal-case text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary to-secondary">Студпарламент
                 ФКНК</a>
         </div>
         <div class="navbar-center hidden lg:flex">
@@ -26,7 +30,10 @@
                 <li><a href="/Events" class="hover:text-primary transition-colors">Заходи</a></li>
                 <li><a href="/Coworking" class="hover:text-primary transition-colors">Коворкінг</a></li>
                 <li><a href="/Statistics" class="hover:text-primary transition-colors">Статистика</a></li>
-                <li><a href="/Admin" class="hover:text-primary transition-colors">Адмін панель</a></li>
+                @if ((await AuthorizationService.AuthorizeAsync(User, AuthorizationPolicyNameConstants.CanAccessAdminPanel)).Succeeded)
+                {
+                    <li><a href="/Admin" class="hover:text-primary transition-colors">Адмін панель</a></li>
+                }
             </ul>
         </div>
         <div class="navbar-end gap-2">
