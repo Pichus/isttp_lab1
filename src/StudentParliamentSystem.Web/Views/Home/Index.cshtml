@@ -2,39 +2,47 @@
     ViewData["Title"] = "Головна";
 }
 
-<!-- Hero Section -->
 <div class="hero min-h-[70vh] rounded-3xl overflow-hidden relative shadow-2xl bg-base-100 border border-base-300">
-    <!-- Abstract Background Pattern / Gradient Map -->
-    <div class="absolute inset-0 z-0 bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10"></div>
-    <div class="absolute inset-0 z-0 opacity-30" style="background-image: radial-gradient(#4a00ff 1px, transparent 1px); background-size: 30px 30px;"></div>
-    
+    <div class="absolute inset-0 z-0 bg-linear-to-br from-primary/10 via-base-100 to-secondary/10"></div>
+    <div class="absolute inset-0 z-0 opacity-30"
+         style="background-image: radial-gradient(#4a00ff 1px, transparent 1px); background-size: 30px 30px;"></div>
+
     <div class="hero-content text-center z-10 p-12 lg:p-24 relative">
         <div class="max-w-3xl">
             <!-- Badge -->
-            <div class="badge badge-primary badge-outline mb-6 p-4 text-sm font-semibold tracking-wide uppercase gap-2 hover:bg-primary hover:text-primary-content transition-all duration-300 cursor-pointer">
+            <div
+                class="badge badge-primary badge-outline mb-6 p-4 text-sm font-semibold tracking-wide uppercase gap-2 hover:bg-primary hover:text-primary-content transition-all duration-300 cursor-pointer">
                 <span class="relative flex h-3 w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span
+                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
                 </span>
                 ФКНК КНУ 2026!
             </div>
-            
+
             <h1 class="text-6xl lg:text-8xl font-black mb-8 tracking-tighter text-balance">
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent animate-gradient">Студпарламент ФКНК</span>
+                <span
+                    class="bg-clip-text text-transparent bg-linear-to-r from-primary via-secondary to-accent animate-gradient">Студпарламент ФКНК</span>
                 <br/>
                 <span class="text-base-content/90">у твоїх руках</span>
             </h1>
-            
+
             <p class="py-6 text-xl lg:text-2xl text-base-content/70 font-light mb-10 leading-relaxed text-balance">
-                Єдиний портал для кібернетиків: реєструйся на заходи, бронюй коворкінг, долучайся до оргкомітету та твори студентське життя нашого улюбленого факультету.
+                Єдиний портал для кібернетиків: реєструйся на заходи, бронюй коворкінг, долучайся до оргкомітету та
+                твори студентське життя нашого улюбленого факультету.
             </p>
-            
+
             <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
-                <a href="/Events" class="btn btn-primary btn-lg rounded-full shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300 border-0 px-8">
+                <a href="/Events"
+                   class="btn btn-primary btn-lg rounded-full shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300 border-0 px-8">
                     Обрати Захід
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 ml-2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                         stroke="currentColor" class="w-5 h-5 ml-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                    </svg>
                 </a>
-                <a href="/Coworking" class="btn btn-outline btn-secondary btn-lg rounded-full hover:bg-secondary/10 hover:-translate-y-1 transition-all duration-300 px-8">
+                <a href="/Coworking"
+                   class="btn btn-outline btn-secondary btn-lg rounded-full hover:bg-secondary/10 hover:-translate-y-1 transition-all duration-300 px-8">
                     Бронювати Читапку
                 </a>
             </div>
@@ -42,56 +50,91 @@
     </div>
 </div>
 
-<!-- Features Section -->
 <div class="mt-24 mb-16">
     <div class="text-center mb-16">
         <h2 class="text-4xl font-bold mb-4">Наші Можливості</h2>
-        <p class="text-base-content/60 text-lg max-w-2xl mx-auto">Все, що потрібно для активного студентського життя в одному місці.</p>
+        <p class="text-base-content/60 text-lg max-w-2xl mx-auto">Все, що потрібно для активного студентського життя в
+            одному місці.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        
-        <!-- Feature 1 -->
-        <a href="/Events" class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-base-200 group cursor-pointer overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-bl-full -z-10 group-hover:bg-primary/20 transition-colors"></div>
+        <a href="/Events"
+           class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-base-200 group cursor-pointer overflow-hidden">
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-bl-full -z-10 group-hover:bg-primary/20 transition-colors"></div>
             <div class="card-body">
-                <div class="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+                <div
+                    class="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
+                    </svg>
                 </div>
                 <h3 class="card-title text-2xl font-bold mb-2">Івенти та Заходи</h3>
-                <p class="text-base-content/70">Відкривай для себе нові можливості, лекції та вечірки. Реєструйся в один клік або створюй власні заходи.</p>
+                <p class="text-base-content/70">Відкривай для себе нові можливості, лекції та вечірки. Реєструйся в один
+                    клік або створюй власні заходи.</p>
                 <div class="card-actions justify-end mt-4">
-                    <span class="text-primary font-medium group-hover:underline flex items-center gap-1">Дізнатись більше <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></span>
+                    <span class="text-primary font-medium group-hover:underline flex items-center gap-1">Дізнатись більше <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></span>
                 </div>
             </div>
         </a>
 
-        <!-- Feature 2 -->
-        <a href="/Coworking" class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-base-200 group cursor-pointer overflow-hidden">
-             <div class="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-bl-full -z-10 group-hover:bg-secondary/20 transition-colors"></div>
+        <a href="/Coworking"
+           class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-base-200 group cursor-pointer overflow-hidden">
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-bl-full -z-10 group-hover:bg-secondary/20 transition-colors"></div>
             <div class="card-body">
-                <div class="w-14 h-14 rounded-2xl bg-secondary/20 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                <div
+                    class="w-14 h-14 rounded-2xl bg-secondary/20 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
                 </div>
                 <h3 class="card-title text-2xl font-bold mb-2">Коворкінг Простір</h3>
-                <p class="text-base-content/70">Бронюй зручні місця для навчання або зустрічей з командою. Переглядай вільні слоти в режимі реального часу.</p>
+                <p class="text-base-content/70">Бронюй зручні місця для навчання або зустрічей з командою. Переглядай
+                    вільні слоти в режимі реального часу.</p>
                 <div class="card-actions justify-end mt-4">
-                     <span class="text-secondary font-medium group-hover:underline flex items-center gap-1">Бронювати <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></span>
+                    <span class="text-secondary font-medium group-hover:underline flex items-center gap-1">Бронювати <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></span>
                 </div>
             </div>
         </a>
 
-        <!-- Feature 3 -->
-        <a href="/Statistics" class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-base-200 group cursor-pointer overflow-hidden lg:col-span-1 md:col-span-2 lg:flex-none">
-             <div class="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-bl-full -z-10 group-hover:bg-accent/20 transition-colors"></div>
+        <a href="/Statistics"
+           class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-base-200 group cursor-pointer overflow-hidden lg:col-span-1 md:col-span-2 lg:flex-none">
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-bl-full -z-10 group-hover:bg-accent/20 transition-colors"></div>
             <div class="card-body">
-                <div class="w-14 h-14 rounded-2xl bg-accent/20 flex items-center justify-center text-accent mb-6 group-hover:scale-110 transition-transform">
-                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>
+                <div
+                    class="w-14 h-14 rounded-2xl bg-accent/20 flex items-center justify-center text-accent mb-6 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>
+                    </svg>
                 </div>
                 <h3 class="card-title text-2xl font-bold mb-2">Аналітика та Звіти</h3>
-                <p class="text-base-content/70">Відслідковуй успішність департаментів, генеруй зручні звіти для Деканату і аналізуй ефективність СПФ.</p>
+                <p class="text-base-content/70">Відслідковуй успішність департаментів, генеруй зручні звіти для Деканату
+                    і аналізуй ефективність СПФ.</p>
                 <div class="card-actions justify-end mt-4">
-                     <span class="text-accent font-medium group-hover:underline flex items-center gap-1">Переглянути <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></span>
+                    <span class="text-accent font-medium group-hover:underline flex items-center gap-1">Переглянути <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></span>
                 </div>
             </div>
         </a>

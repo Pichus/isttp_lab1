@@ -1,0 +1,107 @@
+@{
+    ViewData["Title"] = "Редагування Користувача";
+}
+
+<div class="mb-8 flex justify-between items-end flex-wrap gap-4">
+    <div>
+        <div class="text-sm breadcrumbs mb-2">
+            <ul>
+                <li><a asp-action="Users">Користувачі</a></li>
+                <li>Редагування</li>
+            </ul>
+        </div>
+        <h1 class="text-4xl font-black mb-2 flex items-center gap-3">
+            Редагування Користувача
+        </h1>
+        <p class="text-base-content/70">Оновіть інформацію та ролі обраного користувача.</p>
+    </div>
+</div>
+
+<div class="bg-base-100 shadow-xl rounded-3xl border border-base-200">
+    <div class="p-6 md:p-8">
+        <form asp-action="Edit" method="post" class="space-y-6 max-w-2xl">
+            <!-- Mock ID field (hidden in reality, shown here just for context or keep it hidden) -->
+            <input type="hidden" name="id" value="@Context.Request.RouteValues["id"]" />
+
+            <!-- Profile Info -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold border-b border-base-200 pb-2">Загальна інформація</h3>
+                
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-bold">ПІБ</span></label>
+                    <input type="text" placeholder="Напр. Іван Іванов" value="Користувач системи" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-bold">Електронна пошта <span class="text-error">*</span></span></label>
+                    <input type="email" placeholder="email@student.kpi.ua" value="user@student.kpi.ua" required disabled class="input input-bordered w-full" />
+                    <label class="label"><span class="label-text-alt text-base-content/50">Email змінити неможливо через системні обмеження.</span></label>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-bold">Департамент</span></label>
+                    <select class="select select-bordered w-full">
+                        <option>Немає</option>
+                        <option>Апарат</option>
+                        <option>КультДеп</option>
+                        <option>СпортДеп</option>
+                        <option>Коворкінг</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Roles -->
+            <div class="space-y-4 pt-4">
+                <h3 class="text-lg font-bold border-b border-base-200 pb-2">Ролі та Доступи</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-base-200 hover:bg-base-200 transition-colors">
+                        <input type="checkbox" checked="checked" class="checkbox checkbox-primary" />
+                        <span class="label-text flex flex-col">
+                            <span class="font-bold">Студент</span>
+                            <span class="text-xs text-base-content/60">Базовий доступ до системи</span>
+                        </span>
+                    </label>
+                    
+                    <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-base-200 hover:bg-base-200 transition-colors">
+                        <input type="checkbox" class="checkbox checkbox-primary" />
+                        <span class="label-text flex flex-col">
+                            <span class="font-bold">Член СПФ</span>
+                            <span class="text-xs text-base-content/60">Доступ до внутрішніх ресурсів СПФ</span>
+                        </span>
+                    </label>
+
+                    <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-base-200 hover:bg-base-200 transition-colors">
+                        <input type="checkbox" class="checkbox checkbox-primary" />
+                        <span class="label-text flex flex-col">
+                            <span class="font-bold">Голова Департаменту</span>
+                            <span class="text-xs text-base-content/60">Управління своїм департаментом</span>
+                        </span>
+                    </label>
+
+                    <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-base-200 hover:bg-base-200 transition-colors">
+                        <input type="checkbox" class="checkbox checkbox-primary" />
+                        <span class="label-text flex flex-col">
+                            <span class="font-bold">Адмін Читалки</span>
+                            <span class="text-xs text-base-content/60">Управління простором та подіями</span>
+                        </span>
+                    </label>
+                    
+                    <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-base-200 hover:bg-base-200 transition-colors">
+                        <input type="checkbox" class="checkbox checkbox-error" />
+                        <span class="label-text flex flex-col">
+                            <span class="font-bold text-error">Адмін (Тех)</span>
+                            <span class="text-xs text-base-content/60">Повний доступ до системи (Обережно!)</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap gap-4 pt-6 mt-6 border-t border-base-200">
+                <button type="submit" class="btn btn-primary px-8">Зберегти зміни</button>
+                <a asp-action="Users" class="btn btn-ghost">Скасувати</a>
+            </div>
+        </form>
+    </div>
+</div>

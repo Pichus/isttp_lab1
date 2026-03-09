@@ -5,10 +5,16 @@
 <div class="mb-8 flex justify-between items-end flex-wrap gap-4">
     <div>
         <h1 class="text-4xl font-black mb-2 flex items-center gap-3">
-            Адмін Панель
-            <span class="badge badge-lg badge-neutral">SuperAdmin</span>
+            Користувачі
+            <span class="badge badge-lg badge-neutral">3 всього</span>
         </h1>
         <p class="text-base-content/70">Управління доступом, ролями та користувачами системи.</p>
+    </div>
+    <div>
+        <button class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+            Додати Користувача
+        </button>
     </div>
 </div>
 
@@ -42,19 +48,19 @@
       <tr class="bg-base-200 text-sm">
         <th>Користувач</th>
         <th>Електронна пошта</th>
-        <th>Роль / Статус</th>
+        <th>Ролі / Статуси</th>
         <th>Департамент</th>
         <th>Дії</th>
       </tr>
     </thead>
     <tbody>
       <!-- User 1 -->
-      <tr>
+      <tr class="hover">
         <td>
           <div class="flex items-center space-x-3">
             <div class="avatar placeholder">
               <div class="bg-neutral text-neutral-content rounded-full w-10">
-                <span>МК</span>
+                <span class="text-sm">МК</span>
               </div>
             </div>
             <div>
@@ -62,21 +68,25 @@
             </div>
           </div>
         </td>
-        <td>m.kovalenko@student.kpi.ua</td>
-        <td><span class="badge badge-success badge-sm font-bold">Студент</span></td>
+        <td class="text-sm">m.kovalenko@student.kpi.ua</td>
+        <td>
+          <div class="flex flex-wrap gap-1">
+            <span class="badge badge-success badge-sm font-bold">Студент</span>
+          </div>
+        </td>
         <td class="text-base-content/50">—</td>
         <th>
-          <button class="btn btn-ghost btn-xs">Редагувати</button>
+          <a asp-action="Edit" asp-route-id="1" class="btn btn-ghost btn-sm">Редагувати</a>
         </th>
       </tr>
 
       <!-- User 2 -->
-      <tr>
+      <tr class="hover">
         <td>
           <div class="flex items-center space-x-3">
             <div class="avatar placeholder">
               <div class="bg-primary text-primary-content rounded-full w-10">
-                <span>ДШ</span>
+                <span class="text-sm">ДШ</span>
               </div>
             </div>
             <div>
@@ -84,21 +94,27 @@
             </div>
           </div>
         </td>
-        <td>d.shevchenko@student.kpi.ua</td>
-        <td><span class="badge badge-primary badge-sm font-bold">Член СПФ</span></td>
-        <td class="font-semibold">КультДеп</td>
+        <td class="text-sm">d.shevchenko@student.kpi.ua</td>
+        <td>
+          <div class="flex flex-wrap gap-1">
+            <span class="badge badge-success badge-sm font-bold">Студент</span>
+            <span class="badge badge-primary badge-sm font-bold">Член СПФ</span>
+            <span class="badge badge-warning badge-sm font-bold">Голова Департаменту</span>
+          </div>
+        </td>
+        <td class="font-semibold text-sm">КультДеп</td>
         <th>
-          <button class="btn btn-ghost btn-xs">Редагувати</button>
+          <a asp-action="Edit" asp-route-id="2" class="btn btn-ghost btn-sm">Редагувати</a>
         </th>
       </tr>
 
        <!-- User 3 -->
-      <tr>
+      <tr class="hover">
         <td>
           <div class="flex items-center space-x-3">
              <div class="avatar placeholder">
               <div class="bg-secondary text-secondary-content rounded-full w-10">
-                <span>ОП</span>
+                <span class="text-sm">ОП</span>
               </div>
             </div>
             <div>
@@ -106,11 +122,16 @@
             </div>
           </div>
         </td>
-        <td>o.prokopenko@student.kpi.ua</td>
-        <td><span class="badge badge-secondary badge-sm font-bold">Адмін Читалки</span></td>
-        <td class="font-semibold">Коворкінг</td>
+        <td class="text-sm">o.prokopenko@student.kpi.ua</td>
+        <td>
+          <div class="flex flex-wrap gap-1">
+            <span class="badge badge-success badge-sm font-bold">Студент</span>
+            <span class="badge badge-secondary badge-sm font-bold">Адмін Читалки</span>
+          </div>
+        </td>
+        <td class="font-semibold text-sm">Коворкінг</td>
         <th>
-          <button class="btn btn-ghost btn-xs">Редагувати</button>
+          <a asp-action="Edit" asp-route-id="3" class="btn btn-ghost btn-sm">Редагувати</a>
         </th>
       </tr>
     </tbody>
