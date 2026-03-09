@@ -65,9 +65,7 @@ public class IdentityDataSeeder : IIdentityDataSeeder
         {
             Id = Guid.NewGuid(),
             UserName = _starterAdminAccountOptions.Name,
-            NormalizedUserName = _starterAdminAccountOptions.Name.Normalize(),
             Email = _starterAdminAccountOptions.Email,
-            NormalizedEmail = _starterAdminAccountOptions.Email.Normalize(),
             EmailConfirmed = true
         };
 
