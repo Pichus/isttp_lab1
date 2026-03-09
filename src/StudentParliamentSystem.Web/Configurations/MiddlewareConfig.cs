@@ -9,8 +9,21 @@ public static class MiddlewareConfig
         {
             app.UseMigrations(app.Logger);
         }
-        
-        app.UseExceptionHandler();
+
+        app.UseStaticFiles();
+
+        app.UseRouting();
+        app.UseAuthorization();
+
+        app.MapControllerRoute(
+            "default",
+            "{controller=Home}/{action=Index}/{id?}");
+
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error");
+            app.UseHsts();
+        }
 
         if (app.Environment.IsDevelopment())
         {
