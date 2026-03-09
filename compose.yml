@@ -2,7 +2,7 @@ services:
   app:
     container_name: studentparliamentsystem.api
     build:
-      context: src/StudentParliamentSystem.Api
+      context: src/StudentParliamentSystem.Web
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
