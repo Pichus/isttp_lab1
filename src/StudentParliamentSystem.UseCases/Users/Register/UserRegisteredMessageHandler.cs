@@ -4,22 +4,23 @@ using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.Shared.Contracts.Users;
 using StudentParliamentSystem.UseCases.Abstractions;
 
-namespace StudentParliamentSystem.UseCases.Users.Create;
+namespace StudentParliamentSystem.UseCases.Users.Register;
 
-public class CreateUserMessageHandler
+public class UserRegisteredHandler
 {
-    private readonly ILogger<CreateUserMessageHandler> _logger;
+    private readonly ILogger<UserRegisteredHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
 
-    public CreateUserMessageHandler(IUserRepository userRepository, ILogger<CreateUserMessageHandler> logger, IUnitOfWork unitOfWork)
+    public UserRegisteredHandler(IUserRepository userRepository, ILogger<UserRegisteredHandler> logger,
+        IUnitOfWork unitOfWork)
     {
         _userRepository = userRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task HandleAsync(UserCreated message)
+    public async Task HandleAsync(UserRegistered message)
     {
         var userExists = await _userRepository.ExistsAsync(message.UserId);
 
