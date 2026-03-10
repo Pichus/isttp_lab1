@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 
+using StudentParliamentSystem.Core.Aggregates.User;
+
 namespace StudentParliamentSystem.Infrastructure.Data;
 
 public class ApplicationDatabaseContext : DbContext
 {
-    protected ApplicationDatabaseContext()
-    {
-    }
-
     public ApplicationDatabaseContext(DbContextOptions<ApplicationDatabaseContext> options)
         : base(options)
     {
     }
+
+    public DbSet<User> Users { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
