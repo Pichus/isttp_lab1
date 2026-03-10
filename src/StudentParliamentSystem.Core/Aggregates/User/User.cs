@@ -7,7 +7,7 @@ public class User
 {
     public Guid Id { get; init; }
     public required string Name { get; set; }
-    public DateTime CreatedAtUtc { get; init; }
+    public DateTimeOffset CreatedAtUtc { get; init; }
 
     public ICollection<Role.Role> Roles { get; set; } = [];
     public ICollection<Department.Department> Departments { get; set; } = [];
@@ -15,4 +15,14 @@ public class User
     public ICollection<Event.Event> CreatedEvents { get; set; } = [];
     public ICollection<EventRegistration> EventRegistrations { get; set; } = [];
     public ICollection<OrganizationRequest.OrganizationRequest> OrganizationRequests { get; set; } = [];
+
+    public static User Create(Guid id, string name)
+    {
+        return new User
+        {
+            Id = id,
+            Name = name,
+            CreatedAtUtc = DateTimeOffset.UtcNow,
+        };
+    }
 }
