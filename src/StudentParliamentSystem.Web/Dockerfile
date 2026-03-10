@@ -10,7 +10,10 @@ WORKDIR /src
 
 COPY src/StudentParliamentSystem.Web/*.csproj src/StudentParliamentSystem.Web/
 COPY src/StudentParliamentSystem.Infrastructure/*.csproj src/StudentParliamentSystem.Infrastructure/
-#COPY src/StudentParliamentSystem.UseCases/*.csproj src/StudentParliamentSystem.UseCases/
+COPY src/StudentParliamentSystem.Infrastructure.Identity/*.csproj src/StudentParliamentSystem.Infrastructure.Identity/
+COPY src/StudentParliamentSystem.IdentityUI/*.csproj src/StudentParliamentSystem.IdentityUI/
+COPY src/StudentParliamentSystem.SharedContracts/*.csproj src/StudentParliamentSystem.SharedContracts/
+COPY src/StudentParliamentSystem.UseCases/*.csproj src/StudentParliamentSystem.UseCases/
 COPY src/StudentParliamentSystem.Core/*.csproj src/StudentParliamentSystem.Core/
 
 RUN dotnet restore src/StudentParliamentSystem.Web/StudentParliamentSystem.Web.csproj

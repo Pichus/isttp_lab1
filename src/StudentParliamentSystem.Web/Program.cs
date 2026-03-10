@@ -19,6 +19,8 @@ try
 
     builder.Services.AddServices(builder.Environment, builder.Configuration, startupLogger);
 
+    builder.Host.AddWolverineConfig(builder.Configuration);
+
     var app = builder.Build();
 
     app.UseAppMiddleware();
