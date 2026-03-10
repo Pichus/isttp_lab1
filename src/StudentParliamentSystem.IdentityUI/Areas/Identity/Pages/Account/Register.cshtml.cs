@@ -97,9 +97,9 @@ public class RegisterModel : PageModel
                 _logger.LogInformation("User created a new account with password.");
 
                 _outbox.Enroll(_databaseContext);
-                
-                await _outbox.PublishAsync(new UserCreated(user.Id, user.UserName ?? "NoName"));
-                
+
+                await _outbox.PublishAsync(new UserRegistered(user.Id, user.UserName ?? "NoName"));
+
                 await _outbox.SaveChangesAndFlushMessagesAsync();
 
                 // await transaction.CommitAsync();
