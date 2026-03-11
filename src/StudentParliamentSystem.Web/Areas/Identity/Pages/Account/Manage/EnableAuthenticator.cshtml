@@ -1,0 +1,65 @@
+@page
+@model EnableAuthenticatorModel
+@{
+    ViewData["Title"] = "Налаштування застосунку-автентифікатора";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<h3 class="text-xl font-semibold mb-4">@ViewData["Title"]</h3>
+
+<div class="flex flex-col gap-6">
+    <div class="steps steps-vertical lg:steps-horizontal w-full">
+        <div class="step step-primary">Завантажте застосунок</div>
+        <div class="step step-primary">Скануйте QR-код</div>
+        <div class="step">Підтвердіть код</div>
+    </div>
+
+    <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body gap-4">
+            <h4 class="font-semibold">Крок 1 — Завантажте застосунок-автентифікатор</h4>
+            <p class="text-base-content/70">
+                Завантажте <strong>Microsoft Authenticator</strong> для
+                <a href="https://go.microsoft.com/fwlink/?Linkid=825072" class="link link-primary">Android</a> і
+                <a href="https://go.microsoft.com/fwlink/?Linkid=825073" class="link link-primary">iOS</a> або
+                <strong>Google Authenticator</strong> для
+                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en" class="link link-primary">Android</a> і
+                <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8" class="link link-primary">iOS</a>.
+            </p>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body gap-4">
+            <h4 class="font-semibold">Крок 2 — Скануйте QR-код або введіть ключ</h4>
+            <p class="text-base-content/70">Відскануйте QR-код або введіть цей ключ вручну у вашому застосунку:</p>
+            <div class="bg-base-200 rounded-lg p-3 font-mono text-sm tracking-widest break-all">@Model.SharedKey</div>
+            <div class="alert alert-info text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Дізнайтесь як <a href="https://go.microsoft.com/fwlink/?Linkid=852423" class="link">увімкнути генерацію QR-кодів</a>.</span>
+            </div>
+            <div id="qrCode" class="my-2"></div>
+            <div id="qrCodeData" data-url="@Model.AuthenticatorUri"></div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body gap-4">
+            <h4 class="font-semibold">Крок 3 — Підтвердіть код</h4>
+            <p class="text-base-content/70">Введіть код, що відображається у вашому застосунку-автентифікаторі:</p>
+            <form id="send-code" method="post" class="flex flex-col gap-4 max-w-xs">
+                <div asp-validation-summary="ModelOnly" class="alert alert-error text-sm" role="alert"></div>
+                <div class="form-control">
+                    <label asp-for="Input.Code" class="label"><span class="label-text font-medium">Код підтвердження</span></label>
+                    <input asp-for="Input.Code" class="input input-bordered w-full font-mono tracking-widest" autocomplete="off" placeholder="000000" />
+                    <span asp-validation-for="Input.Code" class="label-text-alt text-error mt-1"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Підтвердити</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

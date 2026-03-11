@@ -1,0 +1,68 @@
+@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Вхід";
+}
+
+<div class="flex justify-center items-start py-8">
+    <div class="card bg-base-100 shadow-xl border border-base-200 w-full max-w-md">
+        <div class="card-body gap-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold">Вхід до системи</h1>
+                <p class="text-base-content/60 mt-1">Використовуйте свій локальний акаунт</p>
+            </div>
+
+            <form id="account" method="post" class="flex flex-col gap-4">
+                <div asp-validation-summary="ModelOnly" class="alert alert-error text-sm" role="alert"></div>
+
+                <div class="form-control">
+                    <label asp-for="Input.Email" class="label"><span class="label-text font-medium">Email</span></label>
+                    <input asp-for="Input.Email" class="input input-bordered w-full" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <span asp-validation-for="Input.Email" class="label-text-alt text-error mt-1"></span>
+                </div>
+
+                <div class="form-control">
+                    <label asp-for="Input.Password" class="label"><span class="label-text font-medium">Пароль</span></label>
+                    <input asp-for="Input.Password" class="input input-bordered w-full" autocomplete="current-password" aria-required="true" placeholder="••••••••" />
+                    <span asp-validation-for="Input.Password" class="label-text-alt text-error mt-1"></span>
+                </div>
+
+                <div class="form-control">
+                    <label asp-for="Input.RememberMe" class="label cursor-pointer justify-start gap-3">
+                        <input class="checkbox checkbox-primary" asp-for="Input.RememberMe" />
+                        <span class="label-text">@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
+                    </label>
+                </div>
+
+                <button id="login-submit" type="submit" class="btn btn-primary w-full">Увійти</button>
+
+                <div class="divider text-base-content/40 text-sm">або</div>
+
+                <div class="flex flex-col gap-2 text-sm text-center">
+                    <a id="forgot-password" asp-page="./ForgotPassword" class="link link-primary">Забули пароль?</a>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="link link-primary">Зареєструватись</a>
+                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="link link-neutral opacity-60">Повторно надіслати підтвердження</a>
+                </div>
+            </form>
+
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                {
+                    <div class="divider">Або через</div>
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="flex flex-wrap gap-2">
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                            <button type="submit" class="btn btn-outline flex-1" name="provider" value="@provider.Name"
+                                    title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                        }
+                    </form>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

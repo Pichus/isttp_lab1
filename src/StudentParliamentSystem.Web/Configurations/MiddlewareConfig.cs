@@ -16,12 +16,12 @@ public static class MiddlewareConfig
 
         app.UseAuthentication();
         app.UseAuthorization();
-
-        app.MapRazorPages();
         
         app.MapControllerRoute(
             "default",
             "{controller=Home}/{action=Index}/{id?}");
+        
+        app.MapRazorPages();
 
         if (!app.Environment.IsDevelopment())
         {
