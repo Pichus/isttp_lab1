@@ -64,7 +64,7 @@ Run the project using docker compose
 Add migrations
 
 ```bash
-    dotnet ef migrations add MigrationName --project src/StudentParliamentSystem.Infrastructure  --startup-project src/StudentParliamentSystem.Api -o ./Data/Migrations
+    dotnet ef migrations add MigrationName --project src/StudentParliamentSystem.Infrastructure  --startup-project src/StudentParliamentSystem.Web -o ./Data/Migrations
 ```
 
 Apply migrations
@@ -75,6 +75,6 @@ Apply migrations
 ```
 
 ```bash
-    dotnet ef database update --project src/StudentParliamentSystem.Infrastructure  --startup-project src/StudentParliamentSystem.Api
+    dotnet ef database update --project src/StudentParliamentSystem.Infrastructure  --startup-project src/StudentParliamentSystem.Web
 ```
 
