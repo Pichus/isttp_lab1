@@ -11,6 +11,10 @@ public static class ServiceConfig
 
         services.AddLoggerConfig(configuration, environment);
 
+        services.AddIdentityConfig();
+
+        services.AddRazorPages();
+
         services.AddSwaggerConfig();
 
         services.AddInfrastructureServices(configuration,

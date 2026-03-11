@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
+using StudentParliamentSystem.Infrastructure.Identity;
 
 namespace StudentParliamentSystem.Infrastructure.Data;
 
-public class ApplicationDatabaseContext : DbContext
+public class ApplicationDatabaseContext : IdentityDbContext<StudentParliamentSystemUser, IdentityRole<Guid>, Guid>
 {
     protected ApplicationDatabaseContext()
     {
