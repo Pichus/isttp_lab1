@@ -8,5 +8,4 @@ public class DepartmentMember
 
     public User.User User { get; init; }
     public Department Department { get; init; }
-    public DepartmentRole DepartmentRole { get; set; }
 }
