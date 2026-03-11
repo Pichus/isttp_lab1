@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "Архів Заходів";
+}
+
+<div class="mb-8 flex justify-between items-end flex-wrap gap-4">
+    <div>
+        <div class="text-sm breadcrumbs mb-2">
+            <ul>
+                <li><a href="/">Головна</a></li> 
+                <li><a href="/Events">Заходи</a></li> 
+                <li class="font-semibold text-base-content">Архів</li>
+            </ul>
+        </div>
+        <h1 class="text-4xl font-black mb-2">Архів Заходів</h1>
+        <p class="text-base-content/70">Історія наших івентів. Шукайте звіти та фотографії з минулих подій.</p>
+    </div>
+</div>
+
+<div class="overflow-x-auto bg-base-100 rounded-3xl shadow-sm border border-base-200">
+  <table class="table table-zebra w-full">
+    <!-- head -->
+    <thead>
+      <tr class="bg-base-200 text-sm">
+        <th>Назва Заходу</th>
+        <th>Дата проведення</th>
+        <th>Локація</th>
+        <th>Теги</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- row 1 -->
+      <tr class="hover">
+        <td>
+          <div class="font-bold">Весняний бал</div>
+          <div class="text-sm opacity-50">Організатор: Культурний департамент</div>
+        </td>
+        <td>15 травня 2025</td>
+        <td>Великий зал</td>
+        <td>
+           <span class="badge badge-sm badge-outline">Вечірка</span>
+        </td>
+        <th class="text-right">
+          <a href="/Events/Details/3" class="btn btn-ghost btn-xs">Матеріали</a>
+        </th>
+      </tr>
+      <!-- row 2 -->
+      <tr class="hover">
+        <td>
+          <div class="font-bold">IT-Форум ФКНК</div>
+          <div class="text-sm opacity-50">Спільно з компанією Genesis</div>
+        </td>
+        <td>10 березня 2025</td>
+        <td>Коворкінг-простір</td>
+        <td>
+           <span class="badge badge-sm badge-outline">Лекція</span>
+           <span class="badge badge-sm badge-outline">IT</span>
+        </td>
+        <th class="text-right">
+          <a href="/Events/Details/4" class="btn btn-ghost btn-xs">Матеріали</a>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+</div>

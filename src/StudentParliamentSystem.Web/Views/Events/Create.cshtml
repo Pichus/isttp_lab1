@@ -1,0 +1,114 @@
+@{
+    ViewData["Title"] = "Створити Захід";
+}
+
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-4xl font-black mb-2">Створення Заходу</h1>
+        <p class="text-base-content/70">Заповніть форму нижче, щоб додати новий захід у розклад.</p>
+    </div>
+
+    <!-- Form Container -->
+    <div class="bg-base-100 shadow-xl rounded-3xl border border-base-200 p-8">
+        <form action="/Events" method="post" class="space-y-6">
+            
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold text-base">Назва заходу <span class="text-error">*</span></span>
+                </label>
+                <input type="text" placeholder="Наприклад: Кіноніч Marvel" class="input input-bordered input-lg w-full bg-base-200/50 focus:bg-base-100 transition-colors" required />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Date -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold text-base">Дата та час початку <span class="text-error">*</span></span>
+                    </label>
+                    <input type="datetime-local" class="input input-bordered w-full bg-base-200/50" required />
+                </div>
+                
+                <!-- Max Participants -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold text-base">Макс. учасників</span>
+                    </label>
+                    <input type="number" placeholder="Залиште пустим, якщо безліміт" class="input input-bordered w-full bg-base-200/50" />
+                </div>
+            </div>
+
+            <!-- Location Check / Coworking Request -->
+            <div class="form-control w-full p-6 bg-secondary/5 rounded-2xl border border-secondary/20">
+                <label class="label cursor-pointer justify-start gap-4 mb-2">
+                    <input type="checkbox" class="checkbox checkbox-secondary" id="needsBooking" />
+                    <span class="label-text font-bold text-base flex flex-col">
+                        <span>Захід проводитиметься в Коворкінгу?</span>
+                        <span class="text-xs text-base-content/60 font-normal mt-1">Виберіть це, щоб автоматично надіслати запит голові читалкадепу на бронювання слоту.</span>
+                    </span> 
+                </label>
+                
+                <!-- Conditional Input (Location if NOT coworking) -->
+                <div class="form-control w-full mt-4 pl-10" id="manualLocationField">
+                    <label class="label">
+                        <span class="label-text font-semibold">Локація (якщо не коворкінг)</span>
+                    </label>
+                    <input type="text" placeholder="Наприклад: Великий актовий зал" class="input input-bordered w-full bg-base-100" />
+                </div>
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold text-base">Опис заходу <span class="text-error">*</span></span>
+                </label>
+                <textarea class="textarea textarea-bordered h-40 bg-base-200/50 text-base" placeholder="Детально опишіть, що буде відбуватися, на кого орієнтований захід тощо..." required></textarea>
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold text-base">Теги (категорії)</span>
+                </label>
+                <select class="select select-bordered w-full bg-base-200/50" multiple>
+                    <option>Вечірка</option>
+                    <option>Лекція</option>
+                    <option>Спорт</option>
+                    <option>Кіноперегляд</option>
+                    <option>IT</option>
+                </select>
+                <label class="label"><span class="label-text-alt">Затисніть Ctrl (або Cmd) для вибору декількох тегів</span></label>
+            </div>
+
+            <!-- Publish switch -->
+             <div class="form-control w-48 mt-4">
+                <label class="label cursor-pointer">
+                    <span class="label-text font-bold">Опублікувати одразу</span> 
+                    <input type="checkbox" class="toggle toggle-primary" checked />
+                </label>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="flex justify-between items-center">
+                <a href="/Events" class="btn btn-ghost rounded-full px-6">Скасувати</a>
+                <button type="submit" class="btn btn-primary btn-lg rounded-full px-10 shadow-lg shadow-primary/30">Створити Захід</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Simple script to toggle location field based on coworking checkbox
+        const chk = document.getElementById('needsBooking');
+        const locBox = document.getElementById('manualLocationField');
+        chk.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                locBox.style.opacity = '0.5';
+                locBox.querySelector('input').disabled = true;
+                locBox.querySelector('input').value = '';
+            } else {
+                locBox.style.opacity = '1';
+                locBox.querySelector('input').disabled = false;
+            }
+        });
+    </script>
+}

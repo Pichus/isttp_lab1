@@ -1,0 +1,107 @@
+@{
+    ViewData["Title"] = "Адміністрування Коворкінгу";
+}
+
+<div class="mb-8">
+    <div class="text-sm breadcrumbs mb-2">
+        <ul>
+            <li><a href="/">Головна</a></li> 
+            <li><a href="/Coworking">Коворкінг</a></li> 
+            <li class="font-semibold text-base-content">Адміністрування</li>
+        </ul>
+    </div>
+    <h1 class="text-4xl font-black mb-2 flex items-center gap-3">
+        Панель Адміністратора Простору
+        <div class="badge badge-error gap-1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> 3 Нових</div>
+    </h1>
+    <p class="text-base-content/70">Керування запитами на бронювання та розкладом читалки.</p>
+</div>
+
+<!-- Tabs -->
+<div role="tablist" class="tabs tabs-lifted mb-6">
+  <input type="radio" name="my_tabs_2" role="tab" class="tab font-semibold" aria-label="Нові запити" checked />
+  <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box rounded-tl-none p-6 shadow-xl">
+    
+      <!-- Requests List -->
+      <div class="flex flex-col gap-4">
+          <!-- Request 1 -->
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-base-200/50 p-4 rounded-2xl border border-base-200 hover:border-primary/50 transition-colors">
+              <div class="flex gap-4 items-center mb-4 md:mb-0">
+                  <div class="avatar placeholder">
+                    <div class="bg-primary text-primary-content rounded-full w-12">
+                      <span>ІП</span>
+                    </div>
+                  </div>
+                  <div>
+                      <div class="font-bold text-lg">Іван Петренко (КН-92)</div>
+                      <div class="text-sm text-base-content/60">Дата: <b>Сьогодні, 14:00 - 16:00</b> | Великий стіл</div>
+                      <div class="text-sm italic mt-1 bg-base-100 p-2 rounded-lg inline-block border border-base-200">"Командний проєкт з ІСТТП, 5 людей"</div>
+                  </div>
+              </div>
+              <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
+                  <button class="btn btn-sm btn-error btn-outline flex-1 md:flex-none">Відхилити</button>
+                  <button class="btn btn-sm btn-success flex-1 md:flex-none">Підтвердити</button>
+              </div>
+          </div>
+
+          <!-- Request 2 (From Event) -->
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-secondary/10 p-4 rounded-2xl border border-secondary/30 relative overflow-hidden">
+               <div class="absolute right-0 top-0 bg-secondary text-secondary-content text-xs font-bold px-3 py-1 rounded-bl-xl">Від Івенту</div>
+              
+              <div class="flex gap-4 items-center mb-4 md:mb-0 pr-16 md:pr-0">
+                  <div class="avatar placeholder">
+                    <div class="bg-secondary text-secondary-content rounded-full w-12">
+                      <span>КД</span>
+                    </div>
+                  </div>
+                  <div>
+                      <div class="font-bold text-lg">Олена Сидорчук (КультДеп)</div>
+                      <div class="text-sm text-base-content/60">Дата: <b>19 жовтня, 18:00 - 23:00</b> | Весь простір</div>
+                      <div class="text-sm italic mt-1 bg-base-100 p-2 rounded-lg inline-block border border-base-200">Івент: "Кіноніч: Марвел"</div>
+                  </div>
+              </div>
+              <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
+                  <!-- Check conflict modal trigger -->
+                  <button class="btn btn-sm btn-warning btn-outline flex-1 md:flex-none" onclick="conflict_modal.showModal()">Перевірити конфлікти</button>
+                  <button class="btn btn-sm btn-success flex-1 md:flex-none">Підтвердити</button>
+              </div>
+          </div>
+      </div>
+
+  </div>
+
+  <input type="radio" name="my_tabs_2" role="tab" class="tab font-semibold" aria-label="Розклад та Конфлікти (Місяць)" />
+  <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6 shadow-xl">
+    <div class="alert alert-info shadow-sm mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span>На сторінці Розкладу ви зможете візуально побачити накладання бронювань на весь доступний місяць (до 30 днів вперед). Тривалість підсвічених слотів обмежена 12 годинами.</span>
+    </div>
+    <div class="text-center p-8 bg-base-200 rounded-xl border border-dashed border-base-300">
+        Тут буде відображатися календар-сітка з усіма підтвердженими бронюваннями членів СПФ на найближчий місяць.
+    </div>
+  </div>
+</div>
+
+<!-- Conflict Modal -->
+<dialog id="conflict_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg text-warning flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        Увага: Конфлікт розкладу!
+    </h3>
+    <p class="py-4">Спроба забронювати <b>Весь простір</b> на <b>19.10 18:00 - 23:00</b> конфліктує з 2 існуючими заявками:</p>
+    
+    <ul class="list-disc w-full ml-4 mb-4 text-sm font-semibold text-error">
+        <li>18:00 - 19:30: Збори IT-відділу</li>
+        <li>19:00 - 21:00: Індивідуальне місце (Максим Г.)</li>
+    </ul>
+    
+    <p class="text-sm text-base-content/70">Відхиліть ці дрібні заявки перед тим, як підтвердити оренду всього простору, або зв'яжіться з КультДепом для перенесення івенту.</p>
+    
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn">Закрити</button>
+      </form>
+    </div>
+  </div>
+</dialog>
