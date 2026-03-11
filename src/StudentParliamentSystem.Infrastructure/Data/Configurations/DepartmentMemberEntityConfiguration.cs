@@ -11,14 +11,8 @@ public class DepartmentMemberEntityConfiguration : IEntityTypeConfiguration<Depa
     {
         builder
             .ToTable("department_members");
-        
-        builder
-            .HasAlternateKey(e => new { e.UserId, e.DepartmentId });
 
         builder
-            .HasOne(e => e.DepartmentRole)
-            .WithMany(e => e.DepartmentMembers)
-            .HasForeignKey(e => e.DepartmentRoleId)
-            .IsRequired();
+            .HasAlternateKey(e => new { e.UserId, e.DepartmentId });
     }
 }
