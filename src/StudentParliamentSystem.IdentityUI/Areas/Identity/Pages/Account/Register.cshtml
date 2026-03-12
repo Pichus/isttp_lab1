@@ -15,6 +15,20 @@
             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="flex flex-col gap-4">
                 <div asp-validation-summary="ModelOnly" class="alert alert-error text-sm" role="alert"></div>
 
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="form-control w-full">
+                        <label asp-for="Input.FirstName" class="label"><span class="label-text font-medium">Ім'я</span></label>
+                        <input asp-for="Input.FirstName" class="input input-bordered w-full" autocomplete="given-name" aria-required="true" placeholder="Іван" />
+                        <span asp-validation-for="Input.FirstName" class="label-text-alt text-error mt-1"></span>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label asp-for="Input.LastName" class="label"><span class="label-text font-medium">Прізвище</span></label>
+                        <input asp-for="Input.LastName" class="input input-bordered w-full" autocomplete="family-name" aria-required="true" placeholder="Шевченко" />
+                        <span asp-validation-for="Input.LastName" class="label-text-alt text-error mt-1"></span>
+                    </div>
+                </div>
+
                 <div class="form-control">
                     <label asp-for="Input.Email" class="label"><span class="label-text font-medium">Email</span></label>
                     <input asp-for="Input.Email" class="input input-bordered w-full" autocomplete="username" aria-required="true" placeholder="name@example.com" />

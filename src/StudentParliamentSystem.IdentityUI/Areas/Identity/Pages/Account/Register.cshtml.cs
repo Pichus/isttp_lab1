@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging;
 
 using StudentParliamentSystem.Infrastructure.Identity.Data;
@@ -84,6 +85,8 @@ public class RegisterModel : PageModel
         if (ModelState.IsValid)
         {
             var user = CreateUser();
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
 
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -98,11 +101,14 @@ public class RegisterModel : PageModel
 
                 _outbox.Enroll(_databaseContext);
 
-                await _outbox.PublishAsync(new UserRegistered(user.Id, user.UserName ?? "NoName"));
+                if (user.Email is null)
+                {
+                    throw new OperationException("Email can't be null, it's required");
+                }
+
+                await _outbox.PublishAsync(new UserRegistered(user.Id, user.Email, user.FirstName, user.LastName));
 
                 await _outbox.SaveChangesAndFlushMessagesAsync();
-
-                // await transaction.CommitAsync();
 
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -194,5 +200,17 @@ public class RegisterModel : PageModel
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [StringLength(35, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            MinimumLength = 1)]
+        [Display(Name = "FirstName")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [StringLength(35, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            MinimumLength = 1)]
+        [Display(Name = "LastName")]
+        public string LastName { get; set; }
     }
 }
