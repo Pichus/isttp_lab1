@@ -6,7 +6,8 @@ namespace StudentParliamentSystem.Core.Aggregates.User;
 public class User
 {
     public Guid Id { get; init; }
-    public required string Name { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
     public DateTimeOffset CreatedAtUtc { get; init; }
 
     public ICollection<Role.Role> Roles { get; set; } = [];
@@ -16,12 +17,13 @@ public class User
     public ICollection<EventRegistration> EventRegistrations { get; set; } = [];
     public ICollection<OrganizationRequest.OrganizationRequest> OrganizationRequests { get; set; } = [];
 
-    public static User Create(Guid id, string name)
+    public static User Create(Guid id, string firstName, string lastName)
     {
         return new User
         {
             Id = id,
-            Name = name,
+            FirstName = firstName,
+            LastName = lastName,
             CreatedAtUtc = DateTimeOffset.UtcNow,
         };
     }
