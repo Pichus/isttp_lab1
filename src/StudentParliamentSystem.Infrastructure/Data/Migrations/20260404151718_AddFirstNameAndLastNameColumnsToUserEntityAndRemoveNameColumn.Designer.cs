@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StudentParliamentSystem.Infrastructure.Data;
@@ -11,9 +12,11 @@ using StudentParliamentSystem.Infrastructure.Data;
 namespace StudentParliamentSystem.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDatabaseContext))]
-    partial class ApplicationDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260404151718_AddFirstNameAndLastNameColumnsToUserEntityAndRemoveNameColumn")]
+    partial class AddFirstNameAndLastNameColumnsToUserEntityAndRemoveNameColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

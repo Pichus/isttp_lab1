@@ -64,8 +64,10 @@ public class IdentityDataSeeder : IIdentityDataSeeder
         var superAdminUser = new ApplicationUser
         {
             Id = Guid.NewGuid(),
-            UserName = _starterAdminAccountOptions.Name,
+            UserName = _starterAdminAccountOptions.Email,
             Email = _starterAdminAccountOptions.Email,
+            FirstName = _starterAdminAccountOptions.Name,
+            LastName = _starterAdminAccountOptions.Name,
             EmailConfirmed = true
         };
 
