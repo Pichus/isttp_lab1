@@ -31,7 +31,7 @@ public class UserRegisteredHandler
             return;
         }
 
-        var user = User.Create(message.UserId, message.UserName);
+        var user = User.Create(message.UserId, message.Email, message.FirstName, message.LastName);
 
         _userRepository.Add(user);
         await _unitOfWork.SaveChangesAsync();
