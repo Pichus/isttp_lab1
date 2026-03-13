@@ -11,7 +11,6 @@ public static class LoggerConfig
             .ReadFrom.Configuration(configuration)
             .Enrich.FromLogContext()
             .Enrich.WithProperty("Application", environment.ApplicationName)
-            .WriteTo.Console()
             .CreateLogger());
 
         return services;
