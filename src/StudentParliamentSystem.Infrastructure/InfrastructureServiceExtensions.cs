@@ -27,6 +27,7 @@ public static class InfrastructureServiceExtensions
             RegisterProductionOnlyDependencies(services, configuration);
         }
 
+        AddDbContextWithPostgres(services, configuration);
         RegisterEFRepositories(services);
         RegisterServices(services);
 
@@ -45,7 +46,6 @@ public static class InfrastructureServiceExtensions
 
     private static void RegisterDevelopmentOnlyDependencies(IServiceCollection services, IConfiguration configuration)
     {
-        AddDbContextWithPostgres(services, configuration);
     }
 
     private static void RegisterTestingOnlyDependencies(IServiceCollection services)
@@ -54,7 +54,6 @@ public static class InfrastructureServiceExtensions
 
     private static void RegisterProductionOnlyDependencies(IServiceCollection services, IConfiguration configuration)
     {
-        AddDbContextWithPostgres(services, configuration);
     }
 
     private static void RegisterEFRepositories(IServiceCollection services)
