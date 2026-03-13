@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using StudentParliamentSystem.Infrastructure.Data;
-using StudentParliamentSystem.Infrastructure.Identity;
 
 namespace StudentParliamentSystem.Infrastructure;
 
@@ -64,7 +63,5 @@ public static class InfrastructureServiceExtensions
 
     private static void RegisterServices(IServiceCollection services)
     {
-        services.AddDefaultIdentity<StudentParliamentSystemUser>()
-            .AddEntityFrameworkStores<ApplicationDatabaseContext>();
     }
 }

@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
@@ -23,16 +24,16 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account;
 public class ExternalLoginModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly IUserEmailStore<StudentParliamentSystemUser> _emailStore;
+    private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly ILogger<ExternalLoginModel> _logger;
-    private readonly SignInManager<StudentParliamentSystemUser> _signInManager;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
-    private readonly IUserStore<StudentParliamentSystemUser> _userStore;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserStore<ApplicationUser> _userStore;
 
     public ExternalLoginModel(
-        SignInManager<StudentParliamentSystemUser> signInManager,
-        UserManager<StudentParliamentSystemUser> userManager,
-        IUserStore<StudentParliamentSystemUser> userStore,
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager,
+        IUserStore<ApplicationUser> userStore,
         ILogger<ExternalLoginModel> logger,
         IEmailSender emailSender)
     {
@@ -184,29 +185,29 @@ public class ExternalLoginModel : PageModel
         return Page();
     }
 
-    private StudentParliamentSystemUser CreateUser()
+    private ApplicationUser CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<StudentParliamentSystemUser>();
+            return Activator.CreateInstance<ApplicationUser>();
         }
         catch
         {
             throw new InvalidOperationException(
-                $"Can't create an instance of '{nameof(StudentParliamentSystemUser)}'. " +
-                $"Ensure that '{nameof(StudentParliamentSystemUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                $"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                 $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
         }
     }
 
-    private IUserEmailStore<StudentParliamentSystemUser> GetEmailStore()
+    private IUserEmailStore<ApplicationUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
         {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
 
-        return (IUserEmailStore<StudentParliamentSystemUser>)_userStore;
+        return (IUserEmailStore<ApplicationUser>)_userStore;
     }
 
     /// <summary>

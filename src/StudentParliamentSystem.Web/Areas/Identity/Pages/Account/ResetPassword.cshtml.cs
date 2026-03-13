@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
@@ -17,9 +18,9 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account;
 
 public class ResetPasswordModel : PageModel
 {
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ResetPasswordModel(UserManager<StudentParliamentSystemUser> userManager)
+    public ResetPasswordModel(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
     }

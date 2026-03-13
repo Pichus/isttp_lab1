@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -20,12 +21,12 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account.Manage;
 public class EmailModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly SignInManager<StudentParliamentSystemUser> _signInManager;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public EmailModel(
-        UserManager<StudentParliamentSystemUser> userManager,
-        SignInManager<StudentParliamentSystemUser> signInManager,
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
         IEmailSender emailSender)
     {
         _userManager = userManager;
@@ -59,7 +60,7 @@ public class EmailModel : PageModel
     [BindProperty]
     public InputModel Input { get; set; }
 
-    private async Task LoadAsync(StudentParliamentSystemUser user)
+    private async Task LoadAsync(ApplicationUser user)
     {
         var email = await _userManager.GetEmailAsync(user);
         Email = email;

@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -21,16 +22,16 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account;
 public class RegisterModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly IUserEmailStore<StudentParliamentSystemUser> _emailStore;
+    private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly ILogger<RegisterModel> _logger;
-    private readonly SignInManager<StudentParliamentSystemUser> _signInManager;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
-    private readonly IUserStore<StudentParliamentSystemUser> _userStore;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserStore<ApplicationUser> _userStore;
 
     public RegisterModel(
-        UserManager<StudentParliamentSystemUser> userManager,
-        IUserStore<StudentParliamentSystemUser> userStore,
-        SignInManager<StudentParliamentSystemUser> signInManager,
+        UserManager<ApplicationUser> userManager,
+        IUserStore<ApplicationUser> userStore,
+        SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger,
         IEmailSender emailSender)
     {
@@ -115,29 +116,29 @@ public class RegisterModel : PageModel
         return Page();
     }
 
-    private StudentParliamentSystemUser CreateUser()
+    private ApplicationUser CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<StudentParliamentSystemUser>();
+            return Activator.CreateInstance<ApplicationUser>();
         }
         catch
         {
             throw new InvalidOperationException(
-                $"Can't create an instance of '{nameof(StudentParliamentSystemUser)}'. " +
-                $"Ensure that '{nameof(StudentParliamentSystemUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                $"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                 $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
         }
     }
 
-    private IUserEmailStore<StudentParliamentSystemUser> GetEmailStore()
+    private IUserEmailStore<ApplicationUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
         {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
 
-        return (IUserEmailStore<StudentParliamentSystemUser>)_userStore;
+        return (IUserEmailStore<ApplicationUser>)_userStore;
     }
 
     /// <summary>

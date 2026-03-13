@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Identity;
@@ -16,10 +17,10 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account.Manage;
 public class DownloadPersonalDataModel : PageModel
 {
     private readonly ILogger<DownloadPersonalDataModel> _logger;
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public DownloadPersonalDataModel(
-        UserManager<StudentParliamentSystemUser> userManager,
+        UserManager<ApplicationUser> userManager,
         ILogger<DownloadPersonalDataModel> logger)
     {
         _userManager = userManager;
@@ -43,7 +44,7 @@ public class DownloadPersonalDataModel : PageModel
 
         // Only include personal data for download
         var personalData = new Dictionary<string, string>();
-        var personalDataProps = typeof(StudentParliamentSystemUser).GetProperties()
+        var personalDataProps = typeof(ApplicationUser).GetProperties()
             .Where(prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
         foreach (var p in personalDataProps)
         {

@@ -1,12 +1,8 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
-using StudentParliamentSystem.Infrastructure.Identity;
 
 namespace StudentParliamentSystem.Infrastructure.Data;
 
-public class ApplicationDatabaseContext : IdentityDbContext<StudentParliamentSystemUser, IdentityRole<Guid>, Guid>
+public class ApplicationDatabaseContext : DbContext
 {
     protected ApplicationDatabaseContext()
     {
@@ -20,6 +16,8 @@ public class ApplicationDatabaseContext : IdentityDbContext<StudentParliamentSys
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.HasDefaultSchema("main_application");
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDatabaseContext).Assembly);
     }

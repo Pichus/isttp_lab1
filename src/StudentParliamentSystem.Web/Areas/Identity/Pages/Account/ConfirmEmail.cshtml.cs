@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.Text;
 
 using Microsoft.AspNetCore.Identity;
@@ -16,9 +17,9 @@ namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account;
 
 public class ConfirmEmailModel : PageModel
 {
-    private readonly UserManager<StudentParliamentSystemUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ConfirmEmailModel(UserManager<StudentParliamentSystemUser> userManager)
+    public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
     }
