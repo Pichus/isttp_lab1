@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 using StudentParliamentSystem.Infrastructure.Identity.Data;
 using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
+using StudentParliamentSystem.Infrastructure.Identity.Data.Seeders;
+using StudentParliamentSystem.Infrastructure.Identity.HostedServices;
+using StudentParliamentSystem.Infrastructure.Identity.Options;
 
 namespace StudentParliamentSystem.Infrastructure.Identity;
 
@@ -30,7 +33,9 @@ public static class IdentityInfrastructureServiceExtensions
             RegisterProductionOnlyDependencies(services, configuration);
         }
 
+        RegisterOptions(services, configuration);
         RegisterDatabaseContext(services, configuration);
+        RegisterDataSeeders(services);
         RegisterEFRepositories(services);
         RegisterServices(services);
         ConfigureIdentity(services);
@@ -71,9 +76,11 @@ public static class IdentityInfrastructureServiceExtensions
             })
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<IdentityDatabaseContext>();
-        
+
         // todo implement real email confirmation, create a real email sender
         services.AddTransient<IEmailSender, NoOpEmailSender>();
+
+        services.AddHostedService<SetupIdentityDataSeeder>();
     }
 
     private static void ConfigureIdentity(IServiceCollection services)
@@ -98,5 +105,18 @@ public static class IdentityInfrastructureServiceExtensions
             // todo: implement proper account confirmation flow and enable RequireConfirmedAccount
             options.SignIn.RequireConfirmedAccount = false;
         });
+    }
+
+    private static void RegisterOptions(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<StarterAdminAccountOptions>()
+            .Bind(configuration.GetSection(StarterAdminAccountOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+    }
+
+    private static void RegisterDataSeeders(IServiceCollection services)
+    {
+        services.AddScoped<IIdentityDataSeeder, IdentityDataSeeder>();
     }
 }
