@@ -14,6 +14,8 @@ public static class ServiceConfig
 
         services.AddAuthenticationConfig();
 
+        services.AddAuthorizationConfig();
+
         services.AddRazorPages();
 
         services.AddSwaggerConfig();
