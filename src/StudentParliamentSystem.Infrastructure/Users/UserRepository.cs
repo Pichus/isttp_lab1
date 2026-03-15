@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
+using StudentParliamentSystem.Core.Abstractions;
 using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.Infrastructure.Data;
 
@@ -22,5 +23,47 @@ public class UserRepository : IUserRepository
     public async Task<bool> ExistsAsync(Guid userId)
     {
         return await _databaseContext.Users.AnyAsync(user => user.Id == userId);
+    }
+
+    public async Task<PagedResult<UserPreview>> RetrieveAllAsync(int pageNumber, int pageSize = 10,
+        string? query = null)
+    {
+        var databaseQuery = _databaseContext.Users.AsNoTracking();
+
+        if (query is not null)
+        {
+            var trimmedQueryString = query.Trim();
+            var isIdQuery = Guid.TryParse(query, out var queryGuid);
+
+            databaseQuery = databaseQuery.Where(user => user.FirstName.Contains(trimmedQueryString) ||
+                                                        user.LastName.Contains(trimmedQueryString) ||
+                                                        (user.FirstName + " " + user.LastName).Contains(
+                                                            trimmedQueryString) ||
+                                                        user.Email.Contains(trimmedQueryString) ||
+                                                        (isIdQuery && user.Id == queryGuid));
+        }
+
+        var totalCount = await databaseQuery.CountAsync();
+
+        databaseQuery = databaseQuery
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize);
+
+        var projectedQuery = databaseQuery
+            .Include(user => user.Roles)
+            .Select(user => new UserPreview
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Roles = user.Roles.Select(role => role.Name)
+            });
+
+        var result = await projectedQuery.ToListAsync();
+
+        return new PagedResult<UserPreview>
+        {
+            Items = result, CurrentPage = pageNumber, PageSize = pageSize, TotalCount = totalCount
+        };
     }
 }
