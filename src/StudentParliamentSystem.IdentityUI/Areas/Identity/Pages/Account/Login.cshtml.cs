@@ -19,11 +19,14 @@ public class LoginModel : PageModel
 {
     private readonly ILogger<LoginModel> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+    public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger,
+        UserManager<ApplicationUser> userManager)
     {
         _signInManager = signInManager;
         _logger = logger;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -77,26 +80,33 @@ public class LoginModel : PageModel
 
         if (ModelState.IsValid)
         {
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, false);
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("User logged in.");
-                return LocalRedirect(returnUrl);
-            }
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+            var userExists = user is not null;
 
-            if (result.RequiresTwoFactor)
+            if (userExists)
             {
-                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
-            }
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var result = await _signInManager.PasswordSignInAsync(user.UserName ?? Input.Email, Input.Password, Input.RememberMe, false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User logged in.");
+                    return LocalRedirect(returnUrl);
+                }
 
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User account locked out.");
-                return RedirectToPage("./Lockout");
-            }
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
+                }
 
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToPage("./Lockout");
+                }
+
+            }
+            
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return Page();
         }
