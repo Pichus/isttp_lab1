@@ -106,7 +106,10 @@ public class RegisterModel : PageModel
                     throw new OperationException("Email can't be null, it's required");
                 }
 
-                await _outbox.PublishAsync(new UserRegistered(user.Id, user.Email, user.FirstName, user.LastName));
+                var roles = await _userManager.GetRolesAsync(user);
+
+                await _outbox.PublishAsync(
+                    new UserRegistered(user.Id, user.Email, user.FirstName, user.LastName, roles));
 
                 await _outbox.SaveChangesAndFlushMessagesAsync();
 
