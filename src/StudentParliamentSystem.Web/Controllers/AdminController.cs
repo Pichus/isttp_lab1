@@ -2,34 +2,37 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using StudentParliamentSystem.Api.Configurations;
-using StudentParliamentSystem.Api.ViewModels;
+using StudentParliamentSystem.Core.Abstractions;
+using StudentParliamentSystem.Core.Aggregates.User;
+using StudentParliamentSystem.UseCases.Users.Retrieve.All;
+
+using Wolverine;
 
 namespace StudentParliamentSystem.Api.Controllers;
 
 [Authorize(Policy = AuthorizationPolicyNameConstants.CanAccessAdminPanel)]
 public class AdminController : Controller
 {
-    // GET: /Admin
-    // User management and roles
-    public IActionResult Index()
+    private readonly IMessageBus _bus;
+
+    public AdminController(IMessageBus bus)
     {
-        return View("Users", new PaginationViewModel
-        {
-            CurrentPage = 1,
-            TotalPages = 10
-        });
+        _bus = bus;
     }
 
-    // GET: /Admin/Users
-    public IActionResult Users(int page = 1)
+    public IActionResult Index()
     {
-        var viewModel = new PaginationViewModel
-        {
-            CurrentPage = page,
-            TotalPages = 10 // placeholder for UI
-        };
-        
-        return View(viewModel);
+        return RedirectToAction(nameof(Users));
+    }
+
+    public async Task<IActionResult> Users([FromQuery] int page = 1, string? query = null)
+    {
+        var pageSize = 10;
+        var result = await _bus.InvokeAsync<PagedResult<UserPreview>>(new RetrieveAllUsers(page, pageSize, query));
+
+        ViewBag.Query = query;
+
+        return View(result);
     }
 
     // GET: /Admin/Edit/5
