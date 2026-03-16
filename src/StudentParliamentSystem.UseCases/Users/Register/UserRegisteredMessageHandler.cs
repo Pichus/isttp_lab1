@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 
+using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.Shared.Contracts.Users;
 using StudentParliamentSystem.UseCases.Abstractions;
@@ -9,15 +10,17 @@ namespace StudentParliamentSystem.UseCases.Users.Register;
 public class UserRegisteredHandler
 {
     private readonly ILogger<UserRegisteredHandler> _logger;
+    private readonly IRoleRepository _roleRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
 
     public UserRegisteredHandler(IUserRepository userRepository, ILogger<UserRegisteredHandler> logger,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork, IRoleRepository roleRepository)
     {
         _userRepository = userRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _roleRepository = roleRepository;
     }
 
     public async Task HandleAsync(UserRegistered message)
@@ -32,6 +35,25 @@ public class UserRegisteredHandler
         }
 
         var user = User.Create(message.UserId, message.Email, message.FirstName, message.LastName);
+
+        var roles = new List<Role>();
+
+        foreach (var roleName in message.Roles)
+        {
+            var getRoleResult = await _roleRepository.GetByNameAsync(roleName);
+
+            if (getRoleResult.IsFailed)
+            {
+                foreach (var error in getRoleResult.Errors)
+                {
+                    _logger.LogWarning(error.Message);
+                }
+            }
+
+            roles.Add(getRoleResult.Value);
+        }
+
+        user.Roles = roles;
 
         _userRepository.Add(user);
         await _unitOfWork.SaveChangesAsync();
