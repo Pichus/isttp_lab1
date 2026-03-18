@@ -8,7 +8,7 @@ public class StatusCodeController : Controller
 {
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [Route("StatusCode/{statusCode}")]
-    public IActionResult RenderStatusCode([FromQuery] int statusCode)
+    public IActionResult RenderStatusCode([FromRoute] int statusCode)
     {
         // todo implement a better status code page
         var viewModel = new StatusCodeViewModel() { StatusCode = statusCode };
