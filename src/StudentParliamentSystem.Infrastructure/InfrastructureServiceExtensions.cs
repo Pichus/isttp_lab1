@@ -3,7 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.Infrastructure.Data;
+using StudentParliamentSystem.Infrastructure.Users;
+using StudentParliamentSystem.UseCases.Abstractions;
 
 namespace StudentParliamentSystem.Infrastructure;
 
@@ -62,5 +65,7 @@ public static class InfrastructureServiceExtensions
 
     private static void RegisterServices(IServiceCollection services)
     {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }

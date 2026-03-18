@@ -15,15 +15,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
+using StudentParliamentSystem.Infrastructure.Identity.Data;
 using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
+using StudentParliamentSystem.Shared.Contracts.Users;
+
+using Wolverine.EntityFrameworkCore;
 
 namespace StudentParliamentSystem.IdentityUI.Areas.Identity.Pages.Account;
 
 public class RegisterModel : PageModel
 {
+    private readonly IdentityDatabaseContext _databaseContext;
     private readonly IEmailSender _emailSender;
     private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly ILogger<RegisterModel> _logger;
+    private readonly IDbContextOutbox _outbox;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUserStore<ApplicationUser> _userStore;
@@ -33,7 +39,7 @@ public class RegisterModel : PageModel
         IUserStore<ApplicationUser> userStore,
         SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger,
-        IEmailSender emailSender)
+        IEmailSender emailSender, IdentityDatabaseContext databaseContext, IDbContextOutbox outbox)
     {
         _userManager = userManager;
         _userStore = userStore;
@@ -41,6 +47,8 @@ public class RegisterModel : PageModel
         _signInManager = signInManager;
         _logger = logger;
         _emailSender = emailSender;
+        _databaseContext = databaseContext;
+        _outbox = outbox;
     }
 
     /// <summary>
@@ -79,11 +87,22 @@ public class RegisterModel : PageModel
 
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+            await using var transaction = await _databaseContext.Database.BeginTransactionAsync();
+
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
+
+                _outbox.Enroll(_databaseContext);
+                
+                await _outbox.PublishAsync(new UserCreated(user.Id, user.UserName ?? "NoName"));
+                
+                await _outbox.SaveChangesAndFlushMessagesAsync();
+
+                // await transaction.CommitAsync();
 
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
