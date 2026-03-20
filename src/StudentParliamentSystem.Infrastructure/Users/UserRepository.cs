@@ -51,12 +51,14 @@ public class UserRepository : IUserRepository
 
         var projectedQuery = databaseQuery
             .Include(user => user.Roles)
+            .Include(user => user.Departments)
             .Select(user => new UserPreview
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Roles = user.Roles.Select(role => role.Name)
+                Roles = user.Roles.Select(role => role.Name),
+                Departments = user.Departments.Select(department => department.Name)
             });
 
         var result = await projectedQuery.ToListAsync();
