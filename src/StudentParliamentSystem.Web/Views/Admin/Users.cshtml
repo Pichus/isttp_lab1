@@ -83,7 +83,16 @@
                         }
                     </div>
                 </td>
-                <td class="text-base-content/50">—</td>
+                <td>
+                    @if (user.Departments != null && user.Departments.Any())
+                    {
+                        <span class="font-semibold text-sm">@string.Join(", ", user.Departments)</span>
+                    }
+                    else
+                    {
+                        <span class="text-base-content/50">—</span>
+                    }
+                </td>
                 <th>
                     <a asp-action="Edit" asp-route-id="@user.Email" class="btn btn-ghost btn-sm">Редагувати</a>
                 </th>
