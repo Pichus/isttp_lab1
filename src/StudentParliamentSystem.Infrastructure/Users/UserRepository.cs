@@ -46,12 +46,15 @@ public class UserRepository : IUserRepository
         var totalCount = await databaseQuery.CountAsync();
 
         databaseQuery = databaseQuery
+            .Include(user => user.Roles)
+            .Include(user => user.Departments)
+            .OrderBy(user => user.FirstName)
+            .ThenBy(user => user.LastName)
+            .ThenBy(user => user.CreatedAtUtc)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize);
 
         var projectedQuery = databaseQuery
-            .Include(user => user.Roles)
-            .Include(user => user.Departments)
             .Select(user => new UserPreview
             {
                 FirstName = user.FirstName,
