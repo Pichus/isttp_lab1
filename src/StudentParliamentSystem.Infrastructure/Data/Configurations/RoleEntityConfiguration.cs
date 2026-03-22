@@ -17,6 +17,9 @@ public class RoleEntityConfiguration : IEntityTypeConfiguration<Role>
 
         builder
             .Property(e => e.Name)
+            .HasConversion(
+                roleNameEnum => roleNameEnum.ToString(),
+                roleNameString => Enum.Parse<RoleName>(roleNameString))
             .HasMaxLength(50)
             .IsRequired();
     }

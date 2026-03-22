@@ -17,13 +17,13 @@ public class RoleRepository : IRoleRepository
         _context = context;
     }
 
-    public async Task<Result<Role>> GetByNameAsync(string name)
+    public async Task<Result<Role>> GetByNameAsync(RoleName name)
     {
         var result = await _context.Roles.FirstOrDefaultAsync(role => role.Name == name);
 
         if (result is null)
         {
-            return Result.Fail(new RoleNotFoundError(name));
+            return Result.Fail(new RoleNotFoundError(name.ToString()));
         }
 
         return Result.Ok(result);

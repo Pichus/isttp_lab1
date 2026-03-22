@@ -60,7 +60,7 @@ public class UserRepository : IUserRepository
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Roles = user.Roles.Select(role => role.Name),
+                Roles = user.Roles.Select(role => role.Name.ToString()),
                 Departments = user.Departments.Select(department => department.Name)
             });
 
