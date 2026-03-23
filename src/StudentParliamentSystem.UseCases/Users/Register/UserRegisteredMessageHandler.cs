@@ -40,7 +40,15 @@ public class UserRegisteredHandler
 
         foreach (var roleName in message.Roles)
         {
-            var getRoleResult = await _roleRepository.GetByNameAsync(roleName);
+            var parseRoleNameResult = Enum.TryParse<RoleName>(roleName, out var parsedRoleName);
+
+            if (!parseRoleNameResult)
+            {
+                _logger.LogWarning($"Role with name {roleName} doesn't exist");
+                continue;
+            }
+            
+            var getRoleResult = await _roleRepository.GetByNameAsync(parsedRoleName);
 
             if (getRoleResult.IsFailed)
             {
@@ -48,6 +56,7 @@ public class UserRegisteredHandler
                 {
                     _logger.LogWarning(error.Message);
                 }
+                continue;
             }
 
             roles.Add(getRoleResult.Value);
