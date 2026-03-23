@@ -1,5 +1,6 @@
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Event;
+using StudentParliamentSystem.Core.Aggregates.Role;
 
 namespace StudentParliamentSystem.Core.Aggregates.User;
 

@@ -1,9 +1,10 @@
+using StudentParliamentSystem.Core.Abstractions;
+
 namespace StudentParliamentSystem.Core.Aggregates.Role;
 
-public class Role
+public class Role : BaseEntity<Guid>
 {
-    public Guid Id { get; init; }
-    public string Name { get; set; }
+    public RoleName Name { get; set; }
 
-    public ICollection<User.User> Users { get; set; }
+    public ICollection<User.User> Users { get; set; } = [];
 }
