@@ -28,4 +28,9 @@ public class RoleRepository : IRoleRepository
 
         return Result.Ok(result);
     }
+
+    public void Create(Role role)
+    {
+        _context.Roles.Add(role);
+    }
 }
