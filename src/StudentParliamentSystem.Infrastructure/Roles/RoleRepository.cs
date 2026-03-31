@@ -29,6 +29,23 @@ public class RoleRepository : IRoleRepository
         return Result.Ok(result);
     }
 
+    public async Task<IEnumerable<Role>> GetByNamesAsync(IEnumerable<RoleName> names)
+    {
+        return await _context.Roles
+            .Where(role => names.Contains(role.Name))
+            .ToListAsync();
+    }
+
+    public async Task<bool> ExistsAsync(RoleName name)
+    {
+        return await _context.Roles.AnyAsync(role => role.Name == name);
+    }
+
+    public async Task<bool> ExistsAsync(Guid id)
+    {
+        return await _context.Roles.AnyAsync(role => role.Id == id);
+    }
+
     public void Create(Role role)
     {
         _context.Roles.Add(role);

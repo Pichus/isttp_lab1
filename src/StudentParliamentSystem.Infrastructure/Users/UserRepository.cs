@@ -25,6 +25,11 @@ public class UserRepository : IUserRepository
         return await _databaseContext.Users.AnyAsync(user => user.Id == userId);
     }
 
+    public async Task<bool> ExistsAsync(string email)
+    {
+        return await _databaseContext.Users.AnyAsync(user => user.Email == email);
+    }
+
     public async Task<PagedResult<UserPreview>> RetrieveAllAsync(int pageNumber, int pageSize = 10,
         string? query = null)
     {
