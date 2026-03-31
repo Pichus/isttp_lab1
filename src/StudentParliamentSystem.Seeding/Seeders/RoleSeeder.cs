@@ -29,8 +29,20 @@ public class RoleSeeder : IRoleSeeder
         foreach (var roleName in roleNames)
         {
             var roleId = Guid.NewGuid();
-            await PersistRoleInIdentityModuleAsync(roleName, roleId);
-            await PersistRoleInApplicationModuleAsync(roleName, roleId);
+
+            var roleExistsInIdentityModule = await _roleManager.FindByNameAsync(roleName.ToString()) is not null;
+
+            if (!roleExistsInIdentityModule)
+            {
+                await PersistRoleInIdentityModuleAsync(roleName, roleId);
+            }
+
+            var roleExistsInApplicationModule = await _roleRepository.ExistsAsync(roleName);
+
+            if (!roleExistsInApplicationModule)
+            {
+                await PersistRoleInApplicationModuleAsync(roleName, roleId);
+            }
         }
     }
 

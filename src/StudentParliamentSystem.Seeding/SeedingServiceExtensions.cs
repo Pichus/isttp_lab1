@@ -28,8 +28,8 @@ public static class SeedingServiceExtensions
 
     private static void RegisterOptions(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOptions<StarterAdminAccountOptions>()
-            .Bind(configuration.GetSection(StarterAdminAccountOptions.SectionName))
+        services.AddOptions<InitialAdminAccountOptions>()
+            .Bind(configuration.GetSection(InitialAdminAccountOptions.SectionName))
             .ValidateDataAnnotations()
             .ValidateOnStart();
     }

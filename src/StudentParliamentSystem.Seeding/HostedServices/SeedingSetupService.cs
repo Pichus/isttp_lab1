@@ -23,8 +23,10 @@ public class SeedingSetupService : IHostedService
         using var scope = _scopeFactory.CreateScope();
         
         var roleSeeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
+        var initialAdminUserSeeder = scope.ServiceProvider.GetRequiredService<IInitialAdminUserSeeder>();
         
         await roleSeeder.SeedAsync();
+        await initialAdminUserSeeder.SeedAsync();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
