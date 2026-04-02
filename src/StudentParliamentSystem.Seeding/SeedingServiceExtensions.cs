@@ -38,5 +38,6 @@ public static class SeedingServiceExtensions
     private static void RegisterDataSeeders(IServiceCollection services)
     {
         services.AddScoped<IRoleSeeder, RoleSeeder>();
+        services.AddScoped<IInitialAdminUserSeeder, InitialAdminUserSeeder>();
     }
 }
