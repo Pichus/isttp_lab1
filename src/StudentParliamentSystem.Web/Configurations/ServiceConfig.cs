@@ -1,5 +1,6 @@
 using StudentParliamentSystem.Infrastructure;
 using StudentParliamentSystem.Infrastructure.Identity;
+using StudentParliamentSystem.Seeding;
 
 namespace StudentParliamentSystem.Api.Configurations;
 
@@ -20,7 +21,8 @@ public static class ServiceConfig
 
         services
             .AddInfrastructureServices(configuration, environment.EnvironmentName, logger)
-            .AddIdentityInfrastructureServices(configuration, environment.EnvironmentName, logger);
+            .AddIdentityInfrastructureServices(configuration, environment.EnvironmentName, logger)
+            .AddSeeding(configuration, logger);
         
         services.AddAuthenticationConfig();
 

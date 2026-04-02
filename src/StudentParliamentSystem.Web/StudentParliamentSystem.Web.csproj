@@ -33,6 +33,7 @@
         <ProjectReference Include="..\StudentParliamentSystem.Infrastructure.Identity\StudentParliamentSystem.Infrastructure.Identity.csproj"/>
         <ProjectReference Include="..\StudentParliamentSystem.IdentityUI\StudentParliamentSystem.IdentityUI.csproj"/>
         <ProjectReference Include="..\StudentParliamentSystem.UseCases\StudentParliamentSystem.UseCases.csproj"/>
+        <ProjectReference Include="..\StudentParliamentSystem.Seeding\StudentParliamentSystem.Seeding.csproj"/>
     </ItemGroup>
 
 </Project>
