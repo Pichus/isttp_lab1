@@ -15,6 +15,7 @@ public static class SeedingServiceExtensions
     {
         RegisterOptions(services, configuration);
         RegisterDataSeeders(services);
+        RegisterServices(services);
 
         logger.LogInformation("{Project} services registered", "Seeding");
 
