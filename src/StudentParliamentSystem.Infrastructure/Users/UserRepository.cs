@@ -30,6 +30,13 @@ public class UserRepository : IUserRepository
         return await _databaseContext.Users.AnyAsync(user => user.Email == email);
     }
 
+    public async Task<User?> GetByIdAsync(Guid userId)
+    {
+        return await _databaseContext.Users
+            .Include(u => u.Roles)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
     public async Task<PagedResult<UserPreview>> RetrieveAllAsync(int pageNumber, int pageSize = 10,
         string? query = null)
     {
@@ -62,6 +69,7 @@ public class UserRepository : IUserRepository
         var projectedQuery = databaseQuery
             .Select(user => new UserPreview
             {
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
