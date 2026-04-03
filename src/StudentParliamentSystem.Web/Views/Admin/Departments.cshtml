@@ -1,0 +1,89 @@
+@model IEnumerable<StudentParliamentSystem.Core.Aggregates.Department.DepartmentPreview>
+
+@{
+    ViewData["Title"] = "Управління Департаментами";
+    var isSuperAdmin = User.IsInRole(StudentParliamentSystem.Core.Aggregates.Role.RoleName.SuperAdmin.ToString());
+}
+
+<div class="mb-8 flex justify-between items-end flex-wrap gap-4">
+    <div>
+        <h1 class="text-4xl font-black mb-2 flex items-center gap-3">
+            Департаменти
+            <span class="badge badge-lg badge-neutral">@Model.Count() всього</span>
+        </h1>
+        <p class="text-base-content/70">Огляд існуючих департаментів, керівників та кількості учасників.</p>
+    </div>
+</div>
+
+<div class="overflow-x-auto bg-base-100 rounded-3xl shadow-xl border border-base-200">
+    <table class="table table-zebra w-full">
+        <!-- head -->
+        <thead>
+        <tr class="bg-base-200 text-sm">
+            <th>Назва</th>
+            <th>Опис</th>
+            <th>Голова департаменту</th>
+            <th>Кількість учасників</th>
+            <th>Дії</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var dept in Model)
+        {
+            var headRoleName = dept.Name switch
+            {
+                "Культурний" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfCulturalDepartment.ToString(),
+                "Науковий" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfScienceDepartment.ToString(),
+                "Читалкадеп" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfCoworkingDepartment.ToString(),
+                "Інформаційний" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfInformationDepartment.ToString(),
+                _ => null
+            };
+            var isHead = headRoleName != null && User.IsInRole(headRoleName);
+            var canManage = isSuperAdmin || isHead;
+
+            <tr class="hover">
+                <td>
+                    <div class="font-bold whitespace-nowrap">@dept.Name</div>
+                </td>
+                <td class="text-sm">
+                    @if (string.IsNullOrEmpty(dept.Description))
+                    {
+                        <span class="text-base-content/50">Без опису</span>
+                    }
+                    else
+                    {
+                        @dept.Description
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(dept.HeadName))
+                    {
+                        <span class="badge badge-primary font-bold">@dept.HeadName</span>
+                    }
+                    else
+                    {
+                        <span class="text-base-content/50">—</span>
+                    }
+                </td>
+                <td>
+                    <div class="font-semibold px-2 py-1 bg-base-200 rounded-lg inline-block">
+                        @dept.MemberCount учасників
+                    </div>
+                </td>
+                <th>
+                    @if (canManage)
+                    {
+                        <a asp-action="ManageDepartment" asp-route-id="@dept.Id" class="btn btn-neutral btn-sm">Управляти</a>
+                    }
+                </th>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="text-center py-10 opacity-60">
+            <p>Департаменти не знайдені.</p>
+        </div>
+    }
+</div>

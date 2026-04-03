@@ -9,7 +9,7 @@ public static class AuthorizationPolicyConfig
     public static void AddAuthorizationPolicies(this AuthorizationOptions authorizationOptions)
     {
         authorizationOptions.AddPolicy(AuthorizationPolicyNameConstants.CanAccessAdminPanel,
-            policy => policy.RequireRole(RoleNameConstants.SuperAdminRoleName));
+            policy => policy.RequireRole(nameof(RoleName.SuperAdmin)));
     }
 }
 

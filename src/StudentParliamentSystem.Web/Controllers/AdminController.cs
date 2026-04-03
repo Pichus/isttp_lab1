@@ -1,11 +1,19 @@
+using FluentResults;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using StudentParliamentSystem.Api.Configurations;
 using StudentParliamentSystem.Api.Models;
 using StudentParliamentSystem.Core.Abstractions;
+using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.User;
+using StudentParliamentSystem.UseCases.Departments.Retrieve.All;
+using StudentParliamentSystem.UseCases.Departments.Retrieve.Members;
+using StudentParliamentSystem.UseCases.Departments.Update;
 using StudentParliamentSystem.UseCases.Users.Retrieve.All;
+using StudentParliamentSystem.UseCases.Users.Retrieve.ById;
+using StudentParliamentSystem.UseCases.Users.Update;
 
 using Wolverine;
 
@@ -36,10 +44,102 @@ public class AdminController : Controller
         return View(result);
     }
 
-    // GET: /Admin/Edit/5
+    public async Task<IActionResult> Departments()
+    {
+        var result = await _bus.InvokeAsync<IEnumerable<DepartmentPreview>>(new RetrieveAllDepartments());
+        return View(result);
+    }
+    
+    public async Task<IActionResult> ManageDepartment(Guid id, [FromQuery] int page = 1, string? query = null)
+    {
+        var deptResult = await _bus.InvokeAsync<IEnumerable<DepartmentPreview>>(new RetrieveAllDepartments());
+        var dept = deptResult.FirstOrDefault(d => d.Id == id);
+        if (dept == null) return NotFound();
+
+        var isSuperAdmin = User.IsInRole(StudentParliamentSystem.Core.Aggregates.Role.RoleName.SuperAdmin.ToString());
+        var headRoleForDept = GetHeadRoleNameForDepartment(dept.Name);
+        var isHead = headRoleForDept != null && User.IsInRole(headRoleForDept);
+
+        if (!isSuperAdmin && !isHead)
+        {
+            return Forbid();
+        }
+
+        var pageSize = 10;
+        var usersResult = await _bus.InvokeAsync<PagedResult<UserPreview>>(
+            new RetrieveDepartmentMembers(id, page, pageSize, query));
+
+        ViewBag.Query = query;
+        ViewBag.Department = dept;
+        ViewBag.IsSuperAdmin = isSuperAdmin;
+        
+        return View(usersResult);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddMember(Guid id, string email)
+    {
+        var deptResult = await _bus.InvokeAsync<IEnumerable<DepartmentPreview>>(new RetrieveAllDepartments());
+        var dept = deptResult.FirstOrDefault(d => d.Id == id);
+        if (dept == null) return NotFound();
+
+        var isSuperAdmin = User.IsInRole(StudentParliamentSystem.Core.Aggregates.Role.RoleName.SuperAdmin.ToString());
+        var headRoleForDept = GetHeadRoleNameForDepartment(dept.Name);
+        var isHead = headRoleForDept != null && User.IsInRole(headRoleForDept);
+
+        if (!isSuperAdmin && !isHead) return Forbid();
+
+        var result = await _bus.InvokeAsync<Result>(new AddDepartmentMember(id, email));
+        
+        if (result.IsFailed)
+        {
+            TempData["ErrorMessage"] = result.Errors.FirstOrDefault()?.Message ?? "Failed to add member";
+        }
+        else
+        {
+            TempData["SuccessMessage"] = "Member added successfully";
+        }
+
+        return RedirectToAction(nameof(ManageDepartment), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeHead(Guid id, string email)
+    {
+        var isSuperAdmin = User.IsInRole(StudentParliamentSystem.Core.Aggregates.Role.RoleName.SuperAdmin.ToString());
+        if (!isSuperAdmin) return Forbid();
+
+        var result = await _bus.InvokeAsync<Result>(new ChangeDepartmentHead(id, email));
+        
+        if (result.IsFailed)
+        {
+            TempData["ErrorMessage"] = result.Errors.FirstOrDefault()?.Message ?? "Failed to change head";
+        }
+        else
+        {
+            TempData["SuccessMessage"] = "Department head changed successfully";
+        }
+
+        return RedirectToAction(nameof(ManageDepartment), new { id });
+    }
+
+    private string? GetHeadRoleNameForDepartment(string departmentName)
+    {
+        return departmentName switch
+        {
+            "Культурний" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfCulturalDepartment.ToString(),
+            "Науковий" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfScienceDepartment.ToString(),
+            "Читалкадеп" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfCoworkingDepartment.ToString(),
+            "Інформаційний" => StudentParliamentSystem.Core.Aggregates.Role.RoleName.HeadOfInformationDepartment.ToString(),
+            _ => null
+        };
+    }
+    
     public async Task<IActionResult> Edit(Guid id)
     {
-        var result = await _bus.InvokeAsync<FluentResults.Result<User>>(new StudentParliamentSystem.UseCases.Users.Retrieve.ById.RetrieveUserById(id));
+        var result = await _bus.InvokeAsync<Result<User>>(new RetrieveUserById(id));
 
         if (result.IsFailed)
         {
@@ -57,8 +157,7 @@ public class AdminController : Controller
 
         return View(viewModel);
     }
-
-    // POST: /Admin/Edit/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Guid id, UpdateUserViewModel model)
@@ -73,10 +172,10 @@ public class AdminController : Controller
             return View(model);
         }
 
-        var result = await _bus.InvokeAsync<FluentResults.Result>(new StudentParliamentSystem.UseCases.Users.Update.UpdateUserDetails(
-            model.Id, 
-            model.FirstName, 
-            model.LastName, 
+        var result = await _bus.InvokeAsync<Result>(new UpdateUserDetails(
+            model.Id,
+            model.FirstName,
+            model.LastName,
             model.Roles));
 
         if (result.IsFailed)
