@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
+using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Core.Aggregates.User;
 
@@ -14,6 +15,7 @@ public class ApplicationDatabaseContext : DbContext
 
     public DbSet<User> Users { get; init; }
     public DbSet<Role> Roles { get; init; }
+    public DbSet<Department> Departments { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

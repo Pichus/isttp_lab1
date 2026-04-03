@@ -65,6 +65,7 @@ public static class InfrastructureServiceExtensions
     {
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<StudentParliamentSystem.Core.Aggregates.Department.IDepartmentRepository, StudentParliamentSystem.Infrastructure.Departments.DepartmentRepository>();
     }
 
     private static void RegisterServices(IServiceCollection services)
