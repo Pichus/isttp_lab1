@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using StudentParliamentSystem.Api.Configurations;
+using StudentParliamentSystem.Api.Models;
 using StudentParliamentSystem.Core.Abstractions;
 using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.UseCases.Users.Retrieve.All;
@@ -36,17 +37,54 @@ public class AdminController : Controller
     }
 
     // GET: /Admin/Edit/5
-    public IActionResult Edit(string id)
+    public async Task<IActionResult> Edit(Guid id)
     {
-        return View();
+        var result = await _bus.InvokeAsync<FluentResults.Result<User>>(new StudentParliamentSystem.UseCases.Users.Retrieve.ById.RetrieveUserById(id));
+
+        if (result.IsFailed)
+        {
+            return NotFound();
+        }
+
+        var user = result.Value;
+        var viewModel = new UpdateUserViewModel
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Roles = user.Roles.Select(r => r.Name.ToString()).ToList()
+        };
+
+        return View(viewModel);
     }
 
     // POST: /Admin/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(string id, IFormCollection collection)
+    public async Task<IActionResult> Edit(Guid id, UpdateUserViewModel model)
     {
-        // For demonstration, simply redirect back to the user list.
+        if (id != model.Id)
+        {
+            return BadRequest();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var result = await _bus.InvokeAsync<FluentResults.Result>(new StudentParliamentSystem.UseCases.Users.Update.UpdateUserDetails(
+            model.Id, 
+            model.FirstName, 
+            model.LastName, 
+            model.Roles));
+
+        if (result.IsFailed)
+        {
+            ModelState.AddModelError(string.Empty, "Update failed.");
+            return View(model);
+        }
+
         return RedirectToAction(nameof(Users));
     }
 }

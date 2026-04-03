@@ -2312,9 +2312,6 @@
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
   }
-  .mt-6 {
-    margin-top: calc(var(--spacing) * 6);
-  }
   .mt-8 {
     margin-top: calc(var(--spacing) * 8);
   }
@@ -2903,13 +2900,6 @@
       margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
-  .space-y-4 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
   .space-y-6 {
     :where(& > :not(:last-child)) {
       --tw-space-y-reverse: 0;
@@ -3427,9 +3417,6 @@
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
-  .pt-6 {
-    padding-top: calc(var(--spacing) * 6);
-  }
   .pr-16 {
     padding-right: calc(var(--spacing) * 16);
   }
@@ -3587,12 +3574,6 @@
       color: var(--color-warning-content);
       --alert-border-color: var(--color-warning);
       --alert-color: var(--color-warning);
-    }
-  }
-  .checkbox-error {
-    @layer daisyui.l1.l2 {
-      color: var(--color-error-content);
-      --input-color: var(--color-error);
     }
   }
   .checkbox-primary {
@@ -3910,12 +3891,6 @@
       --badge-fg: var(--color-success-content);
     }
   }
-  .badge-warning {
-    @layer daisyui.l1.l2 {
-      --badge-color: var(--color-warning);
-      --badge-fg: var(--color-warning-content);
-    }
-  }
   .btn-accent {
     @layer daisyui.l1.l2.l3 {
       --btn-color: var(--color-accent);
@@ -4135,6 +4110,11 @@
       background-color: var(--color-base-100);
     }
   }
+  .focus\:ring-primary {
+    &:focus {
+      --tw-ring-color: var(--color-primary);
+    }
+  }
   .sm\:inline {
     @media (width >= 40rem) {
       display: inline;
@@ -4247,11 +4227,6 @@
   .md\:gap-8 {
     @media (width >= 48rem) {
       gap: calc(var(--spacing) * 8);
-    }
-  }
-  .md\:p-8 {
-    @media (width >= 48rem) {
-      padding: calc(var(--spacing) * 8);
     }
   }
   .md\:pr-0 {
