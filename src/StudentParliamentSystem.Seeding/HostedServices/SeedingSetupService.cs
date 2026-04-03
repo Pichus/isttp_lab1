@@ -24,8 +24,10 @@ public class SeedingSetupService : IHostedService
         
         var roleSeeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
         var initialAdminUserSeeder = scope.ServiceProvider.GetRequiredService<IInitialAdminUserSeeder>();
+        var departmentSeeder = scope.ServiceProvider.GetRequiredService<IDepartmentSeeder>();
         
         await roleSeeder.SeedAsync();
+        await departmentSeeder.SeedAsync();
         await initialAdminUserSeeder.SeedAsync();
     }
 
