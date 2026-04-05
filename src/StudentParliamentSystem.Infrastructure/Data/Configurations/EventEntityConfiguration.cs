@@ -26,9 +26,12 @@ public class EventEntityConfiguration : IEntityTypeConfiguration<Event>
             .IsRequired();
 
         builder
-            .Property(e => e.PosterUrl)
-            .HasDefaultValue(null)
-            .HasMaxLength(500);
+            .Property(e => e.StartTimeUtc)
+            .IsRequired();
+
+        builder
+            .Property(e => e.EndTimeUtc)
+            .IsRequired();
 
         builder
             .Property(e => e.Location)
@@ -52,6 +55,12 @@ public class EventEntityConfiguration : IEntityTypeConfiguration<Event>
             .HasOne(e => e.CreatedByUser)
             .WithMany(e => e.CreatedEvents)
             .HasForeignKey(e => e.CreatedByUserId)
+            .IsRequired();
+
+        builder
+            .HasOne(e => e.Department)
+            .WithMany()
+            .HasForeignKey(e => e.DepartmentId)
             .IsRequired();
 
         builder
