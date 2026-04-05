@@ -1,66 +1,325 @@
+@using StudentParliamentSystem.Core.Aggregates.Department
+@model StudentParliamentSystem.Api.Models.Events.EditEventViewModel
+
 @{
     ViewData["Title"] = "Редагувати Захід";
+    var departments = ViewBag.Departments as List<DepartmentPreview> ?? new List<DepartmentPreview>();
+    var existingTags = ViewBag.ExistingTags as List<string> ?? new List<string>();
 }
 
-<div class="max-w-3xl mx-auto">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+<link href="https://cdn.jsdelivr.net/npm/@@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
+<style>
+    /* Styling for the custom tags dropdown */
+    #TagSuggestions::-webkit-scrollbar {
+        width: 6px;
+    }
+    #TagSuggestions::-webkit-scrollbar-thumb {
+        background-color: oklch(var(--bc) / 0.2);
+        border-radius: 10px;
+    }
+</style>
+
+<div class="max-w-4xl mx-auto mb-16 px-4">
     <div class="mb-8">
-        <h1 class="text-4xl font-black mb-2">Редагування Заходу</h1>
-        <p class="text-base-content/70">Змініть інформацію про захід "#1 Посвята".</p>
+        <h1 class="text-3xl md:text-5xl font-black mb-3">Редагувати захід</h1>
+        <p class="text-base md:text-lg text-base-content/70">Оновіть інформацію про подію, змініть дату, час або теги.</p>
     </div>
 
     <!-- Form Container -->
-    <div class="bg-base-100 shadow-xl rounded-3xl border border-base-200 p-8">
-        <form action="/Events/Details/1" method="post" class="space-y-6">
+    <div class="bg-base-100 shadow-2xl rounded-3xl border border-base-200 p-6 md:p-10">
+        <form asp-action="Edit" asp-controller="Events" method="post" class="space-y-8">
+            <input type="hidden" asp-for="Id" />
             
+            <div asp-validation-summary="ModelOnly" class="alert alert-error font-semibold shadow-lg"></div>
+
             <div class="form-control w-full">
                 <label class="label">
-                    <span class="label-text font-bold text-base">Назва заходу <span class="text-error">*</span></span>
+                    <span class="label-text font-bold text-lg">Назва заходу <span class="text-error">*</span></span>
                 </label>
-                <input type="text" value="Посвята Першокурсників" class="input input-bordered input-lg w-full bg-base-200/50" required />
+                <input asp-for="Title" type="text" placeholder="Наприклад: Хакатон 2026, Кіноніч Marvel..." class="input input-bordered input-lg w-full bg-base-200/50 hover:bg-base-100 focus:bg-base-100 transition-colors shadow-inner" required />
+                <span asp-validation-for="Title" class="text-error mt-2 text-sm font-semibold"></span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Date -->
-                <div class="form-control w-full">
+            <!-- Two Column Date Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="form-control w-full group">
                     <label class="label">
-                        <span class="label-text font-bold text-base">Дата та час початку <span class="text-error">*</span></span>
+                        <span class="label-text font-bold text-lg">Дата та час початку <span class="text-error">*</span></span>
                     </label>
-                    <input type="datetime-local" class="input input-bordered w-full bg-base-200/50" value="2026-10-12T18:00" required />
+                    <div class="relative">
+                        <input asp-for="StartTime" type="text" id="StartTimePicker" class="input input-bordered input-lg w-full bg-base-200/50 group-hover:border-primary transition-colors cursor-pointer" placeholder="Оберіть час початку" required />
+                    </div>
+                    <span asp-validation-for="StartTime" class="text-error mt-2 text-sm font-semibold"></span>
                 </div>
                 
-                <!-- Max Participants -->
+                <div class="form-control w-full group">
+                    <label class="label">
+                        <span class="label-text font-bold text-lg">Дата та час завершення <span class="text-error">*</span></span>
+                    </label>
+                    <div class="relative">
+                        <input asp-for="EndTime" type="text" id="EndTimePicker" class="input input-bordered input-lg w-full bg-base-200/50 group-hover:border-primary transition-colors cursor-pointer" placeholder="Оберіть час завершення" required />
+                    </div>
+                    <span asp-validation-for="EndTime" class="text-error mt-2 text-sm font-semibold"></span>
+                </div>
+            </div>
+
+            <!-- Two Column Dept / Max Participants Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text font-bold text-base">Макс. учасників</span>
+                        <span class="label-text font-bold text-lg">Департамент <span class="text-error">*</span></span>
                     </label>
-                    <input type="number" value="300" class="input input-bordered w-full bg-base-200/50" />
+                    <select asp-for="DepartmentId" class="select select-bordered select-lg w-full bg-base-200/50" required>
+                        <option value="" disabled selected>Оберіть організатора</option>
+                        @foreach (var dept in departments)
+                        {
+                            <option value="@dept.Id">@dept.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="DepartmentId" class="text-error mt-2 text-sm font-semibold"></span>
+                    @if (!departments.Any())
+                    {
+                        <div class="alert alert-warning mt-4 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                            <span>Ви не належите до жодного департаменту і не можете створювати заходи.</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold text-lg">Макс. кількість учасників</span>
+                    </label>
+                    <input asp-for="MaxParticipants" type="number" min="1" placeholder="Залиште пустим, якщо безліміт" class="input input-bordered input-lg w-full bg-base-200/50" />
+                    <span asp-validation-for="MaxParticipants" class="text-error mt-2 text-sm font-semibold"></span>
                 </div>
             </div>
 
-            <!-- Location -->
             <div class="form-control w-full">
                 <label class="label">
-                    <span class="label-text font-bold text-base">Локація</span>
+                    <span class="label-text font-bold text-lg">Локація (Місце проведення) <span class="text-error">*</span></span>
                 </label>
-                <input type="text" value="Малий актовий зал" class="input input-bordered w-full bg-base-200/50" />
+                <input asp-for="Location" type="text" placeholder="Наприклад: Великий актовий зал, Читалка, Google Meet..." class="input input-bordered input-lg w-full bg-base-200/50" required />
+                <span asp-validation-for="Location" class="text-error mt-2 text-sm font-semibold"></span>
             </div>
 
             <div class="form-control w-full">
                 <label class="label">
-                    <span class="label-text font-bold text-base">Опис заходу <span class="text-error">*</span></span>
+                    <span class="label-text font-bold text-lg">Опис заходу <span class="text-error">*</span></span>
                 </label>
-                <textarea class="textarea textarea-bordered h-40 bg-base-200/50 text-base" required>Грандіозна подія для всіх студентів першого курсу. Не пропусти!</textarea>
+                <textarea asp-for="Description" class="textarea textarea-bordered h-48 w-full bg-base-200/50 text-base p-4 leading-relaxed" placeholder="Який формат? Для кого це? Що брати з собою? Детально опишіть усе..." required></textarea>
+                <span asp-validation-for="Description" class="text-error mt-2 text-sm font-semibold"></span>
             </div>
 
-            <div class="divider"></div>
+            <div class="form-control w-full relative">
+                <label class="label">
+                    <span class="label-text font-bold text-lg">Теги (категорії)</span>
+                </label>
+                
+                <input type="hidden" asp-for="TagsCsv" id="TagsCsv" />
+                
+                <div class="flex flex-wrap gap-2 items-center min-h-[3rem] p-2 bg-base-200/50 rounded-box border border-base-200 input-bordered w-full" id="TagsContainer">
+                    <!-- Dynamic Badges Go Here -->
 
-            <div class="flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
-                <a href="/Events/Details/1" class="btn btn-ghost rounded-full px-6">Скасувати</a>
-                <div class="flex gap-2 w-full sm:w-auto">
-                     <button type="button" class="btn btn-error btn-outline rounded-full w-full sm:w-auto">Видалити</button>
-                    <button type="submit" class="btn btn-primary btn-lg rounded-full px-10 shadow-lg shadow-primary/30 w-full sm:w-auto">Зберегти Зміни</button>
+                    <div id="AddTagWrapper" class="relative flex-none">
+                        <button type="button" id="AddTagBtn" class="badge badge-lg gap-1 cursor-pointer bg-base-100 hover:bg-base-200 transition-colors py-4 px-4 font-semibold border-dashed border-2 border-base-300 text-base-content/70">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Додати тег
+                        </button>
+
+                        <div id="AddTagInputContainer" class="hidden absolute left-0 bottom-full mb-2 z-50 flex items-center bg-base-100 shadow-2xl rounded-box border border-base-300 p-1 min-w-[240px]">
+                            <input type="text" id="AddTagInput" class="input input-sm w-full focus:outline-none" placeholder="Назва тегу..." autocomplete="off" />
+                            <button type="button" id="ConfirmTagBtn" class="btn btn-sm btn-circle btn-ghost text-success" title="Додати">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                            </button>
+                            <button type="button" id="CancelTagBtn" class="btn btn-sm btn-circle btn-ghost text-error" title="Скасувати">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+
+                            <ul id="TagSuggestions" class="menu bg-base-100 w-full rounded-box absolute top-full right-0 mt-1 shadow-2xl max-h-48 overflow-y-auto hidden border border-base-200">
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="text-sm opacity-70 mt-2 whitespace-normal break-words">Виберіть зі списку або впишіть власний тег (наприклад: "Кіноперегляд", "IT", "Спорт"). Теги допоможуть студентам швидше знайти захід.</div>
+            </div>
+
+            <!-- Publish switch -->
+            @{var isPublishedChecked = Model.IsPublished;}
+             <div class="form-control w-full md:w-max mt-6 p-6 bg-base-200/50 rounded-2xl border border-base-300">
+                <label class="label cursor-pointer gap-6 flex-col md:flex-row items-start md:items-center">
+                    <div class="flex flex-col">
+                        <span class="label-text font-bold text-xl">Опубліковано</span>
+                        <span class="text-sm opacity-70 mt-1">Зробити захід видимим для всіх студентів.</span>
+                    </div>
+                    @if (isPublishedChecked)
+                    {
+                        <input asp-for="IsPublished" type="checkbox" class="toggle toggle-primary toggle-lg" checked />
+                    }
+                    else
+                    {
+                        <input asp-for="IsPublished" type="checkbox" class="toggle toggle-primary toggle-lg" />
+                    }
+                </label>
+            </div>
+
+            <div class="divider my-8"></div>
+
+            <div class="flex flex-col-reverse md:flex-row justify-between items-center gap-4">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-ghost btn-lg w-full md:w-auto rounded-full px-8">Скасувати</a>
+                <button type="submit" class="btn btn-primary btn-lg w-full md:w-auto rounded-full px-12 shadow-xl shadow-primary/30" @(departments.Any() ? "" : "disabled")>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-2"><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z" clip-rule="evenodd" /></svg>
+                    Зберегти Зміни
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <!-- No _ValidationScriptsPartial needed -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@yaireo/tagify"></script>
+    
+    <!-- Tag Selection Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Flatpickr setup — no minDate on edit, pre-populate from model
+            const startDefault = "@Model.StartTime.ToString("yyyy-MM-dd HH:mm")";
+            const endDefault = "@Model.EndTime.ToString("yyyy-MM-dd HH:mm")";
+
+            const fpConfigBase = {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                locale: "uk",
+                disableMobile: false
+            };
+            flatpickr("#StartTimePicker", { ...fpConfigBase, defaultDate: startDefault });
+            flatpickr("#EndTimePicker",   { ...fpConfigBase, defaultDate: endDefault });
+
+            // Custom Native Badges setup
+            const allTags = @Json.Serialize(existingTags);
+            const initialCsv = "@Html.Raw(Model.TagsCsv ?? "")";
+            const selectedTags = initialCsv.split(',').map(x => x.trim()).filter(x => x.length > 0);
+            
+            const addTagBtn = document.getElementById('AddTagBtn');
+            const inputContainer = document.getElementById('AddTagInputContainer');
+            const tagInput = document.getElementById('AddTagInput');
+            const confirmBtn = document.getElementById('ConfirmTagBtn');
+            const cancelBtn = document.getElementById('CancelTagBtn');
+            const suggestionsList = document.getElementById('TagSuggestions');
+            const tagsWrapper = document.getElementById('TagsContainer');
+            const hiddenCsv = document.getElementById('TagsCsv');
+            const addBtnWrapper = document.getElementById('AddTagWrapper');
+
+            // Show input
+            addTagBtn.addEventListener('click', () => {
+                addTagBtn.classList.add('hidden');
+                inputContainer.classList.remove('hidden');
+                tagInput.value = '';
+                tagInput.focus();
+                showSuggestions('');
+            });
+
+            // Hide input
+            const hideInput = () => {
+                inputContainer.classList.add('hidden');
+                suggestionsList.classList.add('hidden');
+                addTagBtn.classList.remove('hidden');
+            };
+
+            cancelBtn.addEventListener('click', hideInput);
+
+            // Add tag executing
+            const performAdd = (tag) => {
+                const normalized = tag.trim();
+                if (normalized.length > 0 && !selectedTags.includes(normalized)) {
+                    selectedTags.push(normalized);
+                    renderBadges();
+                }
+                hideInput();
+            };
+
+            confirmBtn.addEventListener('click', () => performAdd(tagInput.value));
+
+            tagInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performAdd(tagInput.value);
+                } else if (e.key === 'Escape') {
+                    hideInput();
+                }
+            });
+
+            // Autocomplete suggestions
+            tagInput.addEventListener('input', (e) => {
+                showSuggestions(e.target.value);
+            });
+
+            function showSuggestions(query) {
+                const lower = query.trim().toLowerCase();
+                const matches = allTags.filter(t => !selectedTags.includes(t) && t.toLowerCase().includes(lower));
+                
+                suggestionsList.innerHTML = '';
+                if (matches.length > 0) {
+                    matches.slice(0, 10).forEach(m => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.textContent = m;
+                        a.classList.add('font-medium');
+                        a.addEventListener('click', () => performAdd(m));
+                        li.appendChild(a);
+                        suggestionsList.appendChild(li);
+                    });
+                    suggestionsList.classList.remove('hidden');
+                } else {
+                    suggestionsList.classList.add('hidden');
+                }
+            }
+
+            // Click outside to cancel
+            document.addEventListener('click', (e) => {
+                if (!addBtnWrapper.contains(e.target)) {
+                    if (!inputContainer.classList.contains('hidden') && tagInput.value.trim() === '') {
+                        hideInput();
+                    }
+                }
+            });
+
+            // Rendering
+            function renderBadges() {
+                // Remove existing
+                tagsWrapper.querySelectorAll('.selected-badge').forEach(e => e.remove());
+                
+                selectedTags.forEach(t => {
+                    const badge = document.createElement('div');
+                    badge.className = 'badge badge-primary badge-lg py-4 px-3 gap-2 font-semibold shadow-sm selected-badge transition-all';
+                    badge.innerHTML = `
+                        <span>${t}</span>
+                        <button type="button" class="btn btn-xs btn-circle btn-ghost text-primary-content hover:bg-error/30 -mr-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    `;
+                    badge.querySelector('button').addEventListener('click', () => {
+                        selectedTags.splice(selectedTags.indexOf(t), 1);
+                        renderBadges();
+                    });
+                    tagsWrapper.insertBefore(badge, addBtnWrapper);
+                });
+                
+                hiddenCsv.value = selectedTags.join(',');
+            }
+
+            // Initial render
+            renderBadges();
+        });
+    </script>
+}

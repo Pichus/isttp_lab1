@@ -8,21 +8,13 @@
     var currentQuery = ViewBag.Query as string;
 }
 
-<div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div class="mb-8">
     <div>
         <h1 class="text-4xl md:text-5xl font-black mb-3 text-base-content">
             Календар заходів
         </h1>
         <p class="text-lg text-base-content/70 max-w-2xl">Знаходьте цікаві події, долучайтесь до студентського життя та не пропустіть жодного івенту від Парламенту.</p>
     </div>
-    
-    @if(User.Identity?.IsAuthenticated == true)
-    {
-        <a asp-action="Create" class="btn btn-primary btn-lg rounded-full shadow-xl shadow-primary/30 shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mr-2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-            Створити Захід
-        </a>
-    }
 </div>
 
 <!-- Filters & Search -->

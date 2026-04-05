@@ -1,18 +1,23 @@
-@model StudentParliamentSystem.Core.Abstractions.PagedResult<StudentParliamentSystem.Core.Aggregates.User.UserPreview>
+@using StudentParliamentSystem.Core.Aggregates.Role
+@using System.Security.Claims
+@model StudentParliamentSystem.Api.Models.Admin.ManageDepartmentViewModel
 
 @{
-    var dept = ViewBag.Department as StudentParliamentSystem.Core.Aggregates.Department.DepartmentPreview;
+    var dept = Model.Department;
     var isSuperAdmin = (bool)ViewBag.IsSuperAdmin;
     ViewData["Title"] = $"Управління: {dept?.Name}";
+
+    var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    Guid.TryParse(userIdStr, out var currentUserId);
 }
 
 <div class="mb-8 flex justify-between items-end flex-wrap gap-4">
     <div>
         <h1 class="text-4xl font-black mb-2 flex items-center gap-3">
             @dept?.Name
-            <span class="badge badge-lg badge-neutral">@Model.TotalCount всього</span>
+            <span class="badge badge-lg badge-neutral">@Model.Users.TotalCount учасників</span>
         </h1>
-        <p class="text-base-content/70">Управління учасниками та керівництвом департаменту.</p>
+        <p class="text-base-content/70">Управління учасниками, керівництвом та заходами департаменту.</p>
     </div>
     <div class="flex gap-2">
         <a asp-action="Departments" class="btn btn-outline">Назад</a>
@@ -35,7 +40,8 @@
     </div>
 }
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Members Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
     <div class="lg:col-span-1 flex flex-col gap-6">
         <div class="card bg-base-100 shadow-xl border border-base-200">
             <div class="card-body">
@@ -97,7 +103,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var user in Model.Items)
+                @foreach (var user in Model.Users.Items)
                 {
                     <tr class="hover">
                         <td>
@@ -126,7 +132,7 @@
                 }
                 </tbody>
             </table>
-            @if (!Model.Items.Any())
+            @if (!Model.Users.Items.Any())
             {
                 <div class="text-center py-10 opacity-60">
                     <p>Учасників не знайдено.</p>
@@ -134,14 +140,14 @@
             }
         </div>
 
-        <!-- Pagination -->
-        @if (Model.TotalPages > 1)
+        <!-- Users Pagination -->
+        @if (Model.Users.TotalPages > 1)
         {
-            <div class="flex flex-col items-center mt-6">
+            <div class="flex flex-col items-center mt-6 gap-3">
                 <div class="join shadow-sm">
-                    @if (Model.CurrentPage > 1)
+                    @if (Model.Users.CurrentPage > 1)
                     {
-                        <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-page="@(Model.CurrentPage - 1)" asp-route-query="@ViewBag.Query"
+                        <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-usersPage="@(Model.Users.CurrentPage - 1)" asp-route-query="@ViewBag.Query"
                            class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">«</a>
                     }
                     else
@@ -150,40 +156,36 @@
                     }
 
                     @{
-                        var pageNumbers = new List<int>();
-                        for (var i = 1; i <= Model.TotalPages; i++)
+                        var uPageNumbers = new List<int>();
+                        for (var i = 1; i <= Model.Users.TotalPages; i++)
                         {
-                            if (i == 1 || i == Model.TotalPages || (i >= Model.CurrentPage - 1 && i <= Model.CurrentPage + 1))
-                            {
-                                pageNumbers.Add(i);
-                            }
+                            if (i == 1 || i == Model.Users.TotalPages || (i >= Model.Users.CurrentPage - 1 && i <= Model.Users.CurrentPage + 1))
+                                uPageNumbers.Add(i);
                         }
-                        int? lastPageNumber = null;
+                        int? uLastPage = null;
                     }
 
-                    @foreach (var p in pageNumbers)
+                    @foreach (var p in uPageNumbers)
                     {
-                        if (lastPageNumber != null && p - lastPageNumber > 1)
+                        if (uLastPage != null && p - uLastPage > 1)
                         {
                             <button class="join-item btn btn-disabled bg-base-100 border-base-200 pointer-events-none">...</button>
                         }
-
-                        if (p == Model.CurrentPage)
+                        if (p == Model.Users.CurrentPage)
                         {
                             <button class="join-item btn btn-active btn-neutral pointer-events-none">@p</button>
                         }
                         else
                         {
-                            <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-page="@p" asp-route-query="@ViewBag.Query"
+                            <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-usersPage="@p" asp-route-query="@ViewBag.Query"
                                class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">@p</a>
                         }
-
-                        lastPageNumber = p;
+                        uLastPage = p;
                     }
 
-                    @if (Model.CurrentPage < Model.TotalPages)
+                    @if (Model.Users.CurrentPage < Model.Users.TotalPages)
                     {
-                        <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-page="@(Model.CurrentPage + 1)" asp-route-query="@ViewBag.Query"
+                        <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-usersPage="@(Model.Users.CurrentPage + 1)" asp-route-query="@ViewBag.Query"
                            class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">»</a>
                     }
                     else
@@ -191,7 +193,152 @@
                         <button class="join-item btn btn-disabled bg-base-100 border-base-200">»</button>
                     }
                 </div>
+                <div class="text-sm text-base-content/70 font-medium">Сторінка @Model.Users.CurrentPage з @Model.Users.TotalPages</div>
             </div>
         }
     </div>
 </div>
+
+<!-- Events Section -->
+<div class="divider my-4"></div>
+
+<div class="mb-6 flex justify-between items-center flex-wrap gap-4">
+    <div>
+        <h2 class="text-3xl font-black mb-1 flex items-center gap-3">
+            Заходи
+            <span class="badge badge-lg badge-neutral">@Model.Events.TotalCount всього</span>
+        </h2>
+        <p class="text-base-content/70 text-sm">Всі заходи, включаючи чернетки. Лише автор або супер-адмін може видаляти.</p>
+    </div>
+    <a asp-controller="Events" asp-action="Create" class="btn btn-primary shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-1"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+        Створити Захід
+    </a>
+</div>
+
+<div class="overflow-x-auto bg-base-100 rounded-3xl shadow-xl border border-base-200 mb-6">
+    <table class="table table-zebra w-full">
+        <thead>
+        <tr class="bg-base-200 text-sm">
+            <th>Назва</th>
+            <th>Дата початку</th>
+            <th>Локація</th>
+            <th>Статус</th>
+            <th>Теги</th>
+            <th>Дії</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var ev in Model.Events.Items)
+        {
+            var isCreator = ev.Id != Guid.Empty; // placeholder — creator info not in EventPreview
+            var canDelete = isSuperAdmin; // full check done server-side on POST
+            
+            <tr class="hover">
+                <td>
+                    <a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="font-bold hover:text-primary transition-colors">
+                        @ev.Title
+                    </a>
+                </td>
+                <td class="text-sm text-base-content/70">@ev.StartTimeUtc.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</td>
+                <td class="text-sm">@ev.Location</td>
+                <td>
+                    @if (ev.StartTimeUtc > DateTime.UtcNow)
+                    {
+                        <span class="badge badge-success badge-sm font-semibold">Майбутній</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-ghost badge-sm font-semibold">Завершений</span>
+                    }
+                </td>
+                <td>
+                    <div class="flex flex-wrap gap-1">
+                        @foreach (var tag in ev.Tags.Take(2))
+                        {
+                            <span class="badge bg-base-200 badge-sm">@tag</span>
+                        }
+                        @if (ev.Tags.Count() > 2)
+                        {
+                            <span class="badge bg-base-200 badge-sm">+@(ev.Tags.Count() - 2)</span>
+                        }
+                    </div>
+                </td>
+                <td>
+                    <div class="flex items-center gap-2">
+                        <a asp-controller="Events" asp-action="Edit" asp-route-id="@ev.Id" class="btn btn-ghost btn-xs">Редагувати</a>
+                        <form asp-controller="Events" asp-action="Delete" asp-route-id="@ev.Id" method="post"
+                              onsubmit="return confirm('Видалити «@ev.Title»? Цю дію неможливо скасувати.');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-error btn-xs">Видалити</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @if (!Model.Events.Items.Any())
+    {
+        <div class="text-center py-10 opacity-60">
+            <p>Заходів не знайдено.</p>
+        </div>
+    }
+</div>
+
+<!-- Events Pagination -->
+@if (Model.Events.TotalPages > 1)
+{
+    <div class="flex flex-col items-center mt-6 mb-8 gap-3">
+        <div class="join shadow-sm">
+            @if (Model.Events.CurrentPage > 1)
+            {
+                <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-eventsPage="@(Model.Events.CurrentPage - 1)" asp-route-query="@ViewBag.Query"
+                   class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">«</a>
+            }
+            else
+            {
+                <button class="join-item btn btn-disabled bg-base-100 border-base-200">«</button>
+            }
+
+            @{
+                var ePageNumbers = new List<int>();
+                for (var i = 1; i <= Model.Events.TotalPages; i++)
+                {
+                    if (i == 1 || i == Model.Events.TotalPages || (i >= Model.Events.CurrentPage - 1 && i <= Model.Events.CurrentPage + 1))
+                        ePageNumbers.Add(i);
+                }
+                int? eLastPage = null;
+            }
+
+            @foreach (var p in ePageNumbers)
+            {
+                if (eLastPage != null && p - eLastPage > 1)
+                {
+                    <button class="join-item btn btn-disabled bg-base-100 border-base-200 pointer-events-none">...</button>
+                }
+                if (p == Model.Events.CurrentPage)
+                {
+                    <button class="join-item btn btn-active btn-neutral pointer-events-none">@p</button>
+                }
+                else
+                {
+                    <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-eventsPage="@p" asp-route-query="@ViewBag.Query"
+                       class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">@p</a>
+                }
+                eLastPage = p;
+            }
+
+            @if (Model.Events.CurrentPage < Model.Events.TotalPages)
+            {
+                <a asp-action="ManageDepartment" asp-route-id="@dept?.Id" asp-route-eventsPage="@(Model.Events.CurrentPage + 1)" asp-route-query="@ViewBag.Query"
+                   class="join-item btn bg-base-100 hover:bg-base-200 border-base-200">»</a>
+            }
+            else
+            {
+                <button class="join-item btn btn-disabled bg-base-100 border-base-200">»</button>
+            }
+        </div>
+        <div class="text-sm text-base-content/70 font-medium">Сторінка @Model.Events.CurrentPage з @Model.Events.TotalPages</div>
+    </div>
+}

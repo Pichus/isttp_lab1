@@ -7,10 +7,12 @@ using StudentParliamentSystem.Api.Configurations;
 using StudentParliamentSystem.Api.Models;
 using StudentParliamentSystem.Core.Abstractions;
 using StudentParliamentSystem.Core.Aggregates.Department;
+using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.UseCases.Departments.Retrieve.All;
 using StudentParliamentSystem.UseCases.Departments.Retrieve.Members;
 using StudentParliamentSystem.UseCases.Departments.Update;
+using StudentParliamentSystem.UseCases.Events.Retrieve.ByDepartment;
 using StudentParliamentSystem.UseCases.Users.Retrieve.All;
 using StudentParliamentSystem.UseCases.Users.Retrieve.ById;
 using StudentParliamentSystem.UseCases.Users.Update;
@@ -50,7 +52,7 @@ public class AdminController : Controller
         return View(result);
     }
     
-    public async Task<IActionResult> ManageDepartment(Guid id, [FromQuery] int page = 1, string? query = null)
+    public async Task<IActionResult> ManageDepartment(Guid id, [FromQuery] int usersPage = 1, [FromQuery] int eventsPage = 1, string? query = null)
     {
         var deptResult = await _bus.InvokeAsync<IEnumerable<DepartmentPreview>>(new RetrieveAllDepartments());
         var dept = deptResult.FirstOrDefault(d => d.Id == id);
@@ -67,13 +69,22 @@ public class AdminController : Controller
 
         var pageSize = 10;
         var usersResult = await _bus.InvokeAsync<PagedResult<UserPreview>>(
-            new RetrieveDepartmentMembers(id, page, pageSize, query));
+            new RetrieveDepartmentMembers(id, usersPage, pageSize, query));
+
+        var eventsResult = await _bus.InvokeAsync<PagedResult<EventPreview>>(
+            new RetrieveDepartmentEvents(id, eventsPage, pageSize, query));
 
         ViewBag.Query = query;
-        ViewBag.Department = dept;
         ViewBag.IsSuperAdmin = isSuperAdmin;
         
-        return View(usersResult);
+        var viewModel = new StudentParliamentSystem.Api.Models.Admin.ManageDepartmentViewModel 
+        {
+            Department = dept,
+            Users = usersResult,
+            Events = eventsResult
+        };
+
+        return View(viewModel);
     }
 
     [HttpPost]
