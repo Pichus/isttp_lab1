@@ -1,106 +1,194 @@
+@model StudentParliamentSystem.Core.Abstractions.PagedResult<StudentParliamentSystem.Core.Aggregates.Event.EventPreview>
+
 @{
-    ViewData["Title"] = "Майбутні Заходи";
+    ViewData["Title"] = "Заходи";
+    var tags = ViewBag.Tags as List<string> ?? new List<string>();
+    var currentTag = ViewBag.Tag as string;
+    var currentSort = ViewBag.SortOrder as string;
+    var currentQuery = ViewBag.Query as string;
 }
 
-<div class="mb-8 flex justify-between items-end flex-wrap gap-4">
+<div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
     <div>
-        <h1 class="text-4xl font-black mb-2">Заходи СПФ</h1>
-        <p class="text-base-content/70">Реєструйся, долучайся до організації або просто відпочивай на наших івентах.</p>
+        <h1 class="text-4xl md:text-5xl font-black mb-3 text-base-content">
+            Календар заходів
+        </h1>
+        <p class="text-lg text-base-content/70 max-w-2xl">Знаходьте цікаві події, долучайтесь до студентського життя та не пропустіть жодного івенту від Парламенту.</p>
     </div>
-    <div class="flex gap-2">
-        <a href="/Events/Archive" class="btn btn-outline btn-sm lg:btn-md">Архів Заходів</a>
-        <a href="/Events/Create" class="btn btn-primary btn-sm lg:btn-md flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-            Створити Івент
+    
+    @if(User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-action="Create" class="btn btn-primary btn-lg rounded-full shadow-xl shadow-primary/30 shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mr-2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            Створити Захід
         </a>
-    </div>
+    }
 </div>
 
-<!-- Search and Filter -->
-<div class="bg-base-100 p-4 rounded-xl shadow-sm border border-base-200 mb-8 flex flex-col sm:flex-row gap-4">
-    <div class="form-control w-full">
-        <div class="input-group flex w-full">
-            <input type="text" placeholder="Пошук заходів..." class="input input-bordered w-full rounded-r-none" />
-            <button class="btn btn-square btn-primary rounded-l-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            </button>
+<!-- Filters & Search -->
+<div class="bg-base-100 shadow-xl rounded-3xl border border-base-200 p-6 mb-8">
+    <form method="get" asp-action="Index" class="flex flex-col lg:flex-row gap-4 items-end">
+        <div class="form-control w-full">
+            <label class="label"><span class="label-text font-bold text-sm">Пошук</span></label>
+            <div class="join w-full">
+                <input type="text" name="query" value="@currentQuery" placeholder="Назва, опис або локація..." class="input input-bordered w-full join-item focus:bg-base-200/50 transition-colors" />
+            </div>
         </div>
-    </div>
-    <select class="select select-bordered w-full sm:w-xs">
-        <option disabled selected>Фільтр за тегом</option>
-        <option>Вечірка</option>
-        <option>Лекція</option>
-        <option>Спорт</option>
-        <option>Кіноперегляд</option>
-    </select>
+
+        <div class="form-control w-full lg:w-64 shrink-0">
+            <label class="label"><span class="label-text font-bold text-sm">Фільтр за тегом</span></label>
+            <select name="tag" class="select select-bordered w-full">
+                <option value="">Всі теги</option>
+                @foreach(var t in tags)
+                {
+                    if (t == currentTag)
+                    {
+                        <option value="@t" selected>@t</option>
+                    }
+                    else
+                    {
+                        <option value="@t">@t</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-control w-full lg:w-48 shrink-0">
+            <label class="label"><span class="label-text font-bold text-sm">Сортування</span></label>
+            <select name="sortOrder" class="select select-bordered w-full">
+                @if (currentSort == "date_desc") { <option value="date_desc" selected>Нові спочатку</option> } else { <option value="date_desc">Нові спочатку</option> }
+                @if (currentSort == "date_asc") { <option value="date_asc" selected>Старі спочатку</option> } else { <option value="date_asc">Старі спочатку</option> }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-neutral w-full lg:w-auto shrink-0 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            Шукати
+        </button>
+        
+        @if (!string.IsNullOrEmpty(currentQuery) || !string.IsNullOrEmpty(currentTag))
+        {
+            <a asp-action="Index" class="btn btn-ghost w-full lg:w-auto shrink-0">Очистити</a>
+        }
+    </form>
 </div>
 
-<!-- Events Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Dummy Event Card -->
-    <div class="card bg-base-100 shadow-xl overflow-hidden border border-base-200 group hover:shadow-2xl transition-all duration-300">
-        <figure class="relative h-48 bg-base-300">
-            <!-- Mock Poster -->
-            <div class="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/30 flex items-center justify-center">
-                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-base-content/30"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
-            </div>
-            <div class="absolute top-2 right-2 flex gap-1">
-                <span class="badge badge-accent shadow-sm font-semibold text-xs py-2">Завтра</span>
-            </div>
-        </figure>
-        <div class="card-body">
-            <h2 class="card-title text-xl font-bold group-hover:text-primary transition-colors">
-                Посвята Першокурсників
-            </h2>
-            <div class="flex items-center gap-1 text-sm text-base-content/60 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                12 жовтня, 18:00
-            </div>
-             <div class="flex items-center gap-1 text-sm text-base-content/60 mb-4">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                Малий актовий зал
-            </div>
-            <p class="text-sm line-clamp-2">Грандіозна подія для всіх студентів першого курсу. Не пропусти!</p>
-            <div class="card-actions justify-between items-center mt-4">
-                <div class="flex gap-1 flex-wrap">
-                    <div class="badge badge-outline text-xs">Вечірка</div>
+<!-- Events List -->
+@if (!Model.Items.Any())
+{
+    <div class="text-center py-24 bg-base-200/30 rounded-3xl border border-base-200 border-dashed">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-base-content/30"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" /></svg>
+        <h3 class="text-2xl font-bold mb-2">Нічого не знайдено</h3>
+        <p class="text-base-content/60">За вашим запитом не знайдено жодного заходу. Спробуйте змінити фільтри.</p>
+    </div>
+}
+else
+{
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        @foreach (var ev in Model.Items)
+        {
+            var isUpcoming = ev.StartTimeUtc > DateTime.UtcNow;
+            var timeColor = isUpcoming ? "text-primary" : "text-base-content/50";
+            
+            <a asp-action="Details" asp-route-id="@ev.Id" class="card bg-base-100 shadow-xl border border-base-200 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
+                <div class="h-2 w-full bg-gradient-to-r from-primary to-secondary opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                
+                <div class="card-body p-6">
+                    <div class="flex justify-between items-start mb-2 gap-4">
+                        <div class="badge badge-neutral shadow-sm whitespace-nowrap">@ev.DepartmentName</div>
+                        @if(isUpcoming)
+                        {
+                            <div class="badge badge-success badge-outline shadow-sm whitespace-nowrap font-semibold">Анонс</div>
+                        }
+                    </div>
+                    
+                    <h2 class="card-title text-2xl font-bold leading-tight group-hover:text-primary transition-colors">@ev.Title</h2>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div class="flex items-center gap-3 text-sm @timeColor font-semibold">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>@ev.StartTimeUtc.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-base-content/70">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                            <span class="truncate" title="@ev.Location">@ev.Location</span>
+                        </div>
+                    </div>
+                    
+                    @if (ev.Tags.Any())
+                    {
+                        <div class="flex flex-wrap gap-2 mt-6">
+                            @foreach (var tag in ev.Tags.Take(3))
+                            {
+                                <span class="badge bg-base-200 text-xs font-semibold py-3 px-3">@tag</span>
+                            }
+                            @if(ev.Tags.Count() > 3)
+                            {
+                                <span class="badge bg-base-200 text-xs font-semibold py-3 px-3">+@(ev.Tags.Count() - 3)</span>
+                            }
+                        </div>
+                    }
                 </div>
-                <a href="/Events/Details/1" class="btn btn-primary btn-sm rounded-full px-6">Детальніше</a>
-            </div>
-        </div>
+            </a>
+        }
     </div>
 
-    <!-- Dummy Event Card 2 -->
-    <div class="card bg-base-100 shadow-xl overflow-hidden border border-base-200 group hover:shadow-2xl transition-all duration-300">
-        <figure class="relative h-48 bg-base-300">
-            <!-- Mock Poster -->
-            <div class="absolute inset-0 bg-gradient-to-tr from-secondary/30 to-accent/30 flex items-center justify-center">
-                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-base-content/30"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
-            </div>
-            <div class="absolute top-2 right-2 flex gap-1">
-                <span class="badge badge-secondary shadow-sm font-semibold text-xs py-2">За тиждень</span>
-            </div>
-        </figure>
-        <div class="card-body">
-            <h2 class="card-title text-xl font-bold group-hover:text-primary transition-colors">
-                Кіноніч: Марвел
-            </h2>
-            <div class="flex items-center gap-1 text-sm text-base-content/60 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                19 жовтня, 21:00
-            </div>
-             <div class="flex items-center gap-1 text-sm text-base-content/60 mb-4">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                Коворкінг простору
-            </div>
-            <p class="text-sm line-clamp-2">Перегляд класики марвел з попкорном. Кількість місць обмежена!</p>
-            <div class="card-actions justify-between items-center mt-4">
-                <div class="flex gap-1 flex-wrap">
-                    <div class="badge badge-outline text-xs">Кіноперегляд</div>
-                    <div class="badge badge-outline text-xs">Відпочинок</div>
-                </div>
-                <a href="/Events/Details/2" class="btn btn-primary btn-sm rounded-full px-6">Детальніше</a>
-            </div>
+    <!-- Pagination from Users.cshtml -->
+    <div class="flex flex-col items-center mt-12 mb-8 gap-4">
+        <div class="join shadow-sm border border-base-200">
+            @if (Model.CurrentPage > 1)
+            {
+                <a asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)" asp-route-query="@currentQuery" asp-route-tag="@currentTag" asp-route-sortOrder="@currentSort"
+                   class="join-item btn bg-base-100 hover:bg-base-200 border-none">«</a>
+            }
+            else
+            {
+                <button class="join-item btn btn-disabled bg-base-100 border-none">«</button>
+            }
+
+            @{
+                var pageNumbers = new List<int>();
+                for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    if (i == 1 || i == Model.TotalPages || (i >= Model.CurrentPage - 1 && i <= Model.CurrentPage + 1))
+                    {
+                        pageNumbers.Add(i);
+                    }
+                }
+                int? lastPageNumber = null;
+            }
+
+            @foreach (var p in pageNumbers)
+            {
+                if (lastPageNumber != null && p - lastPageNumber > 1)
+                {
+                    <button class="join-item btn btn-disabled bg-base-100 border-none pointer-events-none">...</button>
+                }
+
+                if (p == Model.CurrentPage)
+                {
+                    <button class="join-item btn btn-active btn-neutral pointer-events-none border-none">@p</button>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-route-page="@p" asp-route-query="@currentQuery" asp-route-tag="@currentTag" asp-route-sortOrder="@currentSort"
+                       class="join-item btn bg-base-100 hover:bg-base-200 border-none">@p</a>
+                }
+                lastPageNumber = p;
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)" asp-route-query="@currentQuery" asp-route-tag="@currentTag" asp-route-sortOrder="@currentSort"
+                   class="join-item btn bg-base-100 hover:bg-base-200 border-none">»</a>
+            }
+            else
+            {
+                <button class="join-item btn btn-disabled bg-base-100 border-none">»</button>
+            }
+        </div>
+        <div class="text-sm text-base-content/70 font-semibold bg-base-200/50 py-1 px-4 rounded-full">
+            Сторінка @Model.CurrentPage з @Model.TotalPages
         </div>
     </div>
-</div>
+}
