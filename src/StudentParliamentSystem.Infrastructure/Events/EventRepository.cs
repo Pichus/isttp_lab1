@@ -84,4 +84,57 @@ public class EventRepository : IEventRepository
             TotalCount = totalCount
         };
     }
+
+    public async Task<PagedResult<EventPreview>> RetrieveByDepartmentAsync(
+        Guid departmentId,
+        int pageNumber,
+        int pageSize,
+        string? query,
+        CancellationToken cancellationToken = default)
+    {
+        var q = _context.Set<Event>()
+            .Include(e => e.Department)
+            .Include(e => e.Tags)
+            .Where(e => e.DepartmentId == departmentId);
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            var lowerQuery = query.ToLower();
+            q = q.Where(e => e.Title.ToLower().Contains(lowerQuery) || 
+                             e.Description.ToLower().Contains(lowerQuery) ||
+                             e.Location.ToLower().Contains(lowerQuery));
+        }
+
+        q = q.OrderByDescending(e => e.StartTimeUtc);
+
+        var totalCount = await q.CountAsync(cancellationToken);
+
+        var items = await q
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(e => new EventPreview(
+                e.Id,
+                e.Title,
+                e.Location,
+                e.StartTimeUtc,
+                e.EndTimeUtc,
+                e.Department!.Name,
+                e.Tags.Select(t => t.Name)
+            ))
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<EventPreview>
+        {
+            Items = items,
+            CurrentPage = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+    }
+
+    public Task DeleteAsync(Event @event, CancellationToken cancellationToken = default)
+    {
+        _context.Set<Event>().Remove(@event);
+        return Task.CompletedTask;
+    }
 }
