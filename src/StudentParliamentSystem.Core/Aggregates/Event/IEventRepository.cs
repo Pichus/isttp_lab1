@@ -13,4 +13,11 @@ public interface IEventRepository
         string? tag, 
         string? sortOrder, 
         CancellationToken cancellationToken = default);
+    Task<PagedResult<EventPreview>> RetrieveByDepartmentAsync(
+        Guid departmentId,
+        int pageNumber,
+        int pageSize,
+        string? query,
+        CancellationToken cancellationToken = default);
+    Task DeleteAsync(Event @event, CancellationToken cancellationToken = default);
 }
