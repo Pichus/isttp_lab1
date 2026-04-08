@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Панель керування";
     var isSuperAdmin = User.IsInRole(nameof(RoleName.SuperAdmin));
+    var canManageCoworking = isSuperAdmin || User.IsInRole(nameof(RoleName.CoworkingDepartmentMember));
     var firstName = User.FindFirstValue(ClaimTypes.GivenName) ?? User.Identity?.Name ?? "Адміністратор";
 }
 
@@ -65,5 +66,18 @@
                 <p class="text-base-content/60 text-sm">Переглянути каталог опублікованих подій.</p>
             </div>
         </a>
+
+        @if (canManageCoworking)
+        {
+            <a asp-action="CoworkingManagement" class="card bg-base-100 border border-base-200 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all group">
+                <div class="card-body">
+                    <div class="w-12 h-12 rounded-2xl bg-warning/10 text-warning flex items-center justify-center mb-4 group-hover:bg-warning group-hover:text-warning-content transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H21M4.5 21H3m1.5 0H9m-4.5 0V7.5A2.25 2.25 0 016.75 5.25h10.5A2.25 2.25 0 0119.5 7.5V21" /></svg>
+                    </div>
+                    <h2 class="card-title font-bold text-xl">Коворкінг</h2>
+                    <p class="text-base-content/60 text-sm">Модерація запитів на бронювання простору.</p>
+                </div>
+            </a>
+        }
     </div>
 </div>

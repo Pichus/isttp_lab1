@@ -1,0 +1,90 @@
+@model StudentParliamentSystem.Core.Aggregates.Event.Event
+@{
+    ViewData["Title"] = "Бронювання Коворкінгу";
+    var events = ViewBag.Events as IEnumerable<StudentParliamentSystem.Core.Aggregates.Event.Event> ?? new List<StudentParliamentSystem.Core.Aggregates.Event.Event>();
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-4xl font-black mb-2">Запит на бронювання</h1>
+        <p class="text-base-content/70">Виберіть захід та уточніть час використання простору.</p>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-error mb-6 shadow-sm">
+            <span>@TempData["ErrorMessage"]</span>
+        </div>
+    }
+
+    <div class="bg-base-100 shadow-xl rounded-3xl border border-base-200 p-8">
+        <form asp-action="RequestBooking" method="post" class="space-y-6">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold">Захід <span class="text-error">*</span></span>
+                </label>
+                <select name="eventId" id="EventSelect" class="select select-bordered w-full bg-base-200/50" required>
+                    <option value="" disabled selected>Оберіть ваш захід</option>
+                    @foreach (var ev in events)
+                    {
+                        <option value="@ev.Id" 
+                                data-start="@ev.StartTimeUtc.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")" 
+                                data-end="@ev.EndTimeUtc.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")">
+                            @ev.Title (@ev.StartTimeUtc.ToLocalTime().ToString("dd.MM"))
+                        </option>
+                    }
+                </select>
+                @if (!events.Any())
+                {
+                    <label class="label">
+                        <span class="label-text-alt text-error">У вас немає створених заходів.</span>
+                    </label>
+                }
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold">Початок бронювання</span>
+                    </label>
+                    <input type="datetime-local" name="startTime" id="StartTimeInput" class="input input-bordered w-full bg-base-200/50" required />
+                </div>
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold">Кінець бронювання</span>
+                    </label>
+                    <input type="datetime-local" name="endTime" id="EndTimeInput" class="input input-bordered w-full bg-base-200/50" required />
+                </div>
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold">Примітки (за бажанням)</span>
+                </label>
+                <textarea name="notes" class="textarea textarea-bordered h-24 bg-base-200/50" placeholder="Додаткова інформація для модератора..."></textarea>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="flex justify-between items-center">
+                 <a asp-action="Index" class="btn btn-ghost px-6">Скасувати</a>
+                 <button type="submit" class="btn btn-primary btn-lg rounded-full px-10 shadow-lg shadow-primary/30" @(events.Any() ? "" : "disabled")>Надіслати запит</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('EventSelect').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const startTime = selectedOption.getAttribute('data-start');
+            const endTime = selectedOption.getAttribute('data-end');
+            
+            if (startTime) document.getElementById('StartTimeInput').value = startTime;
+            if (endTime) document.getElementById('EndTimeInput').value = endTime;
+        });
+    </script>
+}

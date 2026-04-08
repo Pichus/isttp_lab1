@@ -1,0 +1,113 @@
+@model StudentParliamentSystem.Core.Abstractions.PagedResult<StudentParliamentSystem.Core.Aggregates.CoworkingBooking.CoworkingBookingPreview>
+@{
+    ViewData["Title"] = "Керування Коворкінгом";
+    var currentStatus = ViewBag.Status as string;
+}
+
+<div class="mb-8">
+    <h1 class="text-4xl font-black mb-2">Керування Коворкінгом</h1>
+    <p class="text-base-content/70">Модерація запитів на бронювання простору.</p>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success mb-6 rounded-2xl shadow-sm">
+        <span>@TempData["SuccessMessage"]</span>
+    </div>
+}
+
+<div class="bg-base-100 shadow-xl rounded-3xl border border-base-200 p-6 mb-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex flex-wrap gap-2">
+            <a asp-action="CoworkingManagement" asp-route-status="" class="btn btn-sm btn-ghost @(string.IsNullOrEmpty(currentStatus) ? "btn-active" : "")">Всі</a>
+            <a asp-action="CoworkingManagement" asp-route-status="Pending" class="btn btn-sm btn-ghost @(currentStatus == "Pending" ? "btn-active" : "")">Очікують</a>
+            <a asp-action="CoworkingManagement" asp-route-status="Approved" class="btn btn-sm btn-ghost @(currentStatus == "Approved" ? "btn-active" : "")">Підтверджені</a>
+            <a asp-action="CoworkingManagement" asp-route-status="Rejected" class="btn btn-sm btn-ghost @(currentStatus == "Rejected" ? "btn-active" : "")">Відхилені</a>
+        </div>
+    </div>
+</div>
+
+<div class="overflow-x-auto bg-base-100 rounded-3xl shadow-xl border border-base-200">
+    <table class="table table-zebra w-full">
+        <thead>
+            <tr class="bg-base-200">
+                <th>Захід / Організатор</th>
+                <th>Дата та Час</th>
+                <th>Статус</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model.Items)
+            {
+                <tr>
+                    <td>
+                        <div class="font-bold">@booking.EventTitle</div>
+                        <div class="text-xs opacity-60">@booking.RequesterName</div>
+                        @if (!string.IsNullOrEmpty(booking.Notes))
+                        {
+                            <div class="mt-1 p-2 bg-base-200 rounded text-xs italic">
+                                "@booking.Notes"
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <div class="text-sm">@booking.StartTime.ToLocalTime().ToString("dd MMM, HH:mm")</div>
+                        <div class="text-sm opacity-60">@booking.EndTime.ToLocalTime().ToString("dd MMM, HH:mm")</div>
+                    </td>
+                    <td>
+                        <span class="badge @(booking.StatusName switch { "Approved" => "badge-success", "Rejected" => "badge-error", _ => "badge-warning" }) badge-sm font-bold">
+                            @booking.StatusName
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex gap-2">
+                            @if (booking.StatusName == "Pending")
+                            {
+                                <form asp-action="ApproveBooking" asp-route-id="@booking.Id" method="post">
+                                    <button type="submit" class="btn btn-success btn-xs">Підтвердити</button>
+                                </form>
+                                <button class="btn btn-error btn-xs" onclick="document.getElementById('reject-modal-@booking.Id').showModal()">Відхилити</button>
+
+                                <dialog id="reject-modal-@booking.Id" class="modal">
+                                    <div class="modal-box">
+                                        <h3 class="font-bold text-lg">Відхилити бронювання?</h3>
+                                        <form asp-action="RejectBooking" asp-route-id="@booking.Id" method="post">
+                                            <div class="form-control mt-4">
+                                                <label class="label"><span class="label-text">Причина (опціонально)</span></label>
+                                                <textarea name="notes" class="textarea textarea-bordered h-24" placeholder="Напишіть причину відмови..."></textarea>
+                                            </div>
+                                            <div class="modal-action">
+                                                <button type="button" class="btn" onclick="this.closest('dialog').close()">Скасувати</button>
+                                                <button type="submit" class="btn btn-error">Відхилити</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </dialog>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Items.Any())
+    {
+        <div class="text-center py-10 opacity-60">
+            <p>Запитів не знайдено.</p>
+        </div>
+    }
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <div class="flex flex-col items-center mt-6 gap-3">
+        <div class="join shadow-sm">
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                <a asp-action="CoworkingManagement" asp-route-page="@i" asp-route-status="@currentStatus"
+                   class="join-item btn btn-sm @(i == Model.CurrentPage ? "btn-active" : "")">@i</a>
+            }
+        </div>
+    </div>
+}

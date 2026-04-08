@@ -2908,6 +2908,9 @@
   .min-w-0 {
     min-width: calc(var(--spacing) * 0);
   }
+  .min-w-\[100px\] {
+    min-width: 100px;
+  }
   .min-w-\[240px\] {
     min-width: 240px;
   }
@@ -3042,6 +3045,13 @@
       margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
+  .space-y-4 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
   .space-y-6 {
     :where(& > :not(:last-child)) {
       --tw-space-y-reverse: 0;
@@ -3165,6 +3175,10 @@
   .border-t {
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
+  }
+  .border-r {
+    border-right-style: var(--tw-border-style);
+    border-right-width: 1px;
   }
   .border-b {
     border-bottom-style: var(--tw-border-style);
@@ -3607,6 +3621,9 @@
   }
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
+  }
+  .pr-4 {
+    padding-right: calc(var(--spacing) * 4);
   }
   .pr-16 {
     padding-right: calc(var(--spacing) * 16);
@@ -4125,6 +4142,12 @@
       --badge-fg: var(--color-success-content);
     }
   }
+  .badge-warning {
+    @layer daisyui.l1.l2 {
+      --badge-color: var(--color-warning);
+      --badge-fg: var(--color-warning-content);
+    }
+  }
   .btn-accent {
     @layer daisyui.l1.l2.l3 {
       --btn-color: var(--color-accent);
@@ -4264,6 +4287,13 @@
       }
     }
   }
+  .group-hover\:bg-warning {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        background-color: var(--color-warning);
+      }
+    }
+  }
   .group-hover\:text-accent-content {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
@@ -4289,6 +4319,13 @@
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
         color: var(--color-secondary-content);
+      }
+    }
+  }
+  .group-hover\:text-warning-content {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        color: var(--color-warning-content);
       }
     }
   }
@@ -4343,6 +4380,16 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-base-200);
+      }
+    }
+  }
+  .hover\:bg-base-200\/50 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-base-200);
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, var(--color-base-200) 50%, transparent);
+        }
       }
     }
   }

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+
 using FluentResults;
 
 using Microsoft.AspNetCore.Authorization;
@@ -6,10 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using StudentParliamentSystem.Api.Configurations;
 using StudentParliamentSystem.Api.Models;
 using StudentParliamentSystem.Core.Abstractions;
+using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Core.Aggregates.User;
+using StudentParliamentSystem.UseCases.CoworkingBookings.Approve;
+using StudentParliamentSystem.UseCases.CoworkingBookings.Reject;
+using StudentParliamentSystem.UseCases.CoworkingBookings.Retrieve;
 using StudentParliamentSystem.UseCases.Departments.Retrieve.All;
 using StudentParliamentSystem.UseCases.Departments.Retrieve.Members;
 using StudentParliamentSystem.UseCases.Departments.Update;
@@ -178,6 +184,53 @@ public class AdminController : Controller
         }
 
         return RedirectToAction(nameof(Users));
+    }
+
+    [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageCoworkingBookings)]
+    public async Task<IActionResult> CoworkingManagement([FromQuery] int page = 1, string? status = null)
+    {
+        var pageSize = 10;
+        var result = await _bus.InvokeAsync<PagedResult<CoworkingBookingPreview>>(new RetrieveCoworkingBookings(page, pageSize, status));
+
+        ViewBag.Status = status;
+
+        return View(result);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageCoworkingBookings)]
+    public async Task<IActionResult> ApproveBooking(Guid id)
+    {
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+        var result = await _bus.InvokeAsync<Result>(new ApproveCoworkingBooking(id, userId));
+
+        if (result.IsFailed)
+            TempData["ErrorMessage"] = result.Errors.FirstOrDefault()?.Message ?? "Failed to approve booking";
+        else
+            TempData["SuccessMessage"] = "Booking approved successfully";
+
+        return RedirectToAction(nameof(CoworkingManagement));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageCoworkingBookings)]
+    public async Task<IActionResult> RejectBooking(Guid id, string? notes)
+    {
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+        var result = await _bus.InvokeAsync<Result>(new RejectCoworkingBooking(id, userId, notes));
+
+        if (result.IsFailed)
+            TempData["ErrorMessage"] = result.Errors.FirstOrDefault()?.Message ?? "Failed to reject booking";
+        else
+            TempData["SuccessMessage"] = "Booking rejected";
+
+        return RedirectToAction(nameof(CoworkingManagement));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

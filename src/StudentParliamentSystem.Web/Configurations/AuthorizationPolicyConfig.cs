@@ -35,6 +35,10 @@ public static class AuthorizationPolicyConfig
         // Manage a specific department (enforced additionally in controller by dept ownership)
         authorizationOptions.AddPolicy(AuthorizationPolicyNameConstants.CanManageDepartment,
             policy => policy.RequireRole(DepartmentRoles));
+
+        // Manage coworking bookings (Coworking dept members or SuperAdmin)
+        authorizationOptions.AddPolicy(AuthorizationPolicyNameConstants.CanManageCoworkingBookings,
+            policy => policy.RequireRole(nameof(RoleName.CoworkingDepartmentMember), nameof(RoleName.SuperAdmin)));
     }
 }
 
@@ -48,4 +52,7 @@ public static class AuthorizationPolicyNameConstants
 
     /// <summary>Manage a specific department — any department role; controller enforces ownership.</summary>
     public const string CanManageDepartment = "CanManageDepartment";
+
+    /// <summary>Manage coworking bookings — Coworking department members or SuperAdmin.</summary>
+    public const string CanManageCoworkingBookings = "CanManageCoworkingBookings";
 }
