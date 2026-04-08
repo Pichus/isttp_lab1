@@ -137,4 +137,12 @@ public class EventRepository : IEventRepository
         _context.Set<Event>().Remove(@event);
         return Task.CompletedTask;
     }
+
+    public async Task<IEnumerable<Event>> GetByCreatedByUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Set<Event>()
+            .Where(e => e.CreatedByUserId == userId)
+            .OrderByDescending(e => e.StartTimeUtc)
+            .ToListAsync(cancellationToken);
+    }
 }

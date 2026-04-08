@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
+using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Core.Aggregates.User;
@@ -16,6 +17,8 @@ public class ApplicationDatabaseContext : DbContext
     public DbSet<User> Users { get; init; }
     public DbSet<Role> Roles { get; init; }
     public DbSet<Department> Departments { get; init; }
+    public DbSet<CoworkingBooking> CoworkingBookings { get; init; }
+    public DbSet<CoworkingBookingStatus> CoworkingBookingStatuses { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

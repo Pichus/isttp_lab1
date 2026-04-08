@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Core.Aggregates.User;
+using StudentParliamentSystem.Infrastructure.CoworkingBookings;
 using StudentParliamentSystem.Infrastructure.Data;
 using StudentParliamentSystem.Infrastructure.Roles;
 using StudentParliamentSystem.Infrastructure.Users;
@@ -68,6 +69,7 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<StudentParliamentSystem.Core.Aggregates.Department.IDepartmentRepository, StudentParliamentSystem.Infrastructure.Departments.DepartmentRepository>();
         services.AddScoped<StudentParliamentSystem.Core.Aggregates.Event.IEventRepository, StudentParliamentSystem.Infrastructure.Events.EventRepository>();
         services.AddScoped<StudentParliamentSystem.Core.Aggregates.Event.IEventTagRepository, StudentParliamentSystem.Infrastructure.Events.EventTagRepository>();
+        services.AddScoped<StudentParliamentSystem.Core.Aggregates.CoworkingBooking.ICoworkingBookingRepository, CoworkingBookingRepository>();
     }
 
     private static void RegisterServices(IServiceCollection services)
