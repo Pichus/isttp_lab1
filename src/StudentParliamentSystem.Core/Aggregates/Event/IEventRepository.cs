@@ -20,4 +20,5 @@ public interface IEventRepository
         string? query,
         CancellationToken cancellationToken = default);
     Task DeleteAsync(Event @event, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Event>> GetByCreatedByUserAsync(Guid userId, CancellationToken cancellationToken = default);
 }
