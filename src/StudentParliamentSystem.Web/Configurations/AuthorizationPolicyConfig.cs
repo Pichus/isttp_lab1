@@ -6,14 +6,46 @@ namespace StudentParliamentSystem.Api.Configurations;
 
 public static class AuthorizationPolicyConfig
 {
+    // All roles that can access the admin panel (parliament members + heads + superadmin)
+    private static readonly string[] DepartmentRoles =
+    [
+        nameof(RoleName.SuperAdmin),
+        nameof(RoleName.StudentParliamentMember),
+        nameof(RoleName.HeadOfCulturalDepartment),
+        nameof(RoleName.HeadOfScienceDepartment),
+        nameof(RoleName.HeadOfCoworkingDepartment),
+        nameof(RoleName.HeadOfInformationDepartment),
+        nameof(RoleName.HeadOfDepartment),
+        nameof(RoleName.CulturalDepartmentMember),
+        nameof(RoleName.ScienceDepartmentMember),
+        nameof(RoleName.CoworkingDepartmentMember),
+        nameof(RoleName.InformationDepartmentMember),
+    ];
+
     public static void AddAuthorizationPolicies(this AuthorizationOptions authorizationOptions)
     {
+        // Full admin panel access (SuperAdmin only: Users, full Departments list)
         authorizationOptions.AddPolicy(AuthorizationPolicyNameConstants.CanAccessAdminPanel,
             policy => policy.RequireRole(nameof(RoleName.SuperAdmin)));
+
+        // Admin panel entry (any parliament/department role OR superadmin)
+        authorizationOptions.AddPolicy(AuthorizationPolicyNameConstants.CanAccessAdminPanelBase,
+            policy => policy.RequireRole(DepartmentRoles));
+
+        // Manage a specific department (enforced additionally in controller by dept ownership)
+        authorizationOptions.AddPolicy(AuthorizationPolicyNameConstants.CanManageDepartment,
+            policy => policy.RequireRole(DepartmentRoles));
     }
 }
 
 public static class AuthorizationPolicyNameConstants
 {
+    /// <summary>Full admin panel — SuperAdmin only (Users, all Departments).</summary>
     public const string CanAccessAdminPanel = "CanAccessAdminPanel";
+
+    /// <summary>Admin panel entry point — any parliament/department member or SuperAdmin.</summary>
+    public const string CanAccessAdminPanelBase = "CanAccessAdminPanelBase";
+
+    /// <summary>Manage a specific department — any department role; controller enforces ownership.</summary>
+    public const string CanManageDepartment = "CanManageDepartment";
 }
