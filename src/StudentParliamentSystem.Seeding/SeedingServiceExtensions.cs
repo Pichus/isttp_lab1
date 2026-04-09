@@ -40,5 +40,6 @@ public static class SeedingServiceExtensions
         services.AddScoped<IRoleSeeder, RoleSeeder>();
         services.AddScoped<IInitialAdminUserSeeder, InitialAdminUserSeeder>();
         services.AddScoped<IDepartmentSeeder, DepartmentSeeder>();
+        services.AddScoped<ICoworkingBookingStatusSeeder, CoworkingBookingStatusSeeder>();
     }
 }
