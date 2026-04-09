@@ -9,4 +9,5 @@ public interface ICoworkingBookingRepository
     Task<PagedResult<CoworkingBookingPreview>> GetAllAsync(int pageNumber, int pageSize, string? statusFilter, CancellationToken cancellationToken = default);
     Task<IEnumerable<CoworkingBookingSlot>> GetScheduleAsync(CancellationToken cancellationToken = default);
     Task<CoworkingBookingStatus?> GetStatusByNameAsync(string name, CancellationToken cancellationToken = default);
+    Task<IEnumerable<CoworkingBooking>> GetApprovedBookingsWithinSpanAsync(DateTime startUtc, DateTime endUtc, CancellationToken cancellationToken = default);
 }
