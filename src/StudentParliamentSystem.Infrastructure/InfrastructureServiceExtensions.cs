@@ -70,6 +70,8 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<StudentParliamentSystem.Core.Aggregates.Event.IEventRepository, StudentParliamentSystem.Infrastructure.Events.EventRepository>();
         services.AddScoped<StudentParliamentSystem.Core.Aggregates.Event.IEventTagRepository, StudentParliamentSystem.Infrastructure.Events.EventTagRepository>();
         services.AddScoped<StudentParliamentSystem.Core.Aggregates.CoworkingBooking.ICoworkingBookingRepository, CoworkingBookingRepository>();
+        services.AddScoped<StudentParliamentSystem.Core.Aggregates.Statistics.IStatisticsRepository, StudentParliamentSystem.Infrastructure.Statistics.StatisticsRepository>();
+        services.AddScoped<StudentParliamentSystem.UseCases.CoworkingBookings.GenerateDocument.ICoworkingDocumentGenerator, StudentParliamentSystem.Infrastructure.CoworkingBookings.CoworkingDocumentGenerator>();
     }
 
     private static void RegisterServices(IServiceCollection services)

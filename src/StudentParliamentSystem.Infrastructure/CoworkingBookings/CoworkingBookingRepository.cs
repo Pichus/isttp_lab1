@@ -91,4 +91,21 @@ public class CoworkingBookingRepository : ICoworkingBookingRepository
         return await _context.Set<CoworkingBookingStatus>()
             .FirstOrDefaultAsync(s => s.Name == name, cancellationToken);
     }
+
+    public async Task<IEnumerable<CoworkingBooking>> GetApprovedBookingsWithinSpanAsync(DateTime startUtc, DateTime endUtc, CancellationToken cancellationToken = default)
+    {
+        return await _context.Set<CoworkingBooking>()
+            .Include(b => b.Status)
+            .Include(b => b.Event)
+                .ThenInclude(e => e.CreatedByUser)
+            .Include(b => b.Event)
+                .ThenInclude(e => e.EventOrganizers)
+                    .ThenInclude(eo => eo.User)
+            .Include(b => b.SpaceManager)
+            .Where(b => b.Status.Name == "Approved" && 
+                        b.StartTimeUtc >= startUtc &&
+                        b.EndTimeUtc <= endUtc)
+            .OrderBy(b => b.StartTimeUtc)
+            .ToListAsync(cancellationToken);
+    }
 }

@@ -55,6 +55,13 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<User>> GetByIdsAsync(IEnumerable<Guid> userIds)
+    {
+        return await _databaseContext.Users
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync();
+    }
+
     public async Task<PagedResult<UserPreview>> RetrieveAllAsync(int pageNumber, int pageSize = 10,
         string? query = null)
     {
