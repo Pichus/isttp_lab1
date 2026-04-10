@@ -24,6 +24,23 @@
             <a asp-action="CoworkingManagement" asp-route-status="Approved" class="btn btn-sm btn-ghost @(currentStatus == "Approved" ? "btn-active" : "")">Підтверджені</a>
             <a asp-action="CoworkingManagement" asp-route-status="Rejected" class="btn btn-sm btn-ghost @(currentStatus == "Rejected" ? "btn-active" : "")">Відхилені</a>
         </div>
+        
+        <form asp-action="GenerateReport" method="post" class="flex flex-wrap gap-2 items-end">
+            <div class="form-control">
+                <label class="label p-1"><span class="label-text text-xs">Початок</span></label>
+                <input type="date" name="reportStart" class="input input-bordered input-sm" required value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="form-control">
+                <label class="label p-1"><span class="label-text text-xs">Кінець</span></label>
+                <input type="date" name="reportEnd" class="input input-bordered input-sm" required value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm h-[2rem] min-h-[2rem]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Згенерувати Подання
+            </button>
+        </form>
     </div>
 </div>
 
@@ -64,9 +81,33 @@
                         <div class="flex gap-2">
                             @if (booking.StatusName == "Pending")
                             {
-                                <form asp-action="ApproveBooking" asp-route-id="@booking.Id" method="post">
-                                    <button type="submit" class="btn btn-success btn-xs">Підтвердити</button>
-                                </form>
+                                <button class="btn btn-success btn-xs" onclick="document.getElementById('approve-modal-@booking.Id').showModal()">Підтвердити</button>
+
+                                <dialog id="approve-modal-@booking.Id" class="modal">
+                                    <div class="modal-box overflow-visible">
+                                        <h3 class="font-bold text-lg">Підтвердити бронювання</h3>
+                                        <form asp-action="ApproveBooking" asp-route-id="@booking.Id" method="post">
+                                            <div class="form-control mt-4">
+                                                <label class="label"><span class="label-text font-semibold">Оберіть адміністратора</span></label>
+                                                <select name="managerId" class="select select-bordered w-full" required>
+                                                    <option disabled selected value="">Оберіть...</option>
+                                                    @if(ViewBag.CoworkingMembers != null)
+                                                    {
+                                                        foreach(var member in ViewBag.CoworkingMembers)
+                                                        {
+                                                            <option value="@member.Id">@member.FirstName @member.LastName (@member.Email)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="modal-action">
+                                                <button type="button" class="btn" onclick="this.closest('dialog').close()">Скасувати</button>
+                                                <button type="submit" class="btn btn-success">Підтвердити</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </dialog>
+
                                 <button class="btn btn-error btn-xs" onclick="document.getElementById('reject-modal-@booking.Id').showModal()">Відхилити</button>
 
                                 <dialog id="reject-modal-@booking.Id" class="modal">

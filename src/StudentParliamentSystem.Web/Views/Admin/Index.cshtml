@@ -80,4 +80,18 @@
             </a>
         }
     </div>
+
+    @if (isSuperAdmin)
+    {
+        <div class="mt-8 flex gap-4 w-full">
+            <form asp-action="SeedFakeData" method="post" class="w-full sm:w-auto">
+                <button type="submit" class="btn btn-warning shadow-lg w-full sm:w-auto" onclick="return confirm('Ця дія створить тестові дані. Продовжити?');">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Заповнити тестовими даними (Seed)
+                </button>
+            </form>
+        </div>
+    }
 </div>

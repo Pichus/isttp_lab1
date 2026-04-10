@@ -1,5 +1,7 @@
+@using StudentParliamentSystem.Core.Aggregates.Role
 @{
     Layout = "_Layout";
+    var canManageCoworking = User.IsInRole(nameof(RoleName.SuperAdmin)) || User.IsInRole(nameof(RoleName.CoworkingDepartmentMember));
 }
 
 <div class="flex flex-col lg:flex-row gap-6 md:gap-8">
@@ -11,49 +13,87 @@
                     <span class="text-xs font-bold uppercase tracking-wider">Адміністрація</span>
                 </li>
                 <li>
-                    <a asp-controller="Admin" asp-action="Users" class="hover:bg-base-200 flex gap-3 text-base @(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active font-semibold shadow-sm" : "")">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-</svg>
+                    <a asp-controller="Admin" asp-action="Users"
+                       class="hover:bg-base-200 flex gap-3 text-base @(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active font-semibold shadow-sm" : "")">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                             stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                        </svg>
 
                         Користувачі
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="Admin" asp-action="Departments" class="hover:bg-base-200 flex gap-3 text-base @(ViewContext.RouteData.Values["Action"]?.ToString() == "Departments" ? "active font-semibold shadow-sm" : "")">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building" viewBox="0 0 16 16">
-                            <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
-                            <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
+                    <a asp-controller="Admin" asp-action="Departments"
+                       class="hover:bg-base-200 flex gap-3 text-base @(ViewContext.RouteData.Values["Action"]?.ToString() == "Departments" ? "active font-semibold shadow-sm" : "")">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-building" viewBox="0 0 16 16">
+                            <path
+                                d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
+                            <path
+                                d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
                         </svg>
 
                         Департаменти
                     </a>
                 </li>
-                <!-- Add more menu items here in the future -->
+                @if (canManageCoworking)
+                {
+                    <li>
+                        <a asp-controller="Admin" asp-action="CoworkingManagement"
+                           class="hover:bg-base-200 flex gap-3 text-base @(ViewContext.RouteData.Values["Action"]?.ToString() == "CoworkingManagement" ? "active font-semibold shadow-sm" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H21M4.5 21H3m1.5 0H9m-4.5 0V7.5A2.25 2.25 0 016.75 5.25h10.5A2.25 2.25 0 0119.5 7.5V21"/>
+                            </svg>
+                            Коворкінг
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
-        
+
         <!-- Mobile Navigation Dropdown -->
         <div class="lg:hidden mb-6">
             <div class="dropdown w-full">
-                <label tabindex="0" class="btn btn-outline w-full justify-between bg-base-100 shadow-sm border-base-200 rounded-2xl">
+                <label tabindex="0"
+                       class="btn btn-outline w-full justify-between bg-base-100 shadow-sm border-base-200 rounded-2xl">
                     <span class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                         d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         Меню Адміністрації
                     </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
                 </label>
-                <ul tabindex="0" class="menu dropdown-content z-[1] p-4 shadow-xl bg-base-100 rounded-box border border-base-200 w-full mt-2">
+                <ul tabindex="0"
+                    class="menu dropdown-content z-[1] p-4 shadow-xl bg-base-100 rounded-box border border-base-200 w-full mt-2">
                     <li>
-                        <a asp-controller="Admin" asp-action="Users" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active" : "")">
+                        <a asp-controller="Admin" asp-action="Users"
+                           class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active" : "")">
                             Користувачі
                         </a>
                     </li>
                     <li>
-                        <a asp-controller="Admin" asp-action="Departments" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Departments" ? "active" : "")">
+                        <a asp-controller="Admin" asp-action="Departments"
+                           class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Departments" ? "active" : "")">
                             Департаменти
                         </a>
                     </li>
+                    @if (canManageCoworking)
+                    {
+                        <li>
+                            <a asp-controller="Admin" asp-action="CoworkingManagement"
+                               class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "CoworkingManagement" ? "active" : "")">
+                                Коворкінг
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
@@ -66,5 +106,5 @@
 </div>
 
 @section Scripts {
-    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", false)
 }
