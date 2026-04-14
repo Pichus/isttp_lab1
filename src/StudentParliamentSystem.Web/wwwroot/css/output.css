@@ -3872,6 +3872,16 @@
       }
     }
   }
+  .progress-error {
+    @layer daisyui.l1.l2 {
+      color: var(--color-error);
+    }
+  }
+  .progress-primary {
+    @layer daisyui.l1.l2 {
+      color: var(--color-primary);
+    }
+  }
   .progress-secondary {
     @layer daisyui.l1.l2 {
       color: var(--color-secondary);

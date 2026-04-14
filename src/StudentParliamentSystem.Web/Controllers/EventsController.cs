@@ -10,6 +10,7 @@ using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.UseCases.Departments.Retrieve.ForUser;
 using StudentParliamentSystem.UseCases.Events.Create;
+using StudentParliamentSystem.UseCases.Events.Register;
 using StudentParliamentSystem.UseCases.Events.Retrieve.ById;
 using StudentParliamentSystem.UseCases.Events.Retrieve.Published;
 using StudentParliamentSystem.UseCases.Events.Retrieve.Tags;
@@ -55,7 +56,61 @@ public class EventsController : Controller
         if (result.IsFailed)
             return NotFound();
 
-        return View(result.Value);
+        var @event = result.Value;
+
+        // Pass registration state for authenticated users
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Guid.TryParse(userIdStr, out var currentUserId))
+        {
+            var eventWithRegs = await _bus.InvokeAsync<Result<Event>>(new RetrieveEventByIdWithRegistrations(id));
+            if (eventWithRegs.IsSuccess)
+            {
+                @event = eventWithRegs.Value;
+                ViewBag.IsRegistered = @event.Registrations?.Any(r => r.UserId == currentUserId) ?? false;
+                ViewBag.RegistrationCount = @event.Registrations?.Count ?? 0;
+            }
+        }
+        else
+        {
+            ViewBag.IsRegistered = false;
+            ViewBag.RegistrationCount = 0;
+        }
+
+        return View(@event);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(Guid id)
+    {
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+        var result = await _bus.InvokeAsync<Result>(new RegisterForEvent(id, userId));
+
+        if (result.IsFailed)
+            TempData["ErrorMessage"] = result.Errors.FirstOrDefault()?.Message ?? "Registration failed.";
+        else
+            TempData["SuccessMessage"] = "Ви успішно зареєструвались на захід!";
+
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CancelRegistration(Guid id)
+    {
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+        var result = await _bus.InvokeAsync<Result>(new CancelEventRegistration(id, userId));
+
+        if (result.IsFailed)
+            TempData["ErrorMessage"] = result.Errors.FirstOrDefault()?.Message ?? "Cancellation failed.";
+        else
+            TempData["SuccessMessage"] = "Реєстрацію скасовано.";
+
+        return RedirectToAction(nameof(Details), new { id });
     }
 
     [HttpGet]
