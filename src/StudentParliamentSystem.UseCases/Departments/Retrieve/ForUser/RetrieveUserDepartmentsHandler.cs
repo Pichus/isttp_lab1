@@ -1,6 +1,7 @@
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.UseCases.Users.Retrieve.ById;
+
 using Wolverine;
 
 namespace StudentParliamentSystem.UseCases.Departments.Retrieve.ForUser;
@@ -19,7 +20,7 @@ public class RetrieveUserDepartmentsHandler
     public async Task<IEnumerable<DepartmentPreview>> HandleAsync(RetrieveUserDepartments query)
     {
         var userResult = await _bus.InvokeAsync<FluentResults.Result<StudentParliamentSystem.Core.Aggregates.User.User>>(new RetrieveUserById(query.UserId));
-        
+
         var allDepartments = await _departmentRepository.RetrieveAllPreviewsAsync();
 
         if (userResult.IsFailed)
@@ -30,7 +31,7 @@ public class RetrieveUserDepartmentsHandler
         var user = userResult.Value;
         var userRoleNames = user.Roles.Select(r => r.Name).ToHashSet();
 
-        // If SuperAdmin, can post for any department
+
         if (userRoleNames.Contains(RoleName.SuperAdmin))
         {
             return allDepartments;
@@ -41,7 +42,7 @@ public class RetrieveUserDepartmentsHandler
         foreach (var dept in allDepartments)
         {
             var (headRole, memberRole) = GetRolesForDepartment(dept.Name);
-            if ((headRole.HasValue && userRoleNames.Contains(headRole.Value)) || 
+            if ((headRole.HasValue && userRoleNames.Contains(headRole.Value)) ||
                 (memberRole.HasValue && userRoleNames.Contains(memberRole.Value)))
             {
                 allowedDepartments.Add(dept);

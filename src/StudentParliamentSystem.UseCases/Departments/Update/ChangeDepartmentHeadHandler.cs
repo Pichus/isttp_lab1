@@ -1,5 +1,7 @@
 using FluentResults;
+
 using Microsoft.Extensions.Logging;
+
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Core.Aggregates.User;
@@ -45,7 +47,7 @@ public class ChangeDepartmentHeadHandler
 
         var headRole = roleResult.Value;
 
-        // Find existing heads and remove the head role.
+
         var existingHeads = await _userRepository.GetUsersByRoleAsync(headRole.Id);
 
         foreach (var existingHead in existingHeads)
@@ -57,19 +59,19 @@ public class ChangeDepartmentHeadHandler
             }
         }
 
-        // Add new head role to the new Head
+
         if (!newHeadUser.Roles.Any(r => r.Id == headRole.Id))
         {
             newHeadUser.Roles.Add(headRole);
         }
 
-        // Add user to the department's members if not already
+
         if (!newHeadUser.Departments.Any(d => d.Id == department.Id))
         {
             newHeadUser.Departments.Add(department);
         }
 
-        // Based on user feedback: Heads possess member role simultaneously.
+
         var memberRoleName = GetMemberRoleForDepartment(department.Name);
         if (memberRoleName != null && !newHeadUser.Roles.Any(r => r.Name == memberRoleName.Value))
         {
@@ -82,7 +84,7 @@ public class ChangeDepartmentHeadHandler
 
         await _unitOfWork.SaveChangesAsync();
         _logger.LogInformation($"User {newHeadUser.Email} is now the head of {department.Name}");
-        
+
         return Result.Ok();
     }
 

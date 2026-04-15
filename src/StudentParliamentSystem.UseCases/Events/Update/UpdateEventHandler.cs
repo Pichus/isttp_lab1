@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.UseCases.Abstractions;
 
@@ -26,9 +27,9 @@ public class UpdateEventHandler
         if (@event == null)
             return Result.Fail("Event not found");
 
-        // UI already checks permissions but we'll do an implicit check as well if needed.
-        // Assuming controller verifies the user since this command lacks SuperAdmin flag.
-        
+
+
+
         @event.Title = command.Title;
         @event.Description = command.Description;
         @event.Location = command.Location;

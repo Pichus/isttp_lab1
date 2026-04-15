@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.Event;
 
 namespace StudentParliamentSystem.UseCases.Events.Retrieve.ById;

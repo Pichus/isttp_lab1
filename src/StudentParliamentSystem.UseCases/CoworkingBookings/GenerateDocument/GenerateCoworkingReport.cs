@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 
 namespace StudentParliamentSystem.UseCases.CoworkingBookings.GenerateDocument;
@@ -26,7 +27,7 @@ public class GenerateCoworkingReportHandler
             return Result.Fail("End date must be after start date.");
         }
 
-        if ((endUtc - startUtc).TotalDays > 7.1) // Allow up to 7 full days plus a small margin
+        if ((endUtc - startUtc).TotalDays > 7.1)
         {
             return Result.Fail("Timespan cannot exceed one week.");
         }

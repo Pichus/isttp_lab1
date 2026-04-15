@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.UseCases.Abstractions;
 

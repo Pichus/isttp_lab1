@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.UseCases.Abstractions;
 

@@ -47,7 +47,7 @@ public class UserRegisteredHandler
                 _logger.LogWarning($"Role with name {roleName} doesn't exist");
                 continue;
             }
-            
+
             var getRoleResult = await _roleRepository.GetByNameAsync(parsedRoleName);
 
             if (getRoleResult.IsFailed)

@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.UseCases.Abstractions;
@@ -51,4 +52,3 @@ public class RegisterForEventHandler
         return Result.Ok();
     }
 }
-

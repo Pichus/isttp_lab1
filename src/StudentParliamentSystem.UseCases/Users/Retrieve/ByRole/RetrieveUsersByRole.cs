@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Core.Aggregates.User;
 
@@ -26,7 +27,7 @@ public class RetrieveUsersByRoleHandler
         }
 
         var users = await _userRepository.GetUsersByRoleAsync(roleResult.Value.Id);
-        
+
         var userPreviews = users.Select(u => new UserPreview
         {
             Id = u.Id,

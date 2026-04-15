@@ -1,4 +1,5 @@
 using FluentResults;
+
 using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.Core.Aggregates.User;
 using StudentParliamentSystem.UseCases.Abstractions;
@@ -27,7 +28,7 @@ public class ApproveCoworkingBookingHandler
         var approvedStatus = await _repository.GetStatusByNameAsync("Approved");
         if (approvedStatus == null)
             return Result.Fail("Status configuration error");
-            
+
         var manager = await _userRepository.GetByIdAsync(command.ManagerId);
         if (manager == null)
             return Result.Fail("Invalid Space Manager selected.");
@@ -39,4 +40,3 @@ public class ApproveCoworkingBookingHandler
         return Result.Ok();
     }
 }
-
