@@ -145,4 +145,24 @@ public class EventRepository : IEventRepository
             .OrderByDescending(e => e.StartTimeUtc)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<Event?> GetByIdWithRegistrationsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Set<Event>()
+            .Include(e => e.Department)
+            .Include(e => e.Tags)
+            .Include(e => e.Registrations)
+            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+    }
+
+    public async Task AddRegistrationAsync(EventRegistration registration, CancellationToken cancellationToken = default)
+    {
+        await _context.Set<EventRegistration>().AddAsync(registration, cancellationToken);
+    }
+
+    public Task RemoveRegistrationAsync(EventRegistration registration, CancellationToken cancellationToken = default)
+    {
+        _context.Set<EventRegistration>().Remove(registration);
+        return Task.CompletedTask;
+    }
 }
