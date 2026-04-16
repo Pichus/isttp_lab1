@@ -32,7 +32,7 @@ using Wolverine;
 
 namespace StudentParliamentSystem.Api.Controllers;
 
-// Base policy: any dept member or superadmin can enter the panel
+
 [Authorize(Policy = AuthorizationPolicyNameConstants.CanAccessAdminPanelBase)]
 public class AdminController : Controller
 {
@@ -43,13 +43,13 @@ public class AdminController : Controller
         _bus = bus;
     }
 
-    // Welcome page — accessible to any panel member
+
     public IActionResult Index()
     {
         return View();
     }
 
-    // Users page — SuperAdmin only
+
     [Authorize(Policy = AuthorizationPolicyNameConstants.CanAccessAdminPanel)]
     public async Task<IActionResult> Users([FromQuery] int page = 1, string? query = null)
     {
@@ -61,7 +61,7 @@ public class AdminController : Controller
         return View(result);
     }
 
-    // Departments list — SuperAdmin only
+
     [Authorize(Policy = AuthorizationPolicyNameConstants.CanAccessAdminPanel)]
     public async Task<IActionResult> Departments()
     {
@@ -69,7 +69,7 @@ public class AdminController : Controller
         return View(result);
     }
 
-    // Manage specific department — any dept role; ownership enforced below
+
     [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageDepartment)]
     public async Task<IActionResult> ManageDepartment(Guid id, [FromQuery] int usersPage = 1,
         [FromQuery] int eventsPage = 1, string? query = null)
@@ -86,7 +86,7 @@ public class AdminController : Controller
         var isHead = headRoleForDept != null && User.IsInRole(headRoleForDept);
         var isDeptMember = IsMemberOfDepartment(dept.Name);
 
-        // Dept members can only access their own dept
+
         if (!isSuperAdmin && !isHead && !isDeptMember)
         {
             return Forbid();
@@ -310,7 +310,7 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+
 
     private string? GetHeadRoleNameForDepartment(string departmentName)
     {

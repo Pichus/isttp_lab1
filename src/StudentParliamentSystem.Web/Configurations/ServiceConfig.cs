@@ -23,7 +23,7 @@ public static class ServiceConfig
             .AddInfrastructureServices(configuration, environment.EnvironmentName, logger)
             .AddIdentityInfrastructureServices(configuration, environment.EnvironmentName, logger)
             .AddSeeding(configuration, logger);
-        
+
         services.AddAuthenticationConfig();
 
         return services;

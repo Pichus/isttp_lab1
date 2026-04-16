@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using StudentParliamentSystem.UseCases.Statistics.GetOverallStatistics;
+
 using Wolverine;
 
 namespace StudentParliamentSystem.Api.Controllers;

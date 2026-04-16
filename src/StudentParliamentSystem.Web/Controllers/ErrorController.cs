@@ -8,7 +8,7 @@ public class ErrorController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        // todo implement a better error page
+
         return View();
     }
 }

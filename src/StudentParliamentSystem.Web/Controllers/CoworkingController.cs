@@ -1,13 +1,17 @@
 using System.Security.Claims;
+
 using FluentResults;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using StudentParliamentSystem.Api.Configurations;
 using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.UseCases.CoworkingBookings.Request;
 using StudentParliamentSystem.UseCases.CoworkingBookings.Schedule;
 using StudentParliamentSystem.UseCases.Events.Retrieve.CreatedByUser;
+
 using Wolverine;
 
 namespace StudentParliamentSystem.Api.Controllers;

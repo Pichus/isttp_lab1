@@ -10,7 +10,7 @@ public static class AuthenticationConfig
             options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             options.LogoutPath = "/Identity/Account/Logout";
         });
-        
+
         return services;
     }
 }

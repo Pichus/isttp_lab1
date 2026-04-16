@@ -10,7 +10,7 @@ public class StatusCodeController : Controller
     [Route("StatusCode/{statusCode}")]
     public IActionResult RenderStatusCode([FromRoute] int statusCode)
     {
-        // todo implement a better status code page
+
         var viewModel = new StatusCodeViewModel() { StatusCode = statusCode };
         return View("StatusCode", viewModel);
     }

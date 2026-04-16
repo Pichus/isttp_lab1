@@ -1,24 +1,26 @@
 using System.Security.Claims;
 
 using FluentResults;
+using FluentResults;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using StudentParliamentSystem.Api.Models.Events;
 using StudentParliamentSystem.Core.Abstractions;
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Event;
+using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.UseCases.Departments.Retrieve.ForUser;
 using StudentParliamentSystem.UseCases.Events.Create;
+using StudentParliamentSystem.UseCases.Events.Delete;
 using StudentParliamentSystem.UseCases.Events.Register;
 using StudentParliamentSystem.UseCases.Events.Retrieve.ById;
 using StudentParliamentSystem.UseCases.Events.Retrieve.Published;
 using StudentParliamentSystem.UseCases.Events.Retrieve.Tags;
 using StudentParliamentSystem.UseCases.Events.Update;
-using StudentParliamentSystem.UseCases.Events.Delete;
+
 using Wolverine;
-using FluentResults;
-using StudentParliamentSystem.Core.Aggregates.Role;
 
 namespace StudentParliamentSystem.Api.Controllers;
 
@@ -52,13 +54,13 @@ public class EventsController : Controller
     public async Task<IActionResult> Details(Guid id)
     {
         var result = await _bus.InvokeAsync<Result<Event>>(new RetrieveEventById(id));
-        
+
         if (result.IsFailed)
             return NotFound();
 
         var @event = result.Value;
 
-        // Pass registration state for authenticated users
+
         var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (Guid.TryParse(userIdStr, out var currentUserId))
         {
@@ -146,8 +148,8 @@ public class EventsController : Controller
             return View(model);
         }
 
-        var tags = string.IsNullOrWhiteSpace(model.TagsCsv) 
-            ? new List<string>() 
+        var tags = string.IsNullOrWhiteSpace(model.TagsCsv)
+            ? new List<string>()
             : model.TagsCsv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
 
         var result = await _bus.InvokeAsync<FluentResults.Result>(new CreateEvent(
@@ -235,12 +237,12 @@ public class EventsController : Controller
         var resultEvent = await _bus.InvokeAsync<Result<Event>>(new RetrieveEventById(model.Id));
         if (resultEvent.IsFailed) return NotFound();
         var @event = resultEvent.Value;
-        
+
         if (@event.CreatedByUserId != userId && !User.IsInRole(nameof(RoleName.SuperAdmin)))
             return Forbid();
 
-        var tags = string.IsNullOrWhiteSpace(model.TagsCsv) 
-            ? new List<string>() 
+        var tags = string.IsNullOrWhiteSpace(model.TagsCsv)
+            ? new List<string>()
             : model.TagsCsv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
 
         var result = await _bus.InvokeAsync<Result>(new UpdateEvent(
@@ -281,12 +283,12 @@ public class EventsController : Controller
         var resultEvent = await _bus.InvokeAsync<Result<Event>>(new RetrieveEventById(id));
         if (resultEvent.IsFailed) return NotFound();
         var @event = resultEvent.Value;
-        
+
         if (@event.CreatedByUserId != userId && !User.IsInRole(nameof(RoleName.SuperAdmin)))
             return Forbid();
 
         var result = await _bus.InvokeAsync<Result>(new DeleteEvent(id));
-        
+
         var referer = Request.Headers["Referer"].ToString();
         if (!string.IsNullOrEmpty(referer))
         {

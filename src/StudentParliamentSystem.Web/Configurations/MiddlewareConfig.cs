@@ -16,11 +16,11 @@ public static class MiddlewareConfig
 
         app.UseAuthentication();
         app.UseAuthorization();
-        
+
         app.MapControllerRoute(
             "default",
             "{controller=Home}/{action=Index}/{id?}");
-        
+
         app.MapRazorPages();
 
         if (!app.Environment.IsDevelopment())
@@ -28,7 +28,7 @@ public static class MiddlewareConfig
             app.UseExceptionHandler("/Error");
             app.UseHsts();
         }
-        
+
         app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
         if (app.Environment.IsDevelopment())
@@ -36,7 +36,7 @@ public static class MiddlewareConfig
             app.UseDeveloperExceptionPage();
             app.UseOpenApi();
             app.UseSwaggerUi();
-            // app.MapGet("/", () => Results.Redirect("/swagger"));
+
         }
 
         return app;

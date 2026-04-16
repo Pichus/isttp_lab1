@@ -31,6 +31,6 @@ public class EditEventViewModel
 
     public bool IsPublished { get; set; }
 
-    // Using CSV for the tags selected by Tagify / Badge custom input
+
     public string TagsCsv { get; set; }
 }
