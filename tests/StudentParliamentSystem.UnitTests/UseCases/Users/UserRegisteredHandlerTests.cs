@@ -68,4 +68,41 @@ public class UserRegisteredHandlerTests
 
         _userRepo.Verify(r => r.Add(It.Is<User>(u => u.Id == userId && u.Roles.Count == 0)), Times.Once);
     }
+
+    [Fact]
+    public async Task HandleAsync_RoleRepositoryFails_SkipsRoleAndStillCreatesUser()
+    {
+        var userId = Guid.NewGuid();
+        var message = new UserRegistered(userId, "a@b.com", "A", "B", new List<string> { "SuperAdmin" });
+
+        _userRepo.Setup(r => r.ExistsAsync(userId)).ReturnsAsync(false);
+        _roleRepo.Setup(r => r.GetByNameAsync(RoleName.SuperAdmin)).ReturnsAsync(Result.Fail("DB error"));
+        _uow.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+
+        await _sut.HandleAsync(message);
+
+        _userRepo.Verify(r => r.Add(It.Is<User>(u => u.Id == userId && u.Roles.Count == 0)), Times.Once);
+        _uow.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task HandleAsync_NewUserEmptyRoles_CreatesUserWithAllFieldsAndNoRoles()
+    {
+        var userId = Guid.NewGuid();
+        var message = new UserRegistered(userId, "x@y.com", "X", "Y", new List<string>());
+
+        _userRepo.Setup(r => r.ExistsAsync(userId)).ReturnsAsync(false);
+        _uow.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+
+        await _sut.HandleAsync(message);
+
+        _userRepo.Verify(r => r.Add(It.Is<User>(u =>
+            u.Id == userId &&
+            u.Email == "x@y.com" &&
+            u.FirstName == "X" &&
+            u.LastName == "Y" &&
+            u.Roles.Count == 0)), Times.Once);
+        _uow.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _roleRepo.Verify(r => r.GetByNameAsync(It.IsAny<RoleName>()), Times.Never);
+    }
 }
