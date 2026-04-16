@@ -39,7 +39,7 @@ public class UserDetailsUpdatedMessageHandler
         }
 
         var currentRoles = await _userManager.GetRolesAsync(user);
-        
+
         var rolesToRemove = currentRoles.Except(message.Roles).ToList();
         var rolesToAdd = message.Roles.Except(currentRoles).ToList();
 

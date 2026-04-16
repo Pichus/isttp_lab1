@@ -73,7 +73,7 @@ public static class IdentityInfrastructureServiceExtensions
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<IdentityDatabaseContext>();
 
-        // todo implement real email confirmation, create a real email sender
+
         services.AddTransient<IEmailSender, NoOpEmailSender>();
     }
 
@@ -96,7 +96,7 @@ public static class IdentityInfrastructureServiceExtensions
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             options.User.RequireUniqueEmail = true;
 
-            // todo: implement proper account confirmation flow and enable RequireConfirmedAccount
+
             options.SignIn.RequireConfirmedAccount = false;
         });
     }

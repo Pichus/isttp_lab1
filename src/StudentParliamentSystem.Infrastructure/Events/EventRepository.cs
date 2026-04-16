@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using StudentParliamentSystem.Core.Abstractions;
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.Infrastructure.Data;
@@ -43,7 +44,7 @@ public class EventRepository : IEventRepository
         if (!string.IsNullOrWhiteSpace(query))
         {
             var lowerQuery = query.ToLower();
-            q = q.Where(e => e.Title.ToLower().Contains(lowerQuery) || 
+            q = q.Where(e => e.Title.ToLower().Contains(lowerQuery) ||
                              e.Description.ToLower().Contains(lowerQuery) ||
                              e.Location.ToLower().Contains(lowerQuery));
         }
@@ -58,7 +59,7 @@ public class EventRepository : IEventRepository
         else if (sortOrder == "date_asc")
             q = q.OrderBy(e => e.StartTimeUtc);
         else
-            q = q.OrderByDescending(e => e.StartTimeUtc); // default
+            q = q.OrderByDescending(e => e.StartTimeUtc);
 
         var totalCount = await q.CountAsync(cancellationToken);
 
@@ -100,7 +101,7 @@ public class EventRepository : IEventRepository
         if (!string.IsNullOrWhiteSpace(query))
         {
             var lowerQuery = query.ToLower();
-            q = q.Where(e => e.Title.ToLower().Contains(lowerQuery) || 
+            q = q.Where(e => e.Title.ToLower().Contains(lowerQuery) ||
                              e.Description.ToLower().Contains(lowerQuery) ||
                              e.Location.ToLower().Contains(lowerQuery));
         }

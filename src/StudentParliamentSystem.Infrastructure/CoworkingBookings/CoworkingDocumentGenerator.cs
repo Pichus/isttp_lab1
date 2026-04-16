@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+
 using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.UseCases.CoworkingBookings.GenerateDocument;
 
@@ -17,7 +18,7 @@ public class CoworkingDocumentGenerator : ICoworkingDocumentGenerator
             mainPart.Document = new Document();
             var body = mainPart.Document.AppendChild(new Body());
 
-            // Add Header
+
             AddParagraph(body, "Виконуючому обов'язки декана факультету комп'ютерних наук та кібернетики", JustificationValues.Right);
             AddParagraph(body, "Київського національного університету імені Тараса Шевченка", JustificationValues.Right);
             AddParagraph(body, "Людмилі ОМЕЛЬЧУК", JustificationValues.Right);
@@ -57,13 +58,13 @@ public class CoworkingDocumentGenerator : ICoworkingDocumentGenerator
             AddEmptyLine(body);
             AddEmptyLine(body);
 
-            // Add Footer
+
             var footerTable = new Table();
             var tr = new TableRow();
-            
+
             var tcDate = new TableCell(new Paragraph(new Run(new Text(DateTime.Now.ToString("dd.MM.yyyy")))));
             tcDate.Append(new TableCellProperties(new TableCellWidth { Type = TableWidthUnitValues.Auto }));
-            
+
             var tcSign = new TableCell(
                 new Paragraph(
                     new ParagraphProperties(new Justification { Val = JustificationValues.Right }),
@@ -73,7 +74,7 @@ public class CoworkingDocumentGenerator : ICoworkingDocumentGenerator
 
             tr.Append(tcDate, tcSign);
             footerTable.Append(tr);
-            
+
             body.Append(footerTable);
         }
 

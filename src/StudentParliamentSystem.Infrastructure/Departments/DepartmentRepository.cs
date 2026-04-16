@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Core.Aggregates.Role;
 using StudentParliamentSystem.Infrastructure.Data;
@@ -29,7 +30,7 @@ public class DepartmentRepository : IDepartmentRepository
                 var headUser = await _dbContext.Users
                     .Where(u => u.Roles.Any(r => r.Name == headRole))
                     .FirstOrDefaultAsync();
-                
+
                 if (headUser != null)
                 {
                     headName = $"{headUser.FirstName} {headUser.LastName}";

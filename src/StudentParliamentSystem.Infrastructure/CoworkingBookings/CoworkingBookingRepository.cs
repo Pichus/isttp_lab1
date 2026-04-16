@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using StudentParliamentSystem.Core.Abstractions;
 using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.Infrastructure.Data;
@@ -102,7 +103,7 @@ public class CoworkingBookingRepository : ICoworkingBookingRepository
                 .ThenInclude(e => e.EventOrganizers)
                     .ThenInclude(eo => eo.User)
             .Include(b => b.SpaceManager)
-            .Where(b => b.Status.Name == "Approved" && 
+            .Where(b => b.Status.Name == "Approved" &&
                         b.StartTimeUtc >= startUtc &&
                         b.EndTimeUtc <= endUtc)
             .OrderBy(b => b.StartTimeUtc)

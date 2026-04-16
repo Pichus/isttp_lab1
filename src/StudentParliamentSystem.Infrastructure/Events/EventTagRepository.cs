@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using StudentParliamentSystem.Core.Aggregates.Event;
 using StudentParliamentSystem.Infrastructure.Data;
 

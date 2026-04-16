@@ -11,7 +11,7 @@ public class EventEntityConfiguration : IEntityTypeConfiguration<Event>
     {
         builder
             .ToTable("events");
-        
+
         builder
             .HasKey(e => e.Id);
 

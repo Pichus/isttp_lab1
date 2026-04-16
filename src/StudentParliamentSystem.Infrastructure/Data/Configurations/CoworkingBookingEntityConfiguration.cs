@@ -18,7 +18,7 @@ public class CoworkingBookingEntityConfiguration : IEntityTypeConfiguration<Cowo
         builder
             .Property(e => e.StartTimeUtc)
             .IsRequired();
-        
+
         builder
             .Property(e => e.EndTimeUtc)
             .IsRequired();
@@ -37,7 +37,7 @@ public class CoworkingBookingEntityConfiguration : IEntityTypeConfiguration<Cowo
             .HasOne(e => e.SpaceManager)
             .WithMany()
             .HasForeignKey(e => e.SpaceManagerId);
-        
+
         builder
             .HasOne(e => e.Status)
             .WithMany()

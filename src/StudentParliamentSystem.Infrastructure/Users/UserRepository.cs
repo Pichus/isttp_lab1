@@ -106,7 +106,10 @@ public class UserRepository : IUserRepository
 
         return new PagedResult<UserPreview>
         {
-            Items = result, CurrentPage = pageNumber, PageSize = pageSize, TotalCount = totalCount
+            Items = result,
+            CurrentPage = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
         };
     }
 
@@ -155,7 +158,10 @@ public class UserRepository : IUserRepository
 
         return new PagedResult<UserPreview>
         {
-            Items = result, CurrentPage = pageNumber, PageSize = pageSize, TotalCount = totalCount
+            Items = result,
+            CurrentPage = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
         };
     }
 }
