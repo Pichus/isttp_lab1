@@ -1,5 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+
+
 
 #nullable disable
 
@@ -30,10 +30,10 @@ public class ResendEmailConfirmationModel : PageModel
         _emailSender = emailSender;
     }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
+
+
+
+
     [BindProperty]
     public InputModel Input { get; set; }
 
@@ -72,16 +72,16 @@ public class ResendEmailConfirmationModel : PageModel
         return Page();
     }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
+
+
+
+
     public class InputModel
     {
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
+
+
+
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
