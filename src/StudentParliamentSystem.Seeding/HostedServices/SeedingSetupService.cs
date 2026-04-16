@@ -21,12 +21,12 @@ public class SeedingSetupService : IHostedService
     {
         _logger.LogInformation("Start seeding");
         using var scope = _scopeFactory.CreateScope();
-        
+
         var roleSeeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
         var initialAdminUserSeeder = scope.ServiceProvider.GetRequiredService<IInitialAdminUserSeeder>();
         var departmentSeeder = scope.ServiceProvider.GetRequiredService<IDepartmentSeeder>();
         var coworkingStatusSeeder = scope.ServiceProvider.GetRequiredService<ICoworkingBookingStatusSeeder>();
-        
+
         await roleSeeder.SeedAsync();
         await departmentSeeder.SeedAsync();
         await initialAdminUserSeeder.SeedAsync();

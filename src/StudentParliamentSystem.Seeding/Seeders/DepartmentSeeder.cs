@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using StudentParliamentSystem.Core.Aggregates.Department;
 using StudentParliamentSystem.Infrastructure.Data;
 using StudentParliamentSystem.UseCases.Abstractions;

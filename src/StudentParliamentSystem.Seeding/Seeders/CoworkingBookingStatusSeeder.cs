@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 using StudentParliamentSystem.Infrastructure.Data;
 
@@ -7,7 +8,7 @@ namespace StudentParliamentSystem.Seeding.Seeders;
 public class CoworkingBookingStatusSeeder : ICoworkingBookingStatusSeeder
 {
     private static readonly string[] Statuses = ["Pending", "Approved", "Rejected"];
-    
+
     private readonly ApplicationDatabaseContext _context;
 
     public CoworkingBookingStatusSeeder(ApplicationDatabaseContext context)

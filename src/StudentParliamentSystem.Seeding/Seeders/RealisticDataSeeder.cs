@@ -32,7 +32,7 @@ public class RealisticDataSeeder : IRealisticDataSeeder
 
     public async Task SeedAsync()
     {
-        // 1. Departments
+
         var deptNames = new[] { "Культурний", "Науковий", "Читалкадеп", "Інформаційний" };
         var depts = new List<Department>();
         foreach (var dn in deptNames)
@@ -54,28 +54,28 @@ public class RealisticDataSeeder : IRealisticDataSeeder
         var culturalDept = depts.First(d => d.Name == "Культурний");
         var infoDept = depts.First(d => d.Name == "Інформаційний");
 
-        // 2. Users
+
         var seedUsers = new[]
         {
-            // Coworking
+
             new { Email = "taras.shevchenko@knu.ua", First = "Тарас", Last = "Шевченко", Role = RoleName.CoworkingDepartmentMember, Dept = coworkingDept },
             new { Email = "lesia.ukrainka@knu.ua", First = "Леся", Last = "Українка", Role = RoleName.CoworkingDepartmentMember, Dept = coworkingDept },
             new { Email = "ivan.nechuy@knu.ua", First = "Іван", Last = "Нечуй-Левицький", Role = RoleName.CoworkingDepartmentMember, Dept = coworkingDept },
             new { Email = "borys.hrinchenko@knu.ua", First = "Борис", Last = "Грінченко", Role = RoleName.HeadOfCoworkingDepartment, Dept = coworkingDept },
 
-            // Science
+
             new { Email = "ivan.franko@knu.ua", First = "Іван", Last = "Франко", Role = RoleName.ScienceDepartmentMember, Dept = scienceDept },
             new { Email = "olha.kobylianska@knu.ua", First = "Ольга", Last = "Кобилянська", Role = RoleName.ScienceDepartmentMember, Dept = scienceDept },
             new { Email = "panteleimon.kulish@knu.ua", First = "Пантелеймон", Last = "Куліш", Role = RoleName.ScienceDepartmentMember, Dept = scienceDept },
             new { Email = "mykola.amosov@knu.ua", First = "Микола", Last = "Амосов", Role = RoleName.HeadOfScienceDepartment, Dept = scienceDept },
 
-            // Cultural
+
             new { Email = "mariya.zankovetska@knu.ua", First = "Марія", Last = "Заньковецька", Role = RoleName.HeadOfCulturalDepartment, Dept = culturalDept },
             new { Email = "solomiya.krushelnytska@knu.ua", First = "Соломія", Last = "Крушельницька", Role = RoleName.CulturalDepartmentMember, Dept = culturalDept },
             new { Email = "marko.vovchok@knu.ua", First = "Марко", Last = "Вовчок", Role = RoleName.CulturalDepartmentMember, Dept = culturalDept },
             new { Email = "lina.kostenko@knu.ua", First = "Ліна", Last = "Костенко", Role = RoleName.CulturalDepartmentMember, Dept = culturalDept },
 
-            // Information
+
             new { Email = "mykhailo.hrushevskyi@knu.ua", First = "Михайло", Last = "Грушевський", Role = RoleName.HeadOfInformationDepartment, Dept = infoDept },
             new { Email = "vasyl.stus@knu.ua", First = "Василь", Last = "Стус", Role = RoleName.InformationDepartmentMember, Dept = infoDept },
             new { Email = "vyacheslav.chornovil@knu.ua", First = "В'ячеслав", Last = "Чорновіл", Role = RoleName.InformationDepartmentMember, Dept = infoDept },
@@ -94,7 +94,7 @@ public class RealisticDataSeeder : IRealisticDataSeeder
 
             var userId = Guid.NewGuid();
 
-            // Identity
+
             if (await _userManager.FindByEmailAsync(u.Email) == null)
             {
                 var idUser = new ApplicationUser
@@ -109,7 +109,7 @@ public class RealisticDataSeeder : IRealisticDataSeeder
                 await _userManager.AddToRoleAsync(idUser, u.Role.ToString());
             }
 
-            // Application User
+
             var role = (await _roleRepository.GetByNameAsync(u.Role)).Value;
             var appUser = new User
             {
@@ -131,7 +131,7 @@ public class RealisticDataSeeder : IRealisticDataSeeder
         var coworkingManager = appUsers.First(u => u.Email == "taras.shevchenko@knu.ua");
         var organizer = appUsers.First(u => u.Email == "ivan.franko@knu.ua");
 
-        // 3. Events
+
         var evtList = new List<Event>();
         var eventData = new[]
         {
@@ -187,7 +187,7 @@ public class RealisticDataSeeder : IRealisticDataSeeder
 
         await _context.SaveChangesAsync();
 
-        // 4. Coworking Bookings
+
         var statuses = await _context.CoworkingBookingStatuses.ToListAsync();
         var approvedStatus = statuses.First(s => s.Name == "Approved");
         var pendingStatus = statuses.First(s => s.Name == "Pending");
