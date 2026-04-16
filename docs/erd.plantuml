@@ -3,21 +3,18 @@ title ER Diagram: SPF Event & Coworking System
 hide circle
 skinparam linetype ortho
 
-' --- STYLING ---
 skinparam class {
     BackgroundColor White
     ArrowColor #2C3E50
     BorderColor #2C3E50
 }
 
-' --- USERS & ACCESS ---
-
 entity "User" as user {
   *id : UUID <<PK>>
   --
-  name : VARCHAR(100)
+  first_name : VARCHAR(100)
+  last_name : VARCHAR(100)
   email : VARCHAR(100)
-  password_hash : VARCHAR(255)
   created_at : TIMESTAMP
 }
 
@@ -27,48 +24,34 @@ entity "Role" as role {
   name : VARCHAR(50)
 }
 
-entity "UserRole" as user_role {
-  *user_id : UUID <<PK, FK>>
-  *role_id : UUID <<PK, FK>>
+entity "user_roles" as user_role <<join>> {
+  *user_id : UUID <<FK>>
+  *role_id : UUID <<FK>>
 }
-
-' --- DEPARTMENTS ---
 
 entity "Department" as department {
   *id : UUID <<PK>>
   --
   name : VARCHAR(50)
-  description : TEXT
 }
 
-entity "DepartmentRole" as dept_role {
-  *id : UUID <<PK>>
-  --
-  name : VARCHAR(50) 
-  ' e.g. Member, Deputy, SMM, etc.
+entity "user_departments" as user_dept <<join>> {
+  *user_id : UUID <<FK>>
+  *department_id : UUID <<FK>>
 }
-
-entity "DepartmentMember" as dept_member {
-  *user_id : UUID <<PK, FK>>
-  *department_id : UUID <<PK, FK>>
-  --
-  *department_role_id : UUID <<FK>>
-  joined_at : TIMESTAMP
-}
-
-' --- EVENTS ---
 
 entity "Event" as event {
   *id : UUID <<PK>>
   --
   title : VARCHAR(200)
   description : TEXT
-  poster_url : VARCHAR(255)
   location : VARCHAR(255)
   max_participants : INT
   is_published : BOOLEAN
-  --
+  start_time : TIMESTAMP
+  end_time : TIMESTAMP
   *created_by_user_id : UUID <<FK>>
+  *department_id : UUID <<FK>>
   created_at : TIMESTAMP
 }
 
@@ -78,9 +61,9 @@ entity "EventTag" as tag {
   name : VARCHAR(50)
 }
 
-entity "EventTagMap" as event_tag_map {
-  *event_id : UUID <<PK, FK>>
-  *tag_id : UUID <<PK, FK>>
+entity "event_tags" as event_tag_map <<join>> {
+  *event_id : UUID <<FK>>
+  *tag_id : UUID <<FK>>
 }
 
 entity "EventRegistration" as registration {
@@ -90,8 +73,6 @@ entity "EventRegistration" as registration {
   *event_id : UUID <<FK>>
   registered_at : TIMESTAMP
 }
-
-' --- EVENT ORGANIZATION ---
 
 entity "EventOrganizer" as organizer {
   *id : UUID <<PK>>
@@ -105,10 +86,9 @@ entity "OrgRequestStatus" as org_status {
   *id : UUID <<PK>>
   --
   name : VARCHAR(50)
-  ' e.g. Pending, Approved, Rejected
 }
 
-entity "OrgRequest" as org_request {
+entity "OrganizationRequest" as org_request {
   *id : UUID <<PK>>
   --
   *user_id : UUID <<FK>>
@@ -117,13 +97,10 @@ entity "OrgRequest" as org_request {
   created_at : TIMESTAMP
 }
 
-' --- COWORKING ---
-
-entity "BookingStatus" as booking_status {
+entity "CoworkingBookingStatus" as booking_status {
   *id : UUID <<PK>>
   --
   name : VARCHAR(50)
-  ' e.g. Pending, Confirmed, Cancelled
 }
 
 entity "CoworkingBooking" as booking {
@@ -131,8 +108,7 @@ entity "CoworkingBooking" as booking {
   --
   *event_id : UUID <<FK>>
   *status_id : UUID <<FK>>
-  space_manager_id : UUID <<FK>>
-  --
+  space_manager_id : UUID <<FK, nullable>>
   start_time : TIMESTAMP
   end_time : TIMESTAMP
   notes : TEXT
@@ -140,37 +116,30 @@ entity "CoworkingBooking" as booking {
 
 ' --- RELATIONSHIPS ---
 
-' User Roles
 user ||..o{ user_role
 role ||..o{ user_role
 
-' Departments
-user ||..o{ dept_member
-department ||..o{ dept_member
-dept_role ||..o{ dept_member
-department |o..|| user : "headed by"
+user ||..o{ user_dept
+department ||..o{ user_dept
 
-' Event Basic
 user ||..o{ event : "creates"
+department ||..o{ event : "owns"
+
 event ||..o{ event_tag_map
 tag ||..o{ event_tag_map
 
-' Registration
 user ||..o{ registration
 event ||..o{ registration
 
-' Organization Team
 user ||..o{ organizer
 event ||..o{ organizer
 
-' Organization Requests
 user ||..o{ org_request : "requests to join"
 event ||..o{ org_request
 org_status ||..o{ org_request
 
-' Coworking
-event ||..o{ booking : "has booking"
+event ||..o| booking : "has booking"
 booking_status ||..o{ booking
-user |o..o{ booking : "manager approves"
+user |o..o{ booking : "space manager"
 
 @enduml
