@@ -1,0 +1,20 @@
+@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Доступ заборонено";
+}
+
+<div class="flex justify-center items-start py-12">
+    <div class="card bg-base-100 shadow-xl border border-error/30 w-full max-w-md">
+        <div class="card-body items-center text-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center text-error">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-error">@ViewData["Title"]</h1>
+            <p class="text-base-content/70">У вас немає доступу до цього ресурсу.</p>
+            <a href="/" class="btn btn-primary mt-2">На головну</a>
+        </div>
+    </div>
+</div>

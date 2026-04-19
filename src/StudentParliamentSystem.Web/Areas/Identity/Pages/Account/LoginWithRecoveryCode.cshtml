@@ -1,0 +1,32 @@
+@page
+@model LoginWithRecoveryCodeModel
+@{
+    ViewData["Title"] = "Вхід з кодом відновлення";
+}
+
+<div class="flex justify-center items-start py-8">
+    <div class="card bg-base-100 shadow-xl border border-base-200 w-full max-w-md">
+        <div class="card-body gap-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold">@ViewData["Title"]</h1>
+                <p class="text-base-content/60 mt-2 text-sm">Цей вхід не буде запам'ятовано до тих пір, поки ви не введете код автентифікатора або не відключите 2FA.</p>
+            </div>
+
+            <form method="post" class="flex flex-col gap-4">
+                <div asp-validation-summary="ModelOnly" class="alert alert-error text-sm" role="alert"></div>
+
+                <div class="form-control">
+                    <label asp-for="Input.RecoveryCode" class="label"><span class="label-text font-medium">Код відновлення</span></label>
+                    <input asp-for="Input.RecoveryCode" class="input input-bordered w-full font-mono tracking-widest" autocomplete="off" placeholder="XXXX-XXXX" />
+                    <span asp-validation-for="Input.RecoveryCode" class="label-text-alt text-error mt-1"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">Увійти</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
