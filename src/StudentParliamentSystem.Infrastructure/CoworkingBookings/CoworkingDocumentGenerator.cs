@@ -74,13 +74,24 @@ public class CoworkingDocumentGenerator : ICoworkingDocumentGenerator
                     var noBookings = new Paragraph(new Run(new Text("У цей період заходів не заплановано.")));
                     insertBeforeNode.Parent!.InsertBefore(noBookings, insertBeforeNode);
                 }
-                else
-                {
+                    TimeZoneInfo kyivZone;
+                    try
+                    {
+                        kyivZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Kyiv");
+                    }
+                    catch (TimeZoneNotFoundException)
+                    {
+                        kyivZone = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time");
+                    }
+
                     foreach (var booking in coworkingBookings)
                     {
-                        var eventDate = booking.StartTimeUtc.ToLocalTime().ToString("dd.MM.yyyy");
-                        var startTime = booking.StartTimeUtc.ToLocalTime().ToString("HH:mm");
-                        var endTime = booking.EndTimeUtc.ToLocalTime().ToString("HH:mm");
+                        var startKyiv = TimeZoneInfo.ConvertTimeFromUtc(booking.StartTimeUtc, kyivZone);
+                        var endKyiv = TimeZoneInfo.ConvertTimeFromUtc(booking.EndTimeUtc, kyivZone);
+
+                        var eventDate = startKyiv.ToString("dd.MM.yyyy");
+                        var startTime = startKyiv.ToString("HH:mm");
+                        var endTime = endKyiv.ToString("HH:mm");
                         var eventName = booking.Event.Title;
 
                         var organizerName = booking.Event.CreatedByUser.LastName + " " +
@@ -118,8 +129,6 @@ public class CoworkingDocumentGenerator : ICoworkingDocumentGenerator
                         insertBeforeNode.Parent!.InsertBefore(new Paragraph(new Run(new Text(""))),
                             insertBeforeNode);
                     }
-                }
-
                 foreach (var p in templateParagraphs)
                 {
                     p.Remove();
