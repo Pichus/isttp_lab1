@@ -2,7 +2,7 @@ using StudentParliamentSystem.Core.Aggregates.Statistics;
 
 namespace StudentParliamentSystem.UseCases.Statistics.GetOverallStatistics;
 
-public record GetOverallStatisticsQuery;
+public record GetOverallStatisticsQuery(DateTime? StartDate = null, DateTime? EndDate = null);
 
 public class GetOverallStatisticsQueryHandler
 {
@@ -15,6 +15,6 @@ public class GetOverallStatisticsQueryHandler
 
     public async Task<OverallStatistics> Handle(GetOverallStatisticsQuery query, CancellationToken cancellationToken)
     {
-        return await _statisticsRepository.GetOverallStatisticsAsync(cancellationToken);
+        return await _statisticsRepository.GetOverallStatisticsAsync(query.StartDate, query.EndDate, cancellationToken);
     }
 }

@@ -17,12 +17,14 @@ public class StatisticsController : Controller
         _bus = bus;
     }
 
-    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    public async Task<IActionResult> Index([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, CancellationToken cancellationToken)
     {
-        var stats = await _bus.InvokeAsync<StudentParliamentSystem.Core.Aggregates.Statistics.OverallStatistics>(new GetOverallStatisticsQuery(), cancellationToken);
+        var stats = await _bus.InvokeAsync<StudentParliamentSystem.Core.Aggregates.Statistics.OverallStatistics>(new GetOverallStatisticsQuery(startDate, endDate), cancellationToken);
 
         var model = new StatisticsViewModel
         {
+            StartDate = startDate,
+            EndDate = endDate,
             ActiveMembersCount = stats.ActiveMembersCount,
             ConductedEventsCount = stats.ConductedEventsCount,
             CoworkingHours = stats.CoworkingHours,
@@ -45,6 +47,8 @@ public class StatisticsController : Controller
 
 public class StatisticsViewModel
 {
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
     public int ActiveMembersCount { get; set; }
     public int ConductedEventsCount { get; set; }
     public int CoworkingHours { get; set; }

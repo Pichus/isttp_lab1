@@ -13,11 +13,12 @@ public class StatisticsQueryTests
     {
         var sut = new GetOverallStatisticsQueryHandler(_repo.Object);
         var expected = new OverallStatistics(10, 5, 20, [], []);
-        _repo.Setup(r => r.GetOverallStatisticsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(expected);
+        _repo.Setup(r => r.GetOverallStatisticsAsync(It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>())).ReturnsAsync(expected);
 
-        var result = await sut.Handle(new GetOverallStatisticsQuery(), default);
+        var query = new GetOverallStatisticsQuery(DateTime.UtcNow.AddDays(-7), DateTime.UtcNow);
+        var result = await sut.Handle(query, default);
 
         result.Should().Be(expected);
-        _repo.Verify(r => r.GetOverallStatisticsAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _repo.Verify(r => r.GetOverallStatisticsAsync(query.StartDate, query.EndDate, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

@@ -15,13 +15,30 @@ public class StatisticsRepository : IStatisticsRepository
         _context = context;
     }
 
-    public async Task<OverallStatistics> GetOverallStatisticsAsync(CancellationToken cancellationToken = default)
+    public async Task<OverallStatistics> GetOverallStatisticsAsync(DateTime? startDate = null, DateTime? endDate = null, CancellationToken cancellationToken = default)
     {
-        var activeMembersCount = await _context.Users.CountAsync(cancellationToken);
+        if (startDate.HasValue && startDate.Value.Kind == DateTimeKind.Unspecified)
+            startDate = DateTime.SpecifyKind(startDate.Value, DateTimeKind.Utc);
+            
+        if (endDate.HasValue && endDate.Value.Kind == DateTimeKind.Unspecified)
+            endDate = DateTime.SpecifyKind(endDate.Value, DateTimeKind.Utc);
 
-        var conductedEventsCount = await _context.Set<Event>().CountAsync(cancellationToken);
+        var usersQuery = _context.Users.AsQueryable();
+        if (startDate.HasValue) usersQuery = usersQuery.Where(u => u.CreatedAtUtc >= startDate.Value);
+        if (endDate.HasValue) usersQuery = usersQuery.Where(u => u.CreatedAtUtc <= endDate.Value);
+        var activeMembersCount = await usersQuery.CountAsync(cancellationToken);
 
-        var bookings = await _context.CoworkingBookings
+        var eventsQuery = _context.Set<Event>().AsQueryable();
+        if (startDate.HasValue) eventsQuery = eventsQuery.Where(e => e.StartTimeUtc >= startDate.Value);
+        if (endDate.HasValue) eventsQuery = eventsQuery.Where(e => e.StartTimeUtc <= endDate.Value);
+        
+        var conductedEventsCount = await eventsQuery.CountAsync(cancellationToken);
+
+        var bookingsQuery = _context.CoworkingBookings.AsQueryable();
+        if (startDate.HasValue) bookingsQuery = bookingsQuery.Where(b => b.StartTimeUtc >= startDate.Value);
+        if (endDate.HasValue) bookingsQuery = bookingsQuery.Where(b => b.StartTimeUtc <= endDate.Value);
+
+        var bookings = await bookingsQuery
             .Select(b => new { b.StartTimeUtc, b.EndTimeUtc })
             .ToListAsync(cancellationToken);
 
@@ -30,11 +47,11 @@ public class StatisticsRepository : IStatisticsRepository
         var departmentActivities = await _context.Departments
             .Select(d => new DepartmentActivityStats(
                 d.Name,
-                _context.Set<Event>().Count(e => e.DepartmentId == d.Id)
+                eventsQuery.Count(e => e.DepartmentId == d.Id)
             ))
             .ToListAsync(cancellationToken);
 
-        var topEvents = await _context.Set<Event>()
+        var topEvents = await eventsQuery
             .OrderByDescending(e => e.Registrations.Count)
             .Take(5)
             .Select(e => new TopEventStats(

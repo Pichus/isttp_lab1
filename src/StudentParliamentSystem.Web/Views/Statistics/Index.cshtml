@@ -9,11 +9,26 @@
     var colors = new[] { "bg-primary", "bg-secondary", "bg-accent", "bg-success", "bg-warning", "bg-info" };
 }
 
-<div class="mb-8 flex justify-between items-end flex-wrap gap-4">
+<div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end flex-wrap gap-4">
     <div>
         <h1 class="text-4xl font-black mb-2">Статистика</h1>
         <p class="text-base-content/70">Загальна інформація про діяльність Студентського Парламенту.</p>
     </div>
+    <form method="get" class="flex flex-wrap gap-2 items-end bg-base-100 p-4 rounded-2xl shadow-sm border border-base-200">
+        <div class="form-control">
+            <label class="label py-1"><span class="label-text text-xs font-bold">З дати</span></label>
+            <input type="date" name="startDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" class="input input-sm input-bordered" />
+        </div>
+        <div class="form-control">
+            <label class="label py-1"><span class="label-text text-xs font-bold">По дату</span></label>
+            <input type="date" name="endDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" class="input input-sm input-bordered" />
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary">Фільтрувати</button>
+        @if(Model.StartDate.HasValue || Model.EndDate.HasValue)
+        {
+            <a href="/Statistics" class="btn btn-sm btn-ghost">Скинути</a>
+        }
+    </form>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
