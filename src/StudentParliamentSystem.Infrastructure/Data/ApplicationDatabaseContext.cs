@@ -19,6 +19,7 @@ public class ApplicationDatabaseContext : DbContext
     public DbSet<Department> Departments { get; init; }
     public DbSet<CoworkingBooking> CoworkingBookings { get; init; }
     public DbSet<CoworkingBookingStatus> CoworkingBookingStatuses { get; init; }
+    public DbSet<DocumentReceiver> DocumentReceivers { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

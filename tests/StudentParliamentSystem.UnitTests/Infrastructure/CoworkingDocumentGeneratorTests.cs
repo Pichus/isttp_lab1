@@ -14,10 +14,7 @@ public class CoworkingDocumentGeneratorTests
     [Fact]
     public void GenerateDocument_NoBookings_GeneratesMessage()
     {
-        var spanStart = DateTime.UtcNow;
-        var spanEnd = DateTime.UtcNow.AddDays(7);
-        
-        var bytes = _sut.GenerateDocument(new List<CoworkingBooking>(), spanStart, spanEnd);
+        var bytes = _sut.GenerateDocument(new List<CoworkingBooking>(), "Test Receiver", "20.10.2023", "Test Sender");
 
         bytes.Should().NotBeNullOrEmpty();
         
@@ -47,7 +44,7 @@ public class CoworkingDocumentGeneratorTests
             SpaceManager = User.Create(Guid.NewGuid(), "m@b.com", "Petro", "Petrov")
         };
 
-        var bytes = _sut.GenerateDocument(new List<CoworkingBooking> { booking }, startTime.AddDays(-1), startTime.AddDays(1));
+        var bytes = _sut.GenerateDocument(new List<CoworkingBooking> { booking }, "Test Receiver", "20.10.2023", "Test Sender");
 
         bytes.Should().NotBeNullOrEmpty();
         

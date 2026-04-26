@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using System.Text;
 
 using Microsoft.AspNetCore.Authorization;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
 using StudentParliamentSystem.Infrastructure.Identity;
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 
 namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account;
 

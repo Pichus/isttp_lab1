@@ -23,6 +23,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="CoworkingBookings\Templates\CoworkingDocumentTemplate.docx">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\StudentParliamentSystem.Core\StudentParliamentSystem.Core.csproj"/>
         <ProjectReference Include="..\StudentParliamentSystem.UseCases\StudentParliamentSystem.UseCases.csproj"/>
     </ItemGroup>

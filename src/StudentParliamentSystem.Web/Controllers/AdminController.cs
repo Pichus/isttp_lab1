@@ -226,6 +226,9 @@ public class AdminController : Controller
                 new RetrieveUsersByRole(RoleName.CoworkingDepartmentMember));
         ViewBag.CoworkingMembers = membersResult.IsSuccess ? membersResult.Value : Array.Empty<UserPreview>();
 
+        var receivers = await _bus.InvokeAsync<IEnumerable<DocumentReceiver>>(new UseCases.CoworkingBookings.DocumentReceivers.Retrieve.RetrieveDocumentReceiversQuery());
+        ViewBag.Receivers = receivers;
+
         ViewBag.Status = status;
 
         return View(result);
@@ -278,9 +281,17 @@ public class AdminController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageCoworkingBookings)]
-    public async Task<IActionResult> GenerateReport(DateTime reportStart, DateTime reportEnd)
+    public async Task<IActionResult> GenerateReport(DateTime reportStart, DateTime reportEnd, string receiverIdOrCustom, string customReceiverTitle, string documentDate, string senderName)
     {
-        var result = await _bus.InvokeAsync<Result<byte[]>>(new GenerateCoworkingReport(reportStart, reportEnd));
+        string receiver = customReceiverTitle;
+        if (receiverIdOrCustom != "custom" && Guid.TryParse(receiverIdOrCustom, out var receiverId))
+        {
+            var receivers = await _bus.InvokeAsync<IEnumerable<DocumentReceiver>>(new UseCases.CoworkingBookings.DocumentReceivers.Retrieve.RetrieveDocumentReceiversQuery());
+            var found = receivers.FirstOrDefault(r => r.Id == receiverId);
+            if (found != null) receiver = found.FullTitle;
+        }
+
+        var result = await _bus.InvokeAsync<Result<byte[]>>(new GenerateCoworkingReport(reportStart, reportEnd, receiver, documentDate, senderName));
 
         if (result.IsFailed)
         {
@@ -290,6 +301,39 @@ public class AdminController : Controller
 
         return File(result.Value, "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             $"Подання Читалка {reportStart:dd.MM}-{reportEnd:dd.MM}.docx");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageCoworkingBookings)]
+    public async Task<IActionResult> CreateDocumentReceiver(string name, string position, string fullTitle, bool isDefault)
+    {
+        var result = await _bus.InvokeAsync<Result>(new UseCases.CoworkingBookings.DocumentReceivers.Create.CreateDocumentReceiverCommand(name, position, fullTitle, isDefault));
+        if (result.IsFailed) TempData["ErrorMessage"] = "Failed to create receiver.";
+        else TempData["SuccessMessage"] = "Receiver created successfully.";
+        return RedirectToAction(nameof(CoworkingManagement));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageCoworkingBookings)]
+    public async Task<IActionResult> DeleteDocumentReceiver(Guid id)
+    {
+        var result = await _bus.InvokeAsync<Result>(new UseCases.CoworkingBookings.DocumentReceivers.Delete.DeleteDocumentReceiverCommand(id));
+        if (result.IsFailed) TempData["ErrorMessage"] = "Failed to delete receiver.";
+        else TempData["SuccessMessage"] = "Receiver deleted successfully.";
+        return RedirectToAction(nameof(CoworkingManagement));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = AuthorizationPolicyNameConstants.CanManageCoworkingBookings)]
+    public async Task<IActionResult> EditDocumentReceiver(Guid id, string name, string position, string fullTitle, bool isDefault)
+    {
+        var result = await _bus.InvokeAsync<Result>(new UseCases.CoworkingBookings.DocumentReceivers.Update.UpdateDocumentReceiver(id, name, position, fullTitle, isDefault));
+        if (result.IsFailed) TempData["ErrorMessage"] = "Failed to update receiver.";
+        else TempData["SuccessMessage"] = "Receiver updated successfully.";
+        return RedirectToAction(nameof(CoworkingManagement));
     }
 
     [HttpPost("api/Admin/SeedFakeData")]

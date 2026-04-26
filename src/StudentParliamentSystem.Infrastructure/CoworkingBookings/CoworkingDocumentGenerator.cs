@@ -9,92 +9,170 @@ namespace StudentParliamentSystem.Infrastructure.CoworkingBookings;
 
 public class CoworkingDocumentGenerator : ICoworkingDocumentGenerator
 {
-    public byte[] GenerateDocument(IEnumerable<CoworkingBooking> bookings, DateTime spanStart, DateTime spanEnd)
+    public byte[] GenerateDocument(IEnumerable<CoworkingBooking> bookings, string receiver, string documentDate,
+        string sender)
     {
+        var templatePath = Path.Combine(AppContext.BaseDirectory, "CoworkingBookings", "Templates",
+            "CoworkingDocumentTemplate.docx");
+
         using var memoryStream = new MemoryStream();
-        using (var wordDocument = WordprocessingDocument.Create(memoryStream, WordprocessingDocumentType.Document))
+        if (File.Exists(templatePath))
         {
-            var mainPart = wordDocument.AddMainDocumentPart();
-            mainPart.Document = new Document();
-            var body = mainPart.Document.AppendChild(new Body());
+            var templateBytes = File.ReadAllBytes(templatePath);
+            memoryStream.Write(templateBytes, 0, templateBytes.Length);
+        }
+        else
+        {
+            using var emptyDoc = WordprocessingDocument.Create(memoryStream, WordprocessingDocumentType.Document);
+            emptyDoc.AddMainDocumentPart().Document = new Document(new Body(
+                new Paragraph(new Run(new Text("{{Receiver}}"))),
+                new Paragraph(new Run(new Text("{{MainBody}}"))),
+                new Paragraph(new Run(new Text("{{EventName}}"))),
+                new Paragraph(new Run(new Text("{{EventStart}}"))),
+                new Paragraph(new Run(new Text("{{EventEnd}}"))),
+                new Paragraph(new Run(new Text("{{EventOrganizers}}"))),
+                new Paragraph(new Run(new Text("{{Date}}"))),
+                new Paragraph(new Run(new Text("{{Sender}}")))
+            ));
+        }
 
+        memoryStream.Position = 0;
 
-            AddParagraph(body, "Виконуючому обов'язки декана факультету комп'ютерних наук та кібернетики", JustificationValues.Right);
-            AddParagraph(body, "Київського національного університету імені Тараса Шевченка", JustificationValues.Right);
-            AddParagraph(body, "Людмилі ОМЕЛЬЧУК", JustificationValues.Right);
-            AddEmptyLine(body);
-            AddEmptyLine(body);
+        using (var wordDocument = WordprocessingDocument.Open(memoryStream, true))
+        {
+            var body = wordDocument.MainDocumentPart!.Document.Body!;
+            
+            ReplaceText(body, "{{Receiver}}", receiver ?? "");
+            ReplaceText(body, "{{Date}}", documentDate ?? "");
+            ReplaceText(body, "{{Sender}}", sender ?? "");
 
-            if (!bookings.Any())
+            var eventNamePara = body.Descendants<Paragraph>()
+                .FirstOrDefault(p => p.InnerText.Contains("{{EventName"));
+            var eventOrgPara = body.Descendants<Paragraph>()
+                .FirstOrDefault(p => p.InnerText.Contains("{{EventOrganizers"));
+
+            if (eventNamePara != null && eventOrgPara != null)
             {
-                AddParagraph(body, $"У період з {spanStart:dd.MM.yyyy} по {spanEnd:dd.MM.yyyy} заходів не заплановано.", JustificationValues.Left);
-            }
-            else
-            {
-                foreach (var booking in bookings)
+                var templateParagraphs = new List<Paragraph>();
+                var current = eventNamePara;
+                while (current != null)
                 {
-                    var eventDate = booking.StartTimeUtc.ToLocalTime().ToString("dd.MM.yyyy");
-                    var startTime = booking.StartTimeUtc.ToLocalTime().ToString("HH:mm");
-                    var endTime = booking.EndTimeUtc.ToLocalTime().ToString("HH:mm");
-                    var eventName = booking.Event.Title;
+                    templateParagraphs.Add(current);
+                    if (current == eventOrgPara)
+                    {
+                        break;
+                    }
 
-                    var organizerName = booking.Event.CreatedByUser.LastName + " " + booking.Event.CreatedByUser.FirstName;
-                    var spaceManagerName = booking.SpaceManager != null
-                        ? booking.SpaceManager.LastName + " " + booking.SpaceManager.FirstName
-                        : "Не призначено";
+                    current = current.NextSibling<Paragraph>();
+                }
+                
+                var insertBeforeNode = eventNamePara;
 
-                    var others = booking.Event.EventOrganizers != null && booking.Event.EventOrganizers.Any()
-                        ? string.Join(", ", booking.Event.EventOrganizers.Select(eo => eo.User.LastName + " " + eo.User.FirstName))
-                        : "Немає";
+                var coworkingBookings = bookings as CoworkingBooking[] ?? bookings.ToArray();
+                if (!coworkingBookings.Any())
+                {
+                    var noBookings = new Paragraph(new Run(new Text("У цей період заходів не заплановано.")));
+                    insertBeforeNode.Parent!.InsertBefore(noBookings, insertBeforeNode);
+                }
+                else
+                {
+                    foreach (var booking in coworkingBookings)
+                    {
+                        var eventDate = booking.StartTimeUtc.ToLocalTime().ToString("dd.MM.yyyy");
+                        var startTime = booking.StartTimeUtc.ToLocalTime().ToString("HH:mm");
+                        var endTime = booking.EndTimeUtc.ToLocalTime().ToString("HH:mm");
+                        var eventName = booking.Event.Title;
 
-                    AddParagraph(body, $"Прошу дозволити використати приміщення читалки (ауд. 01) на {eventDate} з {startTime} до {endTime} для проведення заходу \"{eventName}\".", JustificationValues.Both);
-                    AddParagraph(body, $"Відповідальний за проведення заходу: {organizerName}.", JustificationValues.Both);
-                    AddParagraph(body, "Бере на себе відповідальність відкрити аудиторію та підтримувати порядок:", JustificationValues.Both);
-                    AddParagraph(body, $"Організатор {organizerName}. Додаткові відповідальні люди: {spaceManagerName}. Інші організатори: {others}.", JustificationValues.Both);
-                    AddEmptyLine(body);
+                        var organizerName = booking.Event.CreatedByUser.LastName + " " +
+                                            booking.Event.CreatedByUser.FirstName;
+                        
+                        var allOrganizers = new List<string> { organizerName };
+                        
+                        if (booking.SpaceManager != null)
+                        {
+                            allOrganizers.Add(booking.SpaceManager.LastName + " " + booking.SpaceManager.FirstName);
+                        }
+
+                        if (booking.Event.EventOrganizers.Any())
+                        {
+                            allOrganizers.AddRange(booking.Event.EventOrganizers.Select(eo => eo.User.LastName + " " + eo.User.FirstName));
+                        }
+
+                        var fullOrganizers = string.Join(", ", allOrganizers.Distinct());
+
+                        foreach (var tPara in templateParagraphs)
+                        {
+                            var clone = (Paragraph)tPara.CloneNode(true);
+                            ReplaceText(clone, "{{EventName}}", eventName);
+                            ReplaceText(clone, "{{EventName}", eventName); // fallback for typo
+                            ReplaceText(clone, "{{EventStart}}", $"{eventDate} {startTime}");
+                            ReplaceText(clone, "{{EventStart}", $"{eventDate} {startTime}");
+                            ReplaceText(clone, "{{EventEnd}}", $"{eventDate} {endTime}");
+                            ReplaceText(clone, "{{EventEnd}", $"{eventDate} {endTime}");
+                            ReplaceText(clone, "{{EventOrganizers}}", fullOrganizers);
+                            ReplaceText(clone, "{{EventOrganizers}", fullOrganizers);
+
+                            insertBeforeNode.Parent!.InsertBefore(clone, insertBeforeNode);
+                        }
+
+                        insertBeforeNode.Parent!.InsertBefore(new Paragraph(new Run(new Text(""))),
+                            insertBeforeNode);
+                    }
+                }
+
+                foreach (var p in templateParagraphs)
+                {
+                    p.Remove();
                 }
             }
 
-            AddEmptyLine(body);
-            AddEmptyLine(body);
+            var mainBodyPara = body.Descendants<Paragraph>().FirstOrDefault(p => p.InnerText.Contains("{{MainBody}}"));
+            if (mainBodyPara != null)
+            {
+                mainBodyPara.Remove();
+            }
 
-
-            var footerTable = new Table();
-            var tr = new TableRow();
-
-            var tcDate = new TableCell(new Paragraph(new Run(new Text(DateTime.Now.ToString("dd.MM.yyyy")))));
-            tcDate.Append(new TableCellProperties(new TableCellWidth { Type = TableWidthUnitValues.Auto }));
-
-            var tcSign = new TableCell(
-                new Paragraph(
-                    new ParagraphProperties(new Justification { Val = JustificationValues.Right }),
-                    new Run(new Text("Представник СП ФКНК___________________"))
-                ));
-            tcSign.Append(new TableCellProperties(new TableCellWidth { Type = TableWidthUnitValues.Pct, Width = "5000" }));
-
-            tr.Append(tcDate, tcSign);
-            footerTable.Append(tr);
-
-            body.Append(footerTable);
+            wordDocument.MainDocumentPart.Document.Save();
         }
 
         return memoryStream.ToArray();
     }
 
-    private static void AddParagraph(Body body, string text, JustificationValues justification)
+    private void ReplaceText(OpenXmlElement element, string tag, string replacement)
     {
-        var paragraph = body.AppendChild(new Paragraph());
-        var paragraphProperties = paragraph.AppendChild(new ParagraphProperties());
-        var justificationElement = new Justification() { Val = justification };
-        paragraphProperties.AppendChild(justificationElement);
+        var paragraphs = new List<Paragraph>();
+        if (element is Paragraph p && p.InnerText.Contains(tag))
+        {
+            paragraphs.Add(p);
+        }
+        else
+        {
+            paragraphs.AddRange(element.Descendants<Paragraph>().Where(para => para.InnerText.Contains(tag)));
+        }
 
-        var run = paragraph.AppendChild(new Run());
-        var textElement = new Text(text) { Space = SpaceProcessingModeValues.Preserve };
-        run.AppendChild(textElement);
-    }
+        foreach (var para in paragraphs)
+        {
+            var text = para.InnerText.Replace(tag, replacement);
+            var firstRunProperties = para.Elements<Run>().FirstOrDefault()?.RunProperties?.CloneNode(true);
+            
+            para.RemoveAllChildren<Run>();
+            var newRun = new Run();
+            if (firstRunProperties != null)
+            {
+                newRun.AppendChild(firstRunProperties);
+            }
+            
+            var lines = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                newRun.AppendChild(new Text(lines[i]) { Space = SpaceProcessingModeValues.Preserve });
+                if (i < lines.Length - 1)
+                {
+                    newRun.AppendChild(new Break());
+                }
+            }
 
-    private static void AddEmptyLine(Body body)
-    {
-        body.AppendChild(new Paragraph(new Run(new Text(""))));
+            para.AppendChild(newRun);
+        }
     }
 }

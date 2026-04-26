@@ -4,7 +4,7 @@ using StudentParliamentSystem.Core.Aggregates.CoworkingBooking;
 
 namespace StudentParliamentSystem.UseCases.CoworkingBookings.GenerateDocument;
 
-public record GenerateCoworkingReport(DateTime Start, DateTime End);
+public record GenerateCoworkingReport(DateTime Start, DateTime End, string Receiver, string DocumentDate, string Sender);
 
 public class GenerateCoworkingReportHandler
 {
@@ -27,14 +27,9 @@ public class GenerateCoworkingReportHandler
             return Result.Fail("End date must be after start date.");
         }
 
-        if ((endUtc - startUtc).TotalDays > 7.1)
-        {
-            return Result.Fail("Timespan cannot exceed one week.");
-        }
-
         var bookings = await _repository.GetApprovedBookingsWithinSpanAsync(startUtc, endUtc);
 
-        var docBytes = _documentGenerator.GenerateDocument(bookings, startUtc, endUtc);
+        var docBytes = _documentGenerator.GenerateDocument(bookings, query.Receiver, query.DocumentDate, query.Sender);
 
         return Result.Ok(docBytes);
     }

@@ -3,12 +3,12 @@
 
 #nullable disable
 
-using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using StudentParliamentSystem.Infrastructure.Identity;
+using StudentParliamentSystem.Infrastructure.Identity.Data.Entities;
 
 namespace StudentParliamentSystem.Api.Areas.Identity.Pages.Account.Manage;
 

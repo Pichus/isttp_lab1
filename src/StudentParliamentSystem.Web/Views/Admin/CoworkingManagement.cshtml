@@ -17,30 +17,157 @@
 }
 
 <div class="bg-base-100 shadow-xl rounded-3xl border border-base-200 p-6 mb-8">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div class="flex flex-wrap gap-2">
-            <a asp-action="CoworkingManagement" asp-route-status="" class="btn btn-sm btn-ghost @(string.IsNullOrEmpty(currentStatus) ? "btn-active" : "")">Всі</a>
-            <a asp-action="CoworkingManagement" asp-route-status="Pending" class="btn btn-sm btn-ghost @(currentStatus == "Pending" ? "btn-active" : "")">Очікують</a>
-            <a asp-action="CoworkingManagement" asp-route-status="Approved" class="btn btn-sm btn-ghost @(currentStatus == "Approved" ? "btn-active" : "")">Підтверджені</a>
-            <a asp-action="CoworkingManagement" asp-route-status="Rejected" class="btn btn-sm btn-ghost @(currentStatus == "Rejected" ? "btn-active" : "")">Відхилені</a>
-        </div>
-        
-        <form asp-action="GenerateReport" method="post" class="flex flex-wrap gap-2 items-end">
+    <h2 class="text-2xl font-bold mb-4">Генерація Подання</h2>
+    <form asp-action="GenerateReport" method="post" class="flex flex-col gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="form-control">
-                <label class="label p-1"><span class="label-text text-xs">Початок</span></label>
+                <label class="label p-1"><span class="label-text font-bold text-xs">Початок</span></label>
                 <input type="date" name="reportStart" class="input input-bordered input-sm" required value="@DateTime.Now.ToString("yyyy-MM-dd")" />
             </div>
             <div class="form-control">
-                <label class="label p-1"><span class="label-text text-xs">Кінець</span></label>
+                <label class="label p-1"><span class="label-text font-bold text-xs">Кінець</span></label>
                 <input type="date" name="reportEnd" class="input input-bordered input-sm" required value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
             </div>
-            <button type="submit" class="btn btn-primary btn-sm h-[2rem] min-h-[2rem]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Згенерувати Подання
-            </button>
+            <div class="form-control">
+                <label class="label p-1"><span class="label-text font-bold text-xs">Дата на документі</span></label>
+                <input type="date" name="documentDate" class="input input-bordered input-sm" required value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="form-control">
+                <label class="label p-1"><span class="label-text font-bold text-xs">Від кого (ПІБ)</span></label>
+                <input type="text" name="senderName" class="input input-bordered input-sm" required value="@User.Identity?.Name" placeholder="Іваненко Іван" />
+            </div>
+        </div>
+        
+        <div class="form-control">
+            <label class="label p-1"><span class="label-text font-bold text-xs">Отримувач</span></label>
+            <select name="receiverIdOrCustom" id="receiverSelect" class="select select-bordered select-sm w-full" onchange="document.getElementById('customReceiverDiv').style.display = this.value === 'custom' ? 'block' : 'none'">
+                @if(ViewBag.Receivers != null)
+                {
+                    foreach(var rec in ViewBag.Receivers)
+                    {
+                        if(rec.IsDefault) {
+                            <option value="@rec.Id" selected>@rec.Name (@rec.Position)</option>
+                        } else {
+                            <option value="@rec.Id">@rec.Name (@rec.Position)</option>
+                        }
+                    }
+                }
+                <option value="custom">Свій варіант...</option>
+            </select>
+        </div>
+        
+        <div class="form-control" id="customReceiverDiv" style="display: none;">
+            <label class="label p-1"><span class="label-text font-bold text-xs">Повний титул отримувача (давальний відмінок)</span></label>
+            <textarea name="customReceiverTitle" class="textarea textarea-bordered textarea-sm w-full" placeholder="В.о. декана..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">
+            Згенерувати Подання
+        </button>
+    </form>
+</div>
+
+<div class="bg-base-100 shadow-xl rounded-3xl border border-base-200 p-6 mb-8">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Отримувачі Подань</h2>
+        <button class="btn btn-sm btn-outline" onclick="document.getElementById('createReceiverModal').showModal()">Додати</button>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Ім'я</th>
+                    <th>Посада</th>
+                    <th>За замовчуванням</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(ViewBag.Receivers != null)
+                {
+                    foreach(var rec in ViewBag.Receivers)
+                    {
+                        <tr>
+                            <td>@rec.Name</td>
+                            <td>@rec.Position</td>
+                            <td>@(rec.IsDefault ? "Так" : "Ні")</td>
+                            <td>
+                                <button class="btn btn-xs btn-warning" onclick="document.getElementById('editReceiverModal-@rec.Id').showModal()">Редагувати</button>
+                                <form asp-action="DeleteDocumentReceiver" asp-route-id="@rec.Id" method="post" style="display:inline">
+                                    <button class="btn btn-xs btn-error" onclick="return confirm('Ви впевнені?')">Видалити</button>
+                                </form>
+
+                                <dialog id="editReceiverModal-@rec.Id" class="modal">
+                                    <div class="modal-box text-left whitespace-normal">
+                                        <h3 class="font-bold text-lg">Редагувати отримувача</h3>
+                                        <form asp-action="EditDocumentReceiver" method="post">
+                                            <input type="hidden" name="id" value="@rec.Id" />
+                                            <div class="form-control mt-4">
+                                                <label class="label"><span class="label-text">Ім'я (ПІБ)</span></label>
+                                                <input type="text" name="name" required class="input input-bordered" value="@rec.Name" />
+                                            </div>
+                                            <div class="form-control mt-4">
+                                                <label class="label"><span class="label-text">Посада</span></label>
+                                                <input type="text" name="position" required class="input input-bordered" value="@rec.Position" />
+                                            </div>
+                                            <div class="form-control mt-4">
+                                                <label class="label"><span class="label-text">Повний титул (давальний відмінок)</span></label>
+                                                <textarea name="fullTitle" required class="textarea textarea-bordered h-24">@rec.FullTitle</textarea>
+                                            </div>
+                                            <div class="form-control mt-4 flex-row items-center gap-2">
+                                                <input type="checkbox" name="isDefault" value="true" class="checkbox" @(rec.IsDefault ? "checked" : "") />
+                                                <label class="label cursor-pointer"><span class="label-text">За замовчуванням</span></label>
+                                            </div>
+                                            <div class="modal-action">
+                                                <button type="button" class="btn" onclick="this.closest('dialog').close()">Скасувати</button>
+                                                <button type="submit" class="btn btn-primary">Зберегти</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </dialog>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<dialog id="createReceiverModal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Новий отримувач</h3>
+        <form asp-action="CreateDocumentReceiver" method="post">
+            <div class="form-control mt-4">
+                <label class="label"><span class="label-text">Ім'я (ПІБ)</span></label>
+                <input type="text" name="name" required class="input input-bordered" />
+            </div>
+            <div class="form-control mt-4">
+                <label class="label"><span class="label-text">Посада</span></label>
+                <input type="text" name="position" required class="input input-bordered" />
+            </div>
+            <div class="form-control mt-4">
+                <label class="label"><span class="label-text">Повний титул (давальний відмінок)</span></label>
+                <textarea name="fullTitle" required class="textarea textarea-bordered h-24" placeholder="Виконуючому обов'язки..."></textarea>
+            </div>
+            <div class="form-control mt-4 flex-row items-center gap-2">
+                <input type="checkbox" name="isDefault" value="true" class="checkbox" />
+                <label class="label cursor-pointer"><span class="label-text">За замовчуванням</span></label>
+            </div>
+            <div class="modal-action">
+                <button type="button" class="btn" onclick="this.closest('dialog').close()">Скасувати</button>
+                <button type="submit" class="btn btn-primary">Зберегти</button>
+            </div>
         </form>
+    </div>
+</dialog>
+
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+    <div class="flex flex-wrap gap-2">
+        <a asp-action="CoworkingManagement" asp-route-status="" class="btn btn-sm btn-ghost @(string.IsNullOrEmpty(currentStatus) ? "btn-active" : "")">Всі</a>
+        <a asp-action="CoworkingManagement" asp-route-status="Pending" class="btn btn-sm btn-ghost @(currentStatus == "Pending" ? "btn-active" : "")">Очікують</a>
+        <a asp-action="CoworkingManagement" asp-route-status="Approved" class="btn btn-sm btn-ghost @(currentStatus == "Approved" ? "btn-active" : "")">Підтверджені</a>
+        <a asp-action="CoworkingManagement" asp-route-status="Rejected" class="btn btn-sm btn-ghost @(currentStatus == "Rejected" ? "btn-active" : "")">Відхилені</a>
     </div>
 </div>
 
