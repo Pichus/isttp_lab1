@@ -74,61 +74,61 @@ public class CoworkingDocumentGenerator : ICoworkingDocumentGenerator
                     var noBookings = new Paragraph(new Run(new Text("У цей період заходів не заплановано.")));
                     insertBeforeNode.Parent!.InsertBefore(noBookings, insertBeforeNode);
                 }
-                    TimeZoneInfo kyivZone;
-                    try
-                    {
-                        kyivZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Kyiv");
-                    }
-                    catch (TimeZoneNotFoundException)
-                    {
-                        kyivZone = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time");
-                    }
+                TimeZoneInfo kyivZone;
+                try
+                {
+                    kyivZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Kyiv");
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    kyivZone = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time");
+                }
 
-                    foreach (var booking in coworkingBookings)
-                    {
-                        var startKyiv = TimeZoneInfo.ConvertTimeFromUtc(booking.StartTimeUtc, kyivZone);
-                        var endKyiv = TimeZoneInfo.ConvertTimeFromUtc(booking.EndTimeUtc, kyivZone);
+                foreach (var booking in coworkingBookings)
+                {
+                    var startKyiv = TimeZoneInfo.ConvertTimeFromUtc(booking.StartTimeUtc, kyivZone);
+                    var endKyiv = TimeZoneInfo.ConvertTimeFromUtc(booking.EndTimeUtc, kyivZone);
 
-                        var eventDate = startKyiv.ToString("dd.MM.yyyy");
-                        var startTime = startKyiv.ToString("HH:mm");
-                        var endTime = endKyiv.ToString("HH:mm");
-                        var eventName = booking.Event.Title;
+                    var eventDate = startKyiv.ToString("dd.MM.yyyy");
+                    var startTime = startKyiv.ToString("HH:mm");
+                    var endTime = endKyiv.ToString("HH:mm");
+                    var eventName = booking.Event.Title;
 
-                        var organizerName = booking.Event.CreatedByUser.LastName + " " +
-                                            booking.Event.CreatedByUser.FirstName;
+                    var organizerName = booking.Event.CreatedByUser.LastName + " " +
+                                        booking.Event.CreatedByUser.FirstName;
                         
-                        var allOrganizers = new List<string> { organizerName };
+                    var allOrganizers = new List<string> { organizerName };
                         
-                        if (booking.SpaceManager != null)
-                        {
-                            allOrganizers.Add(booking.SpaceManager.LastName + " " + booking.SpaceManager.FirstName);
-                        }
-
-                        if (booking.Event.EventOrganizers.Any())
-                        {
-                            allOrganizers.AddRange(booking.Event.EventOrganizers.Select(eo => eo.User.LastName + " " + eo.User.FirstName));
-                        }
-
-                        var fullOrganizers = string.Join(", ", allOrganizers.Distinct());
-
-                        foreach (var tPara in templateParagraphs)
-                        {
-                            var clone = (Paragraph)tPara.CloneNode(true);
-                            ReplaceText(clone, "{{EventName}}", eventName);
-                            ReplaceText(clone, "{{EventName}", eventName); // fallback for typo
-                            ReplaceText(clone, "{{EventStart}}", $"{eventDate} {startTime}");
-                            ReplaceText(clone, "{{EventStart}", $"{eventDate} {startTime}");
-                            ReplaceText(clone, "{{EventEnd}}", $"{eventDate} {endTime}");
-                            ReplaceText(clone, "{{EventEnd}", $"{eventDate} {endTime}");
-                            ReplaceText(clone, "{{EventOrganizers}}", fullOrganizers);
-                            ReplaceText(clone, "{{EventOrganizers}", fullOrganizers);
-
-                            insertBeforeNode.Parent!.InsertBefore(clone, insertBeforeNode);
-                        }
-
-                        insertBeforeNode.Parent!.InsertBefore(new Paragraph(new Run(new Text(""))),
-                            insertBeforeNode);
+                    if (booking.SpaceManager != null)
+                    {
+                        allOrganizers.Add(booking.SpaceManager.LastName + " " + booking.SpaceManager.FirstName);
                     }
+
+                    if (booking.Event.EventOrganizers.Any())
+                    {
+                        allOrganizers.AddRange(booking.Event.EventOrganizers.Select(eo => eo.User.LastName + " " + eo.User.FirstName));
+                    }
+
+                    var fullOrganizers = string.Join(", ", allOrganizers.Distinct());
+
+                    foreach (var tPara in templateParagraphs)
+                    {
+                        var clone = (Paragraph)tPara.CloneNode(true);
+                        ReplaceText(clone, "{{EventName}}", eventName);
+                        ReplaceText(clone, "{{EventName}", eventName); // fallback for typo
+                        ReplaceText(clone, "{{EventStart}}", $"{eventDate} {startTime}");
+                        ReplaceText(clone, "{{EventStart}", $"{eventDate} {startTime}");
+                        ReplaceText(clone, "{{EventEnd}}", $"{eventDate} {endTime}");
+                        ReplaceText(clone, "{{EventEnd}", $"{eventDate} {endTime}");
+                        ReplaceText(clone, "{{EventOrganizers}}", fullOrganizers);
+                        ReplaceText(clone, "{{EventOrganizers}", fullOrganizers);
+
+                        insertBeforeNode.Parent!.InsertBefore(clone, insertBeforeNode);
+                    }
+
+                    insertBeforeNode.Parent!.InsertBefore(new Paragraph(new Run(new Text(""))),
+                        insertBeforeNode);
+                }
                 foreach (var p in templateParagraphs)
                 {
                     p.Remove();
